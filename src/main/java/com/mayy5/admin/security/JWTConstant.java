@@ -1,0 +1,6 @@
+package com.mayy5.admin.security;
+
+public class JWTConstant {
+    public static final long ACCESS_TOKEN_EXPIRED = 1000 * 60 * 60;
+    public static final long REFRESH_TOKEN_EXPIRED = 1000 * 60 * 60 * 24;
+}
