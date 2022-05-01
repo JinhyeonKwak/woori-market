@@ -7,4 +7,5 @@ package com.mayy5.admin.apis.type;
  */
 public class SwaggerApiTag {
 	public static final String DEMO = "DEMO";
+	public static final String USER = "USER";
 }
