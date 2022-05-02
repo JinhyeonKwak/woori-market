@@ -29,16 +29,16 @@ public class AdminSwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .securityContexts(Arrays.asList(securityContext()))
-                // .securitySchemes(Arrays.asList(apiKey()))
+                .securitySchemes(Arrays.asList(apiKey()))
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.mayy5.admin.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
-    // private ApiKey apiKey() {
-    //     return new ApiKey("JWT", "Authorization", "header");
-    // }
+    private ApiKey apiKey() {
+        return new ApiKey("JWT", "Authorization", "header");
+    }
 
     private SecurityContext securityContext() {
         return SecurityContext.builder().securityReferences(defaultAuth()).build();
@@ -55,7 +55,7 @@ public class AdminSwaggerConfig {
         return new ApiInfoBuilder()
                 .title("Admin API")
                 .version("0.1")
-                .description("장터 Admin Api")
+                .description("Market Api")
                 .build();
     }
 }
