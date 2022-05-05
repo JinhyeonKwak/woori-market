@@ -25,10 +25,4 @@ public class RetailerRepository {
         return em.createQuery("select r from Retailer r", Retailer.class)
                 .getResultList();
     }
-
-    public List<Retailer> findByName(String name) {
-        return em.createQuery("select r from Retailer r where r.userName = :name", Retailer.class)
-                .setParameter("name", name)
-                .getResultList();
-    }
 }

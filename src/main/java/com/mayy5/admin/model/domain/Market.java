@@ -1,9 +1,7 @@
 package com.mayy5.admin.model.domain;
 
 import com.mayy5.admin.model.dto.MarketDTO;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
@@ -11,8 +9,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@Getter @Setter
 public class Market {
 
     @Id @GeneratedValue
@@ -28,14 +30,7 @@ public class Market {
     @Column(name = "END_AT")
     private LocalDate endDate;
 
-    @ElementCollection
-    @CollectionTable(
-            name = "OPEN_DAY",
-            joinColumns = @JoinColumn(name = "MARKET_DAY_ID")
-    )
-    @OrderColumn(name = "LIST_IDX")
-    @Column(name = "MARKET_DAY")
-    private List<DayOfWeek> marketDay = new ArrayList<>();
+    private DayOfWeek marketDay;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MARKET_AGENT_ID")
@@ -44,15 +39,8 @@ public class Market {
     @OneToMany(mappedBy = "market", cascade = CascadeType.ALL)
     private List<MarketRetailer> marketRetailerList = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "SCHEDULE_ID")
-    private Schedule schedule;
-
 
     //==생성 메서드==//
-    /**
-     * 장 등록
-     */
     public static Market createMarket(MarketAgent marketAgent, MarketDTO marketDTO) {
         Market market = new Market();
         market.setMarketAgent(marketAgent);
@@ -77,11 +65,6 @@ public class Market {
             marketRetailer.setRetailer(retailer);
             marketRetailerList.add(marketRetailer);
         }
-    }
-
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
-        schedule.setMarket(this);
     }
 
 }
