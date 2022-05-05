@@ -16,8 +16,6 @@ public class MarketAgentService {
 
     @Transactional
     public Long join(MarketAgent marketAgent) {
-
-        validateDuplicateAgent(marketAgent); //중복 장주 검증
         marketAgentRepository.save(marketAgent);
         return marketAgent.getId();
     }
@@ -32,12 +30,4 @@ public class MarketAgentService {
         return marketAgentRepository.findOne(marketAgentId);
     }
 
-
-    //==기타 메서드==//
-    private void validateDuplicateAgent(MarketAgent marketAgent) {
-        List<MarketAgent> findAgents = marketAgentRepository.findByName(marketAgent.getUserName());
-        if (!findAgents.isEmpty()) {
-            throw new IllegalStateException("이미 등록되었습니다.");
-        }
-    }
 }

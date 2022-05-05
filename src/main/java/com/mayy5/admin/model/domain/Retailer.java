@@ -1,47 +1,74 @@
 package com.mayy5.admin.model.domain;
 
 import com.mayy5.admin.model.dto.User;
-import lombok.Getter;
-import lombok.Setter;
+import com.mayy5.admin.type.MarketAgentMetaType;
+import com.mayy5.admin.type.RetailerMetaType;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@Getter @Setter
 public class Retailer {
 
     @Id @GeneratedValue
     @Column(name = "RETAILER_ID")
     private Long id;
 
-    private String userName;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @MapKeyEnumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "RETAILER_META",
+            joinColumns = @JoinColumn(name = "RETAILER_ID")
+    )
+    @MapKeyColumn(name = "META_TYPE")
+    @Column(name = "META_VALUE")
+    private Map<RetailerMetaType, String> meta = new HashMap<>();
 
-    private String phoneNumber;
-
-    private String email;
-
-    @Enumerated(EnumType.STRING)
-    private Category category;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
     @OneToMany(mappedBy = "retailer")
     private List<MarketRetailer> marketRetailerList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "retailer")
-    private List<RetailerSchedule> retailerScheduleList = new ArrayList<>();
+    @Column(name = "CREATE_AT", nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createAt;
+
+    @Column(name = "UPDATE_AT")
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
+
+    //==생성 메서드==//
+    public static Retailer createRetailer(User user, Map<RetailerMetaType, String> meta) {
+        Retailer retailer = new Retailer();
+        retailer.setUser(user);
+        for (RetailerMetaType metaType : meta.keySet()) {
+            retailer.getMeta().put(metaType, meta.get(metaType));
+        }
+        return retailer;
+    }
 
     //==연관 관계 메서드==//
+    public void setUser(User user) {
+        this.user = user;
+        user.getRetailerList().add(this);
+    }
+
     public void addMarketRetailer(MarketRetailer marketRetailer) {
         marketRetailerList.add(marketRetailer);
         marketRetailer.setRetailer(this);
     }
-
-    public void addRetailerSchedule(RetailerSchedule retailerSchedule) {
-        retailerScheduleList.add(retailerSchedule);
-        retailerSchedule.setRetailer(this);
-
-    }
-
-
 }

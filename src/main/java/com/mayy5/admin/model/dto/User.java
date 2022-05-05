@@ -1,13 +1,17 @@
 package com.mayy5.admin.model.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.mayy5.admin.model.domain.MarketAgent;
+import com.mayy5.admin.model.domain.Retailer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -44,6 +48,12 @@ public class User {
 	@MapKeyColumn(name = "META_TYPE")
 	@Column(name = "META_VALUE")
 	private Map<UserMetaType, String> meta = new HashMap<>();
+
+	@OneToOne(mappedBy = "user")
+	private MarketAgent marketAgent;
+
+	@OneToMany(mappedBy = "user")
+	private List<Retailer> retailerList = new ArrayList<>();
 
 	@Column(name = "CREATE_AT", nullable = false, updatable = false)
 	@CreationTimestamp

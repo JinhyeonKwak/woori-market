@@ -21,4 +21,7 @@ public class MarketRetailer {
     @JoinColumn(name = "RETAILER_ID")
     private Retailer retailer;
 
+    @Enumerated(EnumType.STRING)
+    private CheckAttend checkAttend;
+
 }

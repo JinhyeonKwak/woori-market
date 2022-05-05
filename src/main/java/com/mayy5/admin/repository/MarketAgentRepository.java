@@ -26,9 +26,4 @@ public class MarketAgentRepository {
                 .getResultList();
     }
 
-    public List<MarketAgent> findByName(String name) {
-        return em.createQuery("select m from MarketAgent m where m.userName = :name", MarketAgent.class)
-                .setParameter("name", name)
-                .getResultList();
-    }
 }

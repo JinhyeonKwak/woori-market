@@ -5,11 +5,11 @@ import com.mayy5.admin.model.dto.MarketDTO;
 import com.mayy5.admin.repository.MarketAgentRepository;
 import com.mayy5.admin.repository.MarketRepository;
 import com.mayy5.admin.repository.RetailerRepository;
-import com.mayy5.admin.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class MarketService {
     private final MarketRepository marketRepository;
     private final MarketAgentRepository marketAgentRepository;
     private final RetailerRepository retailerRepository;
-    private final ScheduleRepository scheduleRepository;
+    private final EntityManager em;
 
     /**
      * 장 등록
@@ -39,30 +39,6 @@ public class MarketService {
         marketRepository.save(market);
 
         return market.getId();
-    }
-
-    /**
-     * 출석 관리 스케줄 생성
-     * @param marketId
-     * @return scheduleId
-     */
-    @Transactional
-    public Long createSchedule(Long marketId) {
-
-        // 장 조회
-        Market market = marketRepository.findOne(marketId);
-
-        // 출석 관리 스케줄 생성
-        Schedule schedule = new Schedule();
-        schedule.setAttend(Attend.ATTEND); // default 값이 ATTEND
-        /*
-        schedule의 유효 시간을 설정하는 로직 추가 예정
-         */
-
-        market.setSchedule(schedule);
-        scheduleRepository.save(schedule);
-
-        return schedule.getId();
     }
 
     /**
@@ -85,5 +61,8 @@ public class MarketService {
         // 장원 승인
         market.addRetailer(retailers);
     }
+
+
+
 
 }
