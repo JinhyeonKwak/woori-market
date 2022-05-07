@@ -58,13 +58,14 @@ public class Market {
         marketAgent.getMarketList().add(this);
     }
 
-    public void addRetailer(List<Retailer> retailers) {
-        for (Retailer retailer : retailers) {
-            MarketRetailer marketRetailer = new MarketRetailer();
-            marketRetailer.setMarket(this);
-            marketRetailer.setRetailer(retailer);
-            marketRetailerList.add(marketRetailer);
-        }
-    }
+    public void addRetailer(Retailer retailer) {
 
+        MarketRetailer marketRetailer = MarketRetailer.builder()
+                .market(this)
+                .retailer(retailer)
+                .build();
+        this.marketRetailerList.add(marketRetailer);
+        retailer.getMarketRetailerList().add(marketRetailer);
+
+    }
 }

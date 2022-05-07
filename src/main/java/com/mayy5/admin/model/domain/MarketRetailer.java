@@ -1,12 +1,17 @@
 package com.mayy5.admin.model.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@Getter @Setter
 public class MarketRetailer {
 
     @Id @GeneratedValue
@@ -21,7 +26,7 @@ public class MarketRetailer {
     @JoinColumn(name = "RETAILER_ID")
     private Retailer retailer;
 
-    @Enumerated(EnumType.STRING)
-    private CheckAttend checkAttend;
+    @OneToMany(mappedBy = "marketRetailer", cascade = CascadeType.ALL)
+    private List<Schedule> scheduleList = new ArrayList<>();
 
 }
