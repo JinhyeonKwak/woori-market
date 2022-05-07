@@ -1,7 +1,6 @@
 package com.mayy5.admin.model.domain;
 
 import com.mayy5.admin.model.dto.User;
-import com.mayy5.admin.type.MarketAgentMetaType;
 import com.mayy5.admin.type.RetailerMetaType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -53,11 +52,8 @@ public class Retailer {
 
     //==생성 메서드==//
     public static Retailer createRetailer(User user, Map<RetailerMetaType, String> meta) {
-        Retailer retailer = new Retailer();
+        Retailer retailer = Retailer.builder().meta(meta).build();
         retailer.setUser(user);
-        for (RetailerMetaType metaType : meta.keySet()) {
-            retailer.getMeta().put(metaType, meta.get(metaType));
-        }
         return retailer;
     }
 
@@ -65,10 +61,5 @@ public class Retailer {
     public void setUser(User user) {
         this.user = user;
         user.getRetailerList().add(this);
-    }
-
-    public void addMarketRetailer(MarketRetailer marketRetailer) {
-        marketRetailerList.add(marketRetailer);
-        marketRetailer.setRetailer(this);
     }
 }

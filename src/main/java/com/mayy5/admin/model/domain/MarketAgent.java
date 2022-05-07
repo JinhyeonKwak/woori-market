@@ -53,11 +53,9 @@ public class MarketAgent {
 
     //==생성 메서드==//
     public static MarketAgent createMarketAgent(User user, Map<MarketAgentMetaType, String> meta) {
-        MarketAgent marketAgent = new MarketAgent();
+
+        MarketAgent marketAgent = MarketAgent.builder().meta(meta).build();
         marketAgent.setUser(user);
-        for (MarketAgentMetaType metaType : meta.keySet()) {
-            marketAgent.getMeta().put(metaType, meta.get(metaType));
-        }
         return marketAgent;
     }
 
