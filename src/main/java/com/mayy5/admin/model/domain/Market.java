@@ -17,7 +17,8 @@ import java.util.List;
 @Entity
 public class Market {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MARKET_ID")
     private Long id;
 
