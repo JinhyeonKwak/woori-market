@@ -1,23 +1,17 @@
 package com.mayy5.admin.model.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.MapKeyEnumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.mayy5.admin.model.domain.MarketAgent;
+import com.mayy5.admin.model.domain.Retailer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -48,12 +42,18 @@ public class User {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@MapKeyEnumerated(EnumType.STRING)
 	@CollectionTable(
-		name = "USER_META",
-		joinColumns = @JoinColumn(name = "ID")
+			name = "USER_META",
+			joinColumns = @JoinColumn(name = "ID")
 	)
 	@MapKeyColumn(name = "META_TYPE")
 	@Column(name = "META_VALUE")
 	private Map<UserMetaType, String> meta = new HashMap<>();
+
+	@OneToOne(mappedBy = "user")
+	private MarketAgent marketAgent;
+
+	@OneToMany(mappedBy = "user")
+	private List<Retailer> retailerList = new ArrayList<>();
 
 	@Column(name = "CREATE_AT", nullable = false, updatable = false)
 	@CreationTimestamp
