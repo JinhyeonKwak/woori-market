@@ -22,7 +22,7 @@ import java.util.Map;
 public class MarketAgent {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MARKET_AGENT_ID")
     private Long id;
 
@@ -53,7 +53,7 @@ public class MarketAgent {
 
     //==생성 메서드==//
     public static MarketAgent createMarketAgent(User user, Map<MarketAgentMetaType, String> meta) {
-
+        MarketAgent marketAgent1 = new MarketAgent();
         MarketAgent marketAgent = MarketAgent.builder().meta(meta).build();
         marketAgent.setUser(user);
         return marketAgent;

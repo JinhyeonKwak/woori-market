@@ -21,7 +21,8 @@ import java.util.Map;
 @Entity
 public class Retailer {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RETAILER_ID")
     private Long id;
 

@@ -2,7 +2,6 @@ package com.mayy5.admin.service;
 
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
-import com.mayy5.admin.model.domain.Market;
 import com.mayy5.admin.model.domain.MarketAgent;
 import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.repository.MarketAgentRepository;
@@ -22,11 +21,13 @@ import java.util.Optional;
 public class MarketAgentService {
 
     private final MarketAgentRepository marketAgentRepository;
+
     private final UserService userService;
 
     @Transactional
-    public MarketAgent createMarketAgent(String id, Map<MarketAgentMetaType, String> meta) {
-        User user = userService.getUser(id);
+    public MarketAgent createMarketAgent(MarketAgent input) {
+        User user = input.getUser();
+        Map<MarketAgentMetaType, String> meta = input.getMeta();
         return MarketAgent.createMarketAgent(user, meta);
     }
 
@@ -37,8 +38,9 @@ public class MarketAgentService {
     }
 
     @Transactional(readOnly = true)
-    public List<MarketAgent> getMarketAgentList() {
-        return marketAgentRepository.findAll();
+    public List<MarketAgent> getMarketAgentList(String userId) {
+        User user = userService.getUser(userId);
+        return marketAgentRepository.getMarketAgentList(user);
     }
 
     @Transactional
