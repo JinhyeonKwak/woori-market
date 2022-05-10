@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserService {
 
-	final static Set<UserRoleType> USER_ROLE_FILTER_SET = new HashSet<>(Arrays.asList(
+	private final static Set<UserRoleType> USER_ROLE_FILTER_SET = new HashSet<>(Arrays.asList(
 		UserRoleType.ROLE_MARKET_AGENT,
 		UserRoleType.ROLE_RETAILER));
 
@@ -145,8 +144,12 @@ public class UserService {
 	}
 
 	@Transactional
-	public void updateAuthStatus(Map<String, String> map) {
-
+	public void updateAuthStatus(String email) {
+		User user = userRepository.findByEmail(email).orElseThrow(() -> {
+			throw new CommonException(BError.NOT_EXIST,"Email");
+		});
+		user.setValid(true);
+		userRepository.save(user);
 	}
 
 }

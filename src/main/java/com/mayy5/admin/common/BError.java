@@ -13,7 +13,8 @@ public enum BError implements Error {
     FAIL("FAIL", "%1 failed."),
     SUCCEESS("SUCCEESS", "%1 succeeded."),
     FAIL_REASON("FAIL_REASON", "%1 failed for reason (%2)."),
-    NOT_SUPPORT("NOT_SUPPORT", "%1 not supported.");
+    NOT_SUPPORT("NOT_SUPPORT", "%1 not supported."),
+    NOT_REGISTERD("NOT_REGISTERD", "%1 not registered.");
 
     private String errCode;
     private String msg;
