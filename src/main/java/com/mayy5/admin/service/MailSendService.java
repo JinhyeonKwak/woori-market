@@ -18,31 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class MailSendService {
 
-	private int size;
-
 	private final JavaMailSender mailSender;
 	private final TokenService tokenService;
-
-
-	//인증키 생성
-	private String getKey(int size) {
-		this.size = size;
-		return getAuthCode();
-	}
-
-	//인증코드 난수 발생
-	private String getAuthCode() {
-		Random random = new Random();
-		StringBuffer buffer = new StringBuffer();
-		int num = 0;
-
-		while (buffer.length() < size) {
-			num = random.nextInt(10);
-			buffer.append(num);
-		}
-
-		return buffer.toString();
-	}
 
 	//인증메일 보내기
 	public String sendAuthMail(String email) {
