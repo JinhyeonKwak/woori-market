@@ -31,7 +31,6 @@ public class UserUpdateRTO {
 	@ApiModelProperty(value = "newPassword", required = true, example = "admin", position = 3)
 	private String newPassword;
 
-
 	@ApiModelProperty(value = "name", required = true, example = "010 ", position = 5)
 	@NotBlank
 	@Pattern(regexp = "(\\d{3})(\\d{3,4})(\\d{4})")
