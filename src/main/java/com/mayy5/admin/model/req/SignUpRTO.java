@@ -2,7 +2,6 @@ package com.mayy5.admin.model.req;
 
 import java.util.Map;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
