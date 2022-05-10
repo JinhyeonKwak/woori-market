@@ -15,8 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -39,11 +37,20 @@ import lombok.ToString;
 public class User {
 
 	@Id
-	@NotBlank
+	@Column
 	private String id;
 
-	@NotNull
+	@Column(unique = true)
+	private String email;
+
+	@Column
 	private String password;
+
+	@Column
+	private String name;
+
+	@Column(unique = true)
+	private String phone;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@MapKeyEnumerated(EnumType.STRING)

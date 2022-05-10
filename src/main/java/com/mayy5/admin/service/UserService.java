@@ -1,10 +1,11 @@
 package com.mayy5.admin.service;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ public class UserService {
 		UserRoleType.ROLE_MARKET_AGENT,
 		UserRoleType.ROLE_RETAILER));
 
+	// private final MailSendService mailSendService;
 	private final UserRepository userRepository;
 
 	@Transactional
@@ -44,6 +46,18 @@ public class UserService {
 	public List<User> getUserList() {
 		List<User> userList = userRepository.findAll();
 		return userList;
+	}
+
+	public User signUp(User input) {
+		try {
+
+			// mailSendService.sendAuthMail(mail);
+			return createUser(input);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			log.debug(e.getMessage(), e);
+			throw new CommonException(BError.FAIL_REASON, "Sign Up", e.getMessage());
+		}
 	}
 
 	@Transactional
@@ -70,11 +84,8 @@ public class UserService {
 	@Transactional
 	public void deleteUser(String id) throws CommonException {
 		try {
-
-			Optional<User> user = userRepository.findById(id);
-			user.ifPresent(resourceExist -> {
-				userRepository.deleteById(id);
-			});
+			userRepository.findById(id)
+				.ifPresent(idExist -> userRepository.deleteById(id));
 			return;
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -97,29 +108,45 @@ public class UserService {
 
 		User user = userRepository.findById(input.getId()).orElse(
 			User.builder()
-				.id(input.getId())
-				.meta(input.getMeta())
+				.id(input.getId()) // 변경하지 않을 사항
+				.name(input.getName()) // 변경하지 않을 사항
+				.meta(new HashMap<>())
 				.build()
 		);
 
 		// Modify Only Input Data Exist like Patch Method
-		if (Objects.nonNull(input.getPassword()))
+		if (Objects.nonNull(input.getPassword())) {
 			user.setPassword(input.getPassword());
-		if (Objects.nonNull(input.getMeta())) {
-			user.setMeta(input.getMeta());
-			if (Objects.nonNull(user.getMeta().get(UserMetaType.MAIL))) {
-				userRepository.findAllExceptOne(user.getId()).stream()
-					.filter(u -> Objects.nonNull(u.getMeta().get(UserMetaType.MAIL)))
-					.filter(r -> r.getMeta().get(UserMetaType.MAIL)
-						.equals(user.getMeta().get(UserMetaType.MAIL))
-					).findFirst().ifPresent(r -> {
-					throw new CommonException(BError.EXIST, "User Mail");
-				});
+		}
+		// Unique Value
+		if (Objects.nonNull(input.getEmail())) {
+			if (userRepository.existsByEmail(input.getEmail())) {
+				throw new CommonException(BError.EXIST, "Mail");
 			}
+			user.setEmail(input.getEmail());
+		}
+		if (Objects.nonNull(input.getName())) {
+			user.setName(input.getName());
+		}
+		// Unique Value
+		if (Objects.nonNull(input.getPhone())) {
+			if (userRepository.existsByPhone(input.getPhone())) {
+				throw new CommonException(BError.EXIST, "PhoneNumber");
+			}
+			user.setPhone(input.getPhone());
+		}
+		if (Objects.nonNull(input.getMeta())) {
+			input.getMeta().entrySet().forEach(entry -> {
+				user.getMeta().put(entry.getKey(), entry.getValue());
+			});
 		}
 
-		// # Default JDBC Setting
 		return user;
+	}
+
+	@Transactional
+	public void updateAuthStatus(Map<String, String> map) {
+
 	}
 
 }

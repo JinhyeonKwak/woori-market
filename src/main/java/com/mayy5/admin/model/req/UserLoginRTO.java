@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 public class UserLoginRTO {
 
-    @ApiModelProperty(value = "admin", required = true, example = "admin")
+    @ApiModelProperty(value = "admin", required = true, example = "mayy5")
     private String id;
     @ApiModelProperty(value = "admin", required = true, example = "admin")
     private String password;
