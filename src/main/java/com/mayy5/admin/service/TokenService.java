@@ -42,6 +42,19 @@ public class TokenService {
 		return USER_SECRET_KEY.get(username);
 	}
 
+	public String genSignUpAuthToken(String email) {
+		String token = Jwts
+			.builder()
+			.setSubject("가입 확인")
+			.setIssuer("mayy5_admin")
+			.claim("email",email)
+			.setIssuedAt(new Date(System.currentTimeMillis()))
+			.setExpiration(new Date(System.currentTimeMillis() + JWTConstant.SIGNUP_TOKEN_EXPIRED))
+			.signWith(SignatureAlgorithm.HS512,
+				SECRET_KEY.getBytes()).compact();
+		return token;
+	}
+
 	public String genAccessToken(String username) {
 		User user = userService.getUser(username);
 		setUserCode(username, user.getUpdateAt());

@@ -1,6 +1,7 @@
 package com.mayy5.admin.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 	List<User> findAllExceptOne(String email);
 
 	boolean existsByEmail(String email);
+
+	Optional<User> findByEmail(String email);
 
 	boolean existsByPhone(String phone);
 

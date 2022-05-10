@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.type.UserMetaType;
 
 import lombok.AllArgsConstructor;
@@ -52,6 +53,9 @@ public class User {
 	@Column(unique = true)
 	private String phone;
 
+	@Column
+	private boolean valid;
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@MapKeyEnumerated(EnumType.STRING)
 	@CollectionTable(
@@ -70,4 +74,7 @@ public class User {
 	@UpdateTimestamp
 	private LocalDateTime updateAt;
 
+	public boolean isValid() {
+		return id.equals(AuthConstant.ADMIN_USER) || valid;
+	}
 }

@@ -1,7 +1,6 @@
 package com.mayy5.admin.apis;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.mayy5.admin.apis.type.SwaggerApiTag;
 import com.mayy5.admin.model.req.SignUpRTO;
@@ -31,7 +29,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
 
 /**
  * User API 생성
@@ -82,9 +79,8 @@ public interface UserApi {
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
 	})
-	@PostMapping(path = "/v1/signUpConfirm", consumes = "application/json")
-	ModelAndView signUpConfirm(@RequestParam Map<String, String> map, ModelAndView mav);
-
+	@GetMapping(path = "/v1/signUpConfirm")
+	String signUpConfirm(@RequestParam("email") String email, @RequestParam("authKey") String authKey);
 
 	@ApiOperation(value = "User List 조회", notes = "전체 유저 리스트를 조회한다.")
 	@ApiResponses(value = {
