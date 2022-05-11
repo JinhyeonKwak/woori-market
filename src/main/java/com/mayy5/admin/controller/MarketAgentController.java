@@ -2,12 +2,12 @@ package com.mayy5.admin.controller;
 
 import com.mayy5.admin.apis.MarketAgentApi;
 import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.UserMapper;
 import com.mayy5.admin.model.req.MarketAgentRequest;
 import com.mayy5.admin.model.res.MarketAgentResponse;
-import com.mayy5.admin.model.res.UserRTO;
+import com.mayy5.admin.model.res.UserResponseDto;
 import com.mayy5.admin.service.MarketAgentService;
 import com.mayy5.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +61,7 @@ public class MarketAgentController implements MarketAgentApi {
     }
 
     @Override
-    public ResponseEntity<UserRTO> deleteMarketAgent(@RequestBody @Valid String userId) {
+    public ResponseEntity<UserResponseDto> deleteMarketAgent(@RequestBody @Valid String userId) {
         User user = userService.getUser(userId);
         Long marketAgentId = user.getMarketAgent().getId();
         marketAgentService.deleteMarketAgent(marketAgentId);

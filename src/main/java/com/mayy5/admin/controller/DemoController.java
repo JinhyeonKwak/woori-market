@@ -8,19 +8,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mayy5.admin.apis.DemoApi;
 import com.mayy5.admin.model.dto.Demo;
-import com.mayy5.admin.model.res.DemoRTO;
-import com.mayy5.admin.model.res.DemosRTO;
+import com.mayy5.admin.model.res.DemoResponseDto;
+import com.mayy5.admin.model.res.DemosResponseDto;
 
 @RestController
 public class DemoController implements DemoApi {
 
 	@Override
-	public ResponseEntity<DemosRTO> getDemos(
+	public ResponseEntity<DemosResponseDto> getDemos(
 		@PathVariable String userId) {
 		Demo demo = Demo.builder().id("000").content("Temp").build();
-		DemoRTO demoRTO = DemoRTO.fromDemo(demo);
-		return ResponseEntity.ok(DemosRTO.builder()
-			.demos(Arrays.asList(demoRTO))
+		DemoResponseDto demoResponseDto = DemoResponseDto.fromDemo(demo);
+		return ResponseEntity.ok(DemosResponseDto.builder()
+			.demos(Arrays.asList(demoResponseDto))
 			.build());
 	}
 }

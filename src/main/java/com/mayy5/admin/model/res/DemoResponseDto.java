@@ -13,7 +13,7 @@ import lombok.NonNull;
 @Data
 @Builder
 @JsonSerialize
-public class DemoRTO {
+public class DemoResponseDto {
 	@ApiModelProperty(required = true, value = "데모 id(String)", position = 1)
 	@NonNull
 	private String id;
@@ -25,8 +25,8 @@ public class DemoRTO {
 	@ApiModelProperty(value = "읽음 여부", position = 3)
 	private Boolean isRead;
 
-	public static DemoRTO fromDemo(Demo demo) {
-		return DemoRTO.builder()
+	public static DemoResponseDto fromDemo(Demo demo) {
+		return DemoResponseDto.builder()
 			.id(demo.getId())
 			.content(demo.getContent())
 			.build();

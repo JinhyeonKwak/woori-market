@@ -1,4 +1,4 @@
-package com.mayy5.admin.model.dto;
+package com.mayy5.admin.model.domain;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

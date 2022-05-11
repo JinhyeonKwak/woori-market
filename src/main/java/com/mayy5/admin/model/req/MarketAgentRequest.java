@@ -1,6 +1,6 @@
 package com.mayy5.admin.model.req;
 
-import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.type.MarketAgentMetaType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

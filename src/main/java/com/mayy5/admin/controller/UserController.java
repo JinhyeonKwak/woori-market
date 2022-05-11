@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mayy5.admin.apis.UserApi;
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
-import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.model.mapper.UserMapper;
-import com.mayy5.admin.model.req.SignUpRTO;
-import com.mayy5.admin.model.req.UserLoginRTO;
-import com.mayy5.admin.model.req.UserTokenUpdateRTO;
-import com.mayy5.admin.model.req.UserUpdateRTO;
-import com.mayy5.admin.model.res.UserRTO;
-import com.mayy5.admin.model.res.UserTokenRTO;
+import com.mayy5.admin.model.req.SignUpRequestDto;
+import com.mayy5.admin.model.req.UserLoginRequestDto;
+import com.mayy5.admin.model.req.UserTokenUpdateRequestDto;
+import com.mayy5.admin.model.req.UserUpdateRequestDto;
+import com.mayy5.admin.model.res.UserResponseDto;
+import com.mayy5.admin.model.res.UserTokenResponseDto;
 import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.service.MailSendService;
 import com.mayy5.admin.service.TokenService;
@@ -42,7 +42,7 @@ public class UserController implements UserApi {
 	private final UserMapper userMapper;
 	private final PasswordEncoder passwordEncoder;
 
-	public ResponseEntity<UserTokenRTO> login(UserLoginRTO loginDTO) {
+	public ResponseEntity<UserTokenResponseDto> login(UserLoginRequestDto loginDTO) {
 
 		try {
 			User user = userService.getUser(loginDTO.getId());
@@ -55,7 +55,7 @@ public class UserController implements UserApi {
 				throw new CommonException(BError.NOT_MATCH, "Password");
 			} else {
 				return new ResponseEntity<>(
-					UserTokenRTO.builder()
+					UserTokenResponseDto.builder()
 						.accessToken(tokenService.genAccessToken(loginDTO.getId()))
 						.refreshToken(tokenService.genRefreshToken(loginDTO.getId()))
 						.meta(user.getMeta())
@@ -75,9 +75,9 @@ public class UserController implements UserApi {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	public ResponseEntity<UserRTO> signUp(SignUpRTO signUpRTO) {
+	public ResponseEntity<UserResponseDto> signUp(SignUpRequestDto signUpRequestDto) {
 		try {
-			User input = userMapper.toEntity(signUpRTO);
+			User input = userMapper.toEntity(signUpRequestDto);
 			User user = userService.signUp(input);
 			mailSendService.sendAuthMail(user.getEmail());
 			return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
@@ -92,30 +92,30 @@ public class UserController implements UserApi {
 		}
 	}
 
-	public ResponseEntity<List<UserRTO>> getUserList() {
+	public ResponseEntity<List<UserResponseDto>> getUserList() {
 		List<User> userList = userService.getUserList();
 		return new ResponseEntity<>(userList.stream()
 			.map(user -> userMapper.toDto(user))
 			.collect(Collectors.toList()), HttpStatus.OK);
 	}
 
-	public ResponseEntity<UserRTO> updateUser(UserUpdateRTO userUpdateRTO)
+	public ResponseEntity<UserResponseDto> updateUser(UserUpdateRequestDto userUpdateRequestDto)
 		throws CommonException {
 
 		try {
-			log.debug("updateUser {}", userUpdateRTO);
+			log.debug("updateUser {}", userUpdateRequestDto);
 
-			User input = userMapper.toEntity(userUpdateRTO);
+			User input = userMapper.toEntity(userUpdateRequestDto);
 			String email = input.getEmail();
 			// 패스워드 업데이트 로직
-			Optional.ofNullable(userUpdateRTO.getNewPassword()).ifPresent(s -> {
+			Optional.ofNullable(userUpdateRequestDto.getNewPassword()).ifPresent(s -> {
 				String oldPassword = userService.getUser(email).getPassword();
 				// 패스워드 검증
-				if (!passwordEncoder.matches(userUpdateRTO.getPassword(), oldPassword)) {
+				if (!passwordEncoder.matches(userUpdateRequestDto.getPassword(), oldPassword)) {
 					throw new CommonException(BError.NOT_MATCH, "Password");
 				}
 				// 기존 패스워드와 새로운 패스워드 검증
-				if (userUpdateRTO.getNewPassword().equals(userUpdateRTO.getPassword()))
+				if (userUpdateRequestDto.getNewPassword().equals(userUpdateRequestDto.getPassword()))
 					throw new CommonException(BError.MATCHS, "old Password", "new Password");
 
 				input.setPassword(passwordEncoder.encode(s));
@@ -134,13 +134,13 @@ public class UserController implements UserApi {
 		}
 	}
 
-	public ResponseEntity<UserTokenRTO> updateAccessToken(UserTokenUpdateRTO userTokenUpdateRTO) {
+	public ResponseEntity<UserTokenResponseDto> updateAccessToken(UserTokenUpdateRequestDto userTokenUpdateRequestDto) {
 		try {
-			log.debug("TokenUpdate {}", userTokenUpdateRTO);
+			log.debug("TokenUpdate {}", userTokenUpdateRequestDto);
 			return new ResponseEntity<>(
-				UserTokenRTO.builder()
-					.accessToken(tokenService.genAccessTokenByRefreshToken(userTokenUpdateRTO.getRefreshToken()))
-					.refreshToken(userTokenUpdateRTO.getRefreshToken())
+				UserTokenResponseDto.builder()
+					.accessToken(tokenService.genAccessTokenByRefreshToken(userTokenUpdateRequestDto.getRefreshToken()))
+					.refreshToken(userTokenUpdateRequestDto.getRefreshToken())
 					.build(), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -148,7 +148,7 @@ public class UserController implements UserApi {
 		}
 	}
 
-	public ResponseEntity<UserRTO> deleteUser(String id) {
+	public ResponseEntity<UserResponseDto> deleteUser(String id) {
 		try {
 			if (id.equals(AuthConstant.ADMIN_USER))
 				throw new CommonException(BError.NOT_SUPPORT, "Delete Admin User");

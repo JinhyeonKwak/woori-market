@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserUpdateRTO {
+public class UserUpdateRequestDto {
 
 	@ApiModelProperty(value = "mail", example = "mayy5.master@gmail.com", position = 2)
 	@NotBlank

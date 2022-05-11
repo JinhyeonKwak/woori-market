@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.domain.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {

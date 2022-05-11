@@ -1,10 +1,9 @@
 package com.mayy5.admin.apis;
 
 import com.mayy5.admin.apis.type.SwaggerApiTag;
-import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.model.req.MarketAgentRequest;
 import com.mayy5.admin.model.res.MarketAgentResponse;
-import com.mayy5.admin.model.res.UserRTO;
+import com.mayy5.admin.model.res.UserResponseDto;
 import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,7 +25,7 @@ public interface MarketAgentApi {
     ResponseEntity<MarketAgentResponse> updateMarketAgent(@RequestBody @Valid MarketAgentRequest marketAgentRequest);
 
     @DeleteMapping(path = "/v1/market-agent", consumes = "application/json")
-    ResponseEntity<UserRTO> deleteMarketAgent(@RequestBody @Valid String userId);
+    ResponseEntity<UserResponseDto> deleteMarketAgent(@RequestBody @Valid String userId);
 
 
 }
