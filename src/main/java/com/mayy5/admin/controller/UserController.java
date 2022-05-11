@@ -42,10 +42,6 @@ public class UserController implements UserApi {
 	private final UserMapper userMapper;
 	private final PasswordEncoder passwordEncoder;
 
-	public static void main(String[] args) {
-		int a = 5;
-		System.out.println(a==5 || a==8);
-	}
 	public ResponseEntity<UserTokenRTO> login(UserLoginRTO loginDTO) {
 
 		try {
