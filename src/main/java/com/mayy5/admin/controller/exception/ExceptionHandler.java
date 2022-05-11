@@ -87,8 +87,8 @@ public class ExceptionHandler {
 	}
 
 	@org.springframework.web.bind.annotation.ExceptionHandler(CommonException.class)
-	public ResponseEntity<ErrorResponse> handleSMDBException(final CommonException e) {
-		log.error("SMDBException {}", e.getMessage());
+	public ResponseEntity<ErrorResponse> handleCommonException(final CommonException e) {
+		log.error("CommonException {}", e.getMessage());
 		final ErrorResponse response = ErrorResponse.of(e);
 		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 	}

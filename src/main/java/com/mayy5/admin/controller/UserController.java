@@ -4,16 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mayy5.admin.apis.UserApi;
@@ -21,13 +16,14 @@ import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.model.mapper.UserMapper;
-import com.mayy5.admin.model.req.UserCreateRTO;
+import com.mayy5.admin.model.req.SignUpRTO;
 import com.mayy5.admin.model.req.UserLoginRTO;
 import com.mayy5.admin.model.req.UserTokenUpdateRTO;
 import com.mayy5.admin.model.req.UserUpdateRTO;
 import com.mayy5.admin.model.res.UserRTO;
 import com.mayy5.admin.model.res.UserTokenRTO;
 import com.mayy5.admin.security.AuthConstant;
+import com.mayy5.admin.service.MailSendService;
 import com.mayy5.admin.service.TokenService;
 import com.mayy5.admin.service.UserService;
 
@@ -42,21 +38,29 @@ public class UserController implements UserApi {
 
 	private final TokenService tokenService;
 	private final UserService userService;
+	private final MailSendService mailSendService;
 	private final UserMapper userMapper;
 	private final PasswordEncoder passwordEncoder;
 
-	public ResponseEntity<UserTokenRTO> login(@RequestBody UserLoginRTO loginDTO) {
+	public static void main(String[] args) {
+		int a = 5;
+		System.out.println(a==5 || a==8);
+	}
+	public ResponseEntity<UserTokenRTO> login(UserLoginRTO loginDTO) {
 
 		try {
 			User user = userService.getUser(loginDTO.getId());
+			if(!user.isValid()){
+				log.error("인증되지 않은 사용자 입니다. - {}", user.getId());
+				throw new CommonException(BError.NOT_SUPPORT, user.getId());
+			}
 			// 패스워드 검증
 			if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
 				throw new CommonException(BError.NOT_MATCH, "Password");
 			} else {
-				String accessToken = tokenService.genAccessToken(loginDTO.getId());
 				return new ResponseEntity<>(
 					UserTokenRTO.builder()
-						.accessToken(accessToken)
+						.accessToken(tokenService.genAccessToken(loginDTO.getId()))
 						.refreshToken(tokenService.genRefreshToken(loginDTO.getId()))
 						.meta(user.getMeta())
 						.build(),
@@ -70,17 +74,16 @@ public class UserController implements UserApi {
 		}
 	}
 
-	public ResponseEntity logout(@RequestHeader(value = AuthConstant.AUTHORIZATION) String accessToken) {
+	public ResponseEntity logout(String accessToken) {
 		SecurityContextHolder.clearContext();
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	public ResponseEntity<UserRTO> createUser(@RequestBody @Valid UserCreateRTO userCreateRTO) {
+	public ResponseEntity<UserRTO> signUp(SignUpRTO signUpRTO) {
 		try {
-			if (userCreateRTO.getId().trim().isEmpty())
-				throw new CommonException(BError.FAIL_REASON, "User Create", "ID is Not Valid");
-			User input = userMapper.toEntity(userCreateRTO);
-			User user = userService.createUser(input);
+			User input = userMapper.toEntity(signUpRTO);
+			User user = userService.signUp(input);
+			mailSendService.sendAuthMail(user.getEmail());
 			return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
 		} catch (CommonException e) {
 			log.error(e.getMessage());
@@ -100,17 +103,17 @@ public class UserController implements UserApi {
 			.collect(Collectors.toList()), HttpStatus.OK);
 	}
 
-	public ResponseEntity<UserRTO> updateUser(@Valid @RequestBody UserUpdateRTO userUpdateRTO)
+	public ResponseEntity<UserRTO> updateUser(UserUpdateRTO userUpdateRTO)
 		throws CommonException {
 
 		try {
 			log.debug("updateUser {}", userUpdateRTO);
 
 			User input = userMapper.toEntity(userUpdateRTO);
-			String id = input.getId();
+			String email = input.getEmail();
 			// 패스워드 업데이트 로직
 			Optional.ofNullable(userUpdateRTO.getNewPassword()).ifPresent(s -> {
-				String oldPassword = userService.getUser(id).getPassword();
+				String oldPassword = userService.getUser(email).getPassword();
 				// 패스워드 검증
 				if (!passwordEncoder.matches(userUpdateRTO.getPassword(), oldPassword)) {
 					throw new CommonException(BError.NOT_MATCH, "Password");
@@ -135,7 +138,7 @@ public class UserController implements UserApi {
 		}
 	}
 
-	public ResponseEntity<UserTokenRTO> updateAccessToken(@Valid @RequestBody UserTokenUpdateRTO userTokenUpdateRTO) {
+	public ResponseEntity<UserTokenRTO> updateAccessToken(UserTokenUpdateRTO userTokenUpdateRTO) {
 		try {
 			log.debug("TokenUpdate {}", userTokenUpdateRTO);
 			return new ResponseEntity<>(
@@ -149,7 +152,7 @@ public class UserController implements UserApi {
 		}
 	}
 
-	public ResponseEntity<UserRTO> deleteUser(@PathVariable("id") String id) {
+	public ResponseEntity<UserRTO> deleteUser(String id) {
 		try {
 			if (id.equals(AuthConstant.ADMIN_USER))
 				throw new CommonException(BError.NOT_SUPPORT, "Delete Admin User");
@@ -162,5 +165,19 @@ public class UserController implements UserApi {
 			log.debug(e.getMessage(), e);
 			throw e;
 		}
+	}
+
+	@Override
+	public String signUpConfirm(String email, String authKey) {
+		log.info("Email {}, AuthKey {}", email, authKey);
+		try {
+			tokenService.validateToken(authKey);
+			userService.updateAuthStatus(email);
+		} catch (Exception e) {
+			log.error("signUpConfirm Fail {}", e.getMessage());
+			log.debug(e.getMessage(), e);
+			throw e;
+		}
+		return "가입을 축하합니다.";
 	}
 }

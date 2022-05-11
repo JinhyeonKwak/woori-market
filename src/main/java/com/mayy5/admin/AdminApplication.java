@@ -29,6 +29,9 @@ public class AdminApplication {
 			User user = User.builder()
 				.id(AuthConstant.ADMIN_USER)
 				.password(passwordEncoder.encode(AuthConstant.ADMIN_PWD))
+				.email("mayy5.master@gmail.com")
+				.name("master")
+				.phone("010-0000-0000")
 				.meta(new HashMap<>())
 				.build();
 			user.getMeta().put(UserMetaType.ROLE, UserRoleType.ROLE_ADMIN.name());

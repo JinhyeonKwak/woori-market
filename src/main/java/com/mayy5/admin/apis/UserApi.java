@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mayy5.admin.apis.type.SwaggerApiTag;
-import com.mayy5.admin.model.req.UserCreateRTO;
+import com.mayy5.admin.model.req.SignUpRTO;
 import com.mayy5.admin.model.req.UserLoginRTO;
 import com.mayy5.admin.model.req.UserTokenUpdateRTO;
 import com.mayy5.admin.model.req.UserUpdateRTO;
@@ -28,7 +29,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
 
 /**
  * User API 생성
@@ -61,15 +61,26 @@ public interface UserApi {
 	@GetMapping("/v1/logout")
 	ResponseEntity logout(@RequestHeader(value = AuthConstant.AUTHORIZATION) String token);
 
-	@ApiOperation(value = "Create User API",
-		notes = "meta에 Role 부여가 가능하다.")
+	@ApiOperation(value = "회원 가입 API",
+		notes = "메일 인증 서비스와 연계"
+			+ ",meta에 Role 부여가 가능하다.")
 	@ApiResponses(value = {
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = UserRTO.class),
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
 	})
-	@PostMapping(path = "/v1/users", consumes = "application/json")
-	ResponseEntity<UserRTO> createUser(@RequestBody @Valid UserCreateRTO userCreateRTO);
+	@PostMapping(path = "/v1/signUp", consumes = "application/json")
+	ResponseEntity<UserRTO> signUp(@RequestBody @Valid SignUpRTO signUpRTO);
+
+	@ApiOperation(value = "메일 인증 API",
+		notes = "메일 인증 서비스")
+	@ApiResponses(value = {
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = UserRTO.class),
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
+	})
+	@GetMapping(path = "/v1/signUpConfirm")
+	String signUpConfirm(@RequestParam("email") String email, @RequestParam("authKey") String authKey);
 
 	@ApiOperation(value = "User List 조회", notes = "전체 유저 리스트를 조회한다.")
 	@ApiResponses(value = {
