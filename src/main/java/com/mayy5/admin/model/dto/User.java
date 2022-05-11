@@ -52,8 +52,8 @@ public class User {
 	@OneToOne(mappedBy = "user")
 	private MarketAgent marketAgent;
 
-	@OneToMany(mappedBy = "user")
-	private List<Retailer> retailerList = new ArrayList<>();
+	@OneToOne(mappedBy = "user")
+	private Retailer retailer;
 
 	@Column(name = "CREATE_AT", nullable = false, updatable = false)
 	@CreationTimestamp
