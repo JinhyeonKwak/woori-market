@@ -4,6 +4,7 @@ import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.MarketAgent;
 import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.req.MarketAgentRequest;
 import com.mayy5.admin.repository.MarketAgentRepository;
 import com.mayy5.admin.type.MarketAgentMetaType;
 import lombok.RequiredArgsConstructor;
@@ -26,21 +27,17 @@ public class MarketAgentService {
 
     @Transactional
     public MarketAgent createMarketAgent(MarketAgent input) {
-        User user = input.getUser();
+        String userId = input.getUser().getId();
+        User user = userService.getUser(userId);
         Map<MarketAgentMetaType, String> meta = input.getMeta();
-        return MarketAgent.createMarketAgent(user, meta);
+        MarketAgent marketAgent = MarketAgent.createMarketAgent(user, meta);
+        return marketAgentRepository.save(marketAgent);
     }
 
     @Transactional(readOnly = true)
     public MarketAgent getMarketAgent(Long marketAgentId) {
         return marketAgentRepository.findById(marketAgentId)
                 .orElseThrow(() -> new CommonException(BError.NOT_EXIST, "MarketAgent"));
-    }
-
-    @Transactional(readOnly = true)
-    public List<MarketAgent> getMarketAgentList(String userId) {
-        User user = userService.getUser(userId);
-        return marketAgentRepository.getMarketAgentList(user);
     }
 
     @Transactional

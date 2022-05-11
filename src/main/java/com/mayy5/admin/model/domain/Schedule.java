@@ -16,7 +16,7 @@ import java.util.List;
 public class Schedule {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "SCHEDULE_ID")
     private Long id;
 

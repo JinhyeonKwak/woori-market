@@ -22,7 +22,7 @@ import java.util.Map;
 public class Retailer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "RETAILER_ID")
     private Long id;
 
@@ -36,7 +36,7 @@ public class Retailer {
     @Column(name = "META_VALUE")
     private Map<RetailerMetaType, String> meta = new HashMap<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "USER_ID")
     private User user;
 
@@ -61,6 +61,6 @@ public class Retailer {
     //==연관 관계 메서드==//
     public void setUser(User user) {
         this.user = user;
-        user.getRetailerList().add(this);
+        user.setRetailer(this);
     }
 }
