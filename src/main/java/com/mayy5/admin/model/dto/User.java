@@ -1,9 +1,7 @@
 package com.mayy5.admin.model.dto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CollectionTable;
@@ -16,13 +14,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.domain.Retailer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.mayy5.admin.model.domain.MarketAgent;
+import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.type.UserMetaType;
 
@@ -63,8 +62,8 @@ public class User {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@MapKeyEnumerated(EnumType.STRING)
 	@CollectionTable(
-			name = "USER_META",
-			joinColumns = @JoinColumn(name = "ID")
+		name = "USER_META",
+		joinColumns = @JoinColumn(name = "ID")
 	)
 	@MapKeyColumn(name = "META_TYPE")
 	@Column(name = "META_VALUE")
