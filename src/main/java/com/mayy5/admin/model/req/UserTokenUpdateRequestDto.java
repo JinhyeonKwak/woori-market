@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-public class UserTokenUpdateRTO {
+public class UserTokenUpdateRequestDto {
 
 	@ApiModelProperty(value = "", required = true, example = "jwt token")
 	@NotBlank

@@ -4,21 +4,21 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
-import com.mayy5.admin.model.dto.User;
-import com.mayy5.admin.model.req.SignUpRTO;
-import com.mayy5.admin.model.req.UserUpdateRTO;
-import com.mayy5.admin.model.res.UserRTO;
+import com.mayy5.admin.model.domain.User;
+import com.mayy5.admin.model.req.SignUpRequestDto;
+import com.mayy5.admin.model.req.UserUpdateRequestDto;
+import com.mayy5.admin.model.res.UserResponseDto;
 
 @Component
 @Mapper(componentModel = "spring", uses = UserMapperQualifier.class)
 public interface UserMapper {
 
 	@Mapping(source = "password", target = "password", qualifiedByName = {"EncodePassword"})
-	User toEntity(SignUpRTO dto);
+	User toEntity(SignUpRequestDto dto);
 
 	@Mapping(source = "password", target = "password", qualifiedByName = {"EncodePassword"})
-	User toEntity(UserUpdateRTO dto);
+	User toEntity(UserUpdateRequestDto dto);
 
-	UserRTO toDto(User entity);
+	UserResponseDto toDto(User entity);
 }
 

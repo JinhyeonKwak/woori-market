@@ -1,6 +1,5 @@
 package com.mayy5.admin.model.domain;
 
-import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.type.MarketAgentMetaType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-public class UserTokenRTO {
+public class UserTokenResponseDto {
 
 	private String accessToken;
 

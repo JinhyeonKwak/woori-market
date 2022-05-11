@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @ToString
-public class UserLoginRTO {
+public class UserLoginRequestDto {
 
 	@ApiModelProperty(value = "admin", required = true, example = "mayy5")
 	private String id;

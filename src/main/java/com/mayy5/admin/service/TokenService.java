@@ -12,7 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
-import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.security.JWTConstant;
 import com.mayy5.admin.type.UserMetaType;
 
