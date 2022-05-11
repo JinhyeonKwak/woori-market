@@ -11,6 +11,4 @@ import java.util.List;
 @Repository
 public interface MarketAgentRepository extends JpaRepository<MarketAgent, Long> {
 
-    @Query("select m from MarketAgent m where m.user = :user")
-    List<MarketAgent> getMarketAgentList(User user);
 }

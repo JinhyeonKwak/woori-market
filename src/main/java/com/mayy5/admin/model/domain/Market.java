@@ -18,7 +18,7 @@ import java.util.List;
 public class Market {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "MARKET_ID")
     private Long id;
 

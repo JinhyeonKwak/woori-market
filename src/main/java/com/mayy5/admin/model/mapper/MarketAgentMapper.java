@@ -1,9 +1,8 @@
 package com.mayy5.admin.model.mapper;
 
 import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.req.MarketAgentCreateRTO;
-import com.mayy5.admin.model.req.MarketAgentUpdateRTO;
-import com.mayy5.admin.model.res.MarketAgentRTO;
+import com.mayy5.admin.model.req.MarketAgentRequest;
+import com.mayy5.admin.model.res.MarketAgentResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -21,14 +20,18 @@ public interface MarketAgentMapper {
 
     @Mapping(source = "user", target = "user")
     @Mapping(source = "meta", target = "meta")
-    MarketAgent toEntity(MarketAgentCreateRTO dto);
+    MarketAgent toEntity(MarketAgentRequest dto);
 
+    // marketAgentService의 updateMarketAgent() 메서드를 쓸 필요가 없다
     @Mapping(source = "meta", target = "meta")
-    void write(MarketAgentUpdateRTO dto, @MappingTarget MarketAgent marketAgent);
+    void update(MarketAgentRequest marketAgentRequest, @MappingTarget MarketAgent marketAgent);
 
+
+    @Mapping(source = "user", target = "user")
     @Mapping(source = "meta", target = "meta")
     @Mapping(source = "createAt", target = "createAt")
     @Mapping(source = "updateAt", target = "updateAt")
-    MarketAgentRTO toDto(MarketAgent entity);
+    MarketAgentResponse toDto(MarketAgent entity);
+
 
 }

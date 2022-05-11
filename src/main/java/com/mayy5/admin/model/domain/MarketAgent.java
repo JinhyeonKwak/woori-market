@@ -22,7 +22,7 @@ import java.util.Map;
 public class MarketAgent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "MARKET_AGENT_ID")
     private Long id;
 
@@ -39,7 +39,7 @@ public class MarketAgent {
     @OneToMany(mappedBy = "marketAgent", cascade = CascadeType.ALL)
     private List<Market> marketList = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "USER_ID")
     private User user;
 
@@ -53,9 +53,10 @@ public class MarketAgent {
 
     //==생성 메서드==//
     public static MarketAgent createMarketAgent(User user, Map<MarketAgentMetaType, String> meta) {
-        MarketAgent marketAgent1 = new MarketAgent();
-        MarketAgent marketAgent = MarketAgent.builder().meta(meta).build();
+//        MarketAgent marketAgent = MarketAgent.builder().meta(meta).build();
+        MarketAgent marketAgent = new MarketAgent();
         marketAgent.setUser(user);
+        marketAgent.setMeta(meta);
         return marketAgent;
     }
 
