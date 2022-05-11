@@ -1,20 +1,28 @@
 package com.mayy5.admin.model.dto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyEnumerated;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
-import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.domain.Retailer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.mayy5.admin.model.domain.MarketAgent;
+import com.mayy5.admin.model.domain.Retailer;
+import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.type.UserMetaType;
 
 import lombok.AllArgsConstructor;
@@ -33,17 +41,29 @@ import lombok.ToString;
 public class User {
 
 	@Id
-	@NotBlank
+	@Column
 	private String id;
 
-	@NotNull
+	@Column(unique = true)
+	private String email;
+
+	@Column
 	private String password;
+
+	@Column
+	private String name;
+
+	@Column(unique = true)
+	private String phone;
+
+	@Column
+	private boolean valid;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@MapKeyEnumerated(EnumType.STRING)
 	@CollectionTable(
-			name = "USER_META",
-			joinColumns = @JoinColumn(name = "ID")
+		name = "USER_META",
+		joinColumns = @JoinColumn(name = "ID")
 	)
 	@MapKeyColumn(name = "META_TYPE")
 	@Column(name = "META_VALUE")
@@ -63,4 +83,7 @@ public class User {
 	@UpdateTimestamp
 	private LocalDateTime updateAt;
 
+	public boolean isValid() {
+		return id.equals(AuthConstant.ADMIN_USER) || valid;
+	}
 }
