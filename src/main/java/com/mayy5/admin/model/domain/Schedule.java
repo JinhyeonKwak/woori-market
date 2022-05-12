@@ -24,8 +24,7 @@ public class Schedule {
     @CreationTimestamp
     private LocalDate createAt;
 
-    @Enumerated(EnumType.STRING)
-    private CheckAttend checkAttend;
+    private Boolean checkAttend;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MARKET_RETAILER_ID")
@@ -34,7 +33,7 @@ public class Schedule {
     //==생성 메서드==//
     public static Schedule createSchedule(MarketRetailer marketRetailer) {
         Schedule schedule = new Schedule();
-        schedule.setCheckAttend(CheckAttend.PRESENT);
+        schedule.setCheckAttend(true); // default : 출석
         schedule.setMarketRetailer(marketRetailer);
         return schedule;
     }

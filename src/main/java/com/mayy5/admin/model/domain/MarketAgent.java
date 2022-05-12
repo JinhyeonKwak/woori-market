@@ -52,19 +52,11 @@ public class MarketAgent {
 
     //==생성 메서드==//
     public static MarketAgent createMarketAgent(User user, Map<MarketAgentMetaType, String> meta) {
-//        MarketAgent marketAgent = MarketAgent.builder().meta(meta).build();
-        MarketAgent marketAgent = new MarketAgent();
-        marketAgent.setUser(user);
-        marketAgent.setMeta(meta);
+        MarketAgent marketAgent = MarketAgent.builder()
+                .meta(meta)
+                .user(user)
+                .build();
+
         return marketAgent;
     }
-
-    //==연관 관계 메서드==//
-    public void setUser(User user) {
-        this.user = user;
-        user.setMarketAgent(this);
-    }
-
-
-
 }

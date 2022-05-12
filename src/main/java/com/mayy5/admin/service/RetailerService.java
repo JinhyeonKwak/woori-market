@@ -2,6 +2,7 @@ package com.mayy5.admin.service;
 
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
+import com.mayy5.admin.model.domain.MarketAgent;
 import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.repository.RetailerRepository;
@@ -24,9 +25,12 @@ public class RetailerService {
     private final UserService userService;
 
     @Transactional
-    public Retailer createRetailer(String id, Map<RetailerMetaType, String> meta) {
-        User user = userService.getUser(id);
-        return Retailer.createRetailer(user, meta);
+    public Retailer createRetailer(Retailer input) {
+        String userId = input.getUser().getId();
+        User user = userService.getUser(userId);
+        Map<RetailerMetaType, String> meta = input.getMeta();
+        Retailer retailer = Retailer.createRetailer(user, meta);
+        return retailerRepository.save(retailer);
     }
 
     @Transactional(readOnly = true)

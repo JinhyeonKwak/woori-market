@@ -35,7 +35,7 @@ public class Retailer {
     @Column(name = "META_VALUE")
     private Map<RetailerMetaType, String> meta = new HashMap<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "USER_ID")
     private User user;
 
@@ -60,6 +60,6 @@ public class Retailer {
     //==연관 관계 메서드==//
     public void setUser(User user) {
         this.user = user;
-        user.setRetailer(this);
+        user.getRetailerList().add(this);
     }
 }

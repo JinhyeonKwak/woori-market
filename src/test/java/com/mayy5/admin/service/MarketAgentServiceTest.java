@@ -42,10 +42,11 @@ class MarketAgentServiceTest {
 
         // marketAgentRequest 생성
         MarketAgentRequest marketAgentRequest = new MarketAgentRequest();
-        marketAgentRequest.setUser(user);
+        marketAgentRequest.setUserId(user.getId());
 
         // marketAgent 영속성 엔티티 생성
         MarketAgent input = marketAgentMapper.toEntity(marketAgentRequest);
+        input.setUser(user);
         MarketAgent marketAgent = marketAgentService.createMarketAgent(input);
 
         // marketAgent 조회
@@ -68,23 +69,24 @@ class MarketAgentServiceTest {
 
         // marketAgentRequest
         MarketAgentRequest marketAgentRequest = new MarketAgentRequest();
-        marketAgentRequest.setUser(user);
+        marketAgentRequest.setUserId(user.getId());
         Map<MarketAgentMetaType, String> meta = new HashMap<>();
         meta.put(MarketAgentMetaType.CORPORATE_NAME, "NATURE");
         marketAgentRequest.setMeta(meta);
 
         // marketAgent 영속성 엔티티 생성
         MarketAgent input = marketAgentMapper.toEntity(marketAgentRequest);
+        input.setUser(user);
         MarketAgent marketAgent = marketAgentService.createMarketAgent(input);
 
         // marketAgentRequest2
-        String userId = marketAgentRequest.getUser().getId();
+        String userId = marketAgentRequest.getUserId();
         Long marketAgentId = userService.getUser(userId).getMarketAgent().getId();
         MarketAgent ma = marketAgentService.getMarketAgent(marketAgentId);
 
         Map<MarketAgentMetaType, String> updateMeta = new HashMap<>();
         updateMeta.put(MarketAgentMetaType.CORPORATE_NAME, "SCIENCE");
-        MarketAgentRequest marketAgentRequest2 = new MarketAgentRequest(user, updateMeta);
+        MarketAgentRequest marketAgentRequest2 = new MarketAgentRequest(userId, updateMeta);
         marketAgentMapper.update(marketAgentRequest2, ma); // 여기서 변경 감지로 인해 이미 수정이 됨
 
         // marketAgent 수정
@@ -106,7 +108,7 @@ class MarketAgentServiceTest {
 
         // marketAgentRequest
         MarketAgentRequest marketAgentRequest = new MarketAgentRequest();
-        marketAgentRequest.setUser(user);
+        marketAgentRequest.setUserId(user.getId());
         Map<MarketAgentMetaType, String> meta = new HashMap<>();
         meta.put(MarketAgentMetaType.CORPORATE_NAME, "NATURE");
         marketAgentRequest.setMeta(meta);
@@ -114,6 +116,7 @@ class MarketAgentServiceTest {
 
         // marketAgent 영속성 엔티티 생성
         MarketAgent input = marketAgentMapper.toEntity(marketAgentRequest);
+        input.setUser(user);
         MarketAgent marketAgent = marketAgentService.createMarketAgent(input);
 
         // 유저 조회 & 장주 조회

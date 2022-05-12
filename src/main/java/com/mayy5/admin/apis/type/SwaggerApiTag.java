@@ -10,4 +10,5 @@ public class SwaggerApiTag {
 	public static final String USER = "USER";
 	public static final String POST = "POST";
 	public static final String MARKET_AGENT = "MarketAgent";
+	public static final String RETAILER = "Retailer";
 }

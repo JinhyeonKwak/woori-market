@@ -1,10 +1,8 @@
 package com.mayy5.admin.repository;
 
-import com.mayy5.admin.model.domain.CheckAttend;
 import com.mayy5.admin.model.domain.MarketRetailer;
 import com.mayy5.admin.model.domain.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
