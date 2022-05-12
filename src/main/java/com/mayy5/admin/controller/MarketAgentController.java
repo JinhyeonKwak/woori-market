@@ -2,12 +2,12 @@ package com.mayy5.admin.controller;
 
 import com.mayy5.admin.apis.MarketAgentApi;
 import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.domain.User;
+import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.UserMapper;
 import com.mayy5.admin.model.req.MarketAgentRequest;
 import com.mayy5.admin.model.res.MarketAgentResponse;
-import com.mayy5.admin.model.res.UserResponseDto;
+import com.mayy5.admin.model.res.UserRTO;
 import com.mayy5.admin.service.MarketAgentService;
 import com.mayy5.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,21 +37,23 @@ public class MarketAgentController implements MarketAgentApi {
     @Override
     public ResponseEntity<MarketAgentResponse> createMarketAgent(@RequestBody @Valid MarketAgentRequest marketAgentRequest) {
         MarketAgent input = marketAgentMapper.toEntity(marketAgentRequest);
+        User user = userService.getUser(marketAgentRequest.getUserId());
+        input.setUser(user);
+
         MarketAgent marketAgent = marketAgentService.createMarketAgent(input);
         return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<MarketAgentResponse> getMarketAgent(@RequestBody @Valid String userId) {
+    public ResponseEntity<MarketAgentResponse> getMarketAgent(@PathVariable String userId) {
         User user = userService.getUser(userId);
-        Long marketAgentId = user.getMarketAgent().getId();
-        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
+        MarketAgent marketAgent = user.getMarketAgent();
         return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<MarketAgentResponse> updateMarketAgent(@RequestBody @Valid MarketAgentRequest marketAgentRequest) {
-        String userId = marketAgentRequest.getUser().getId();
+        String userId = marketAgentRequest.getUserId();
         Long marketAgentId = userService.getUser(userId).getMarketAgent().getId();
 
         MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
@@ -61,7 +64,7 @@ public class MarketAgentController implements MarketAgentApi {
     }
 
     @Override
-    public ResponseEntity<UserResponseDto> deleteMarketAgent(@RequestBody @Valid String userId) {
+    public ResponseEntity<UserRTO> deleteMarketAgent(@PathVariable String userId) {
         User user = userService.getUser(userId);
         Long marketAgentId = user.getMarketAgent().getId();
         marketAgentService.deleteMarketAgent(marketAgentId);

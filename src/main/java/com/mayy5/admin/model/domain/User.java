@@ -1,21 +1,12 @@
 package com.mayy5.admin.model.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.MapKeyEnumerated;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -28,6 +19,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.w3c.dom.stylesheets.LinkStyle;
 
 @Data
 @ToString
@@ -68,10 +60,10 @@ public class User {
 	private Map<UserMetaType, String> meta = new HashMap<>();
 
 	@OneToOne(mappedBy = "user")
-	private MarketAgent marketAgent;
+	private	MarketAgent marketAgent;
 
-	@OneToOne(mappedBy = "user")
-	private Retailer retailer;
+	@OneToMany(mappedBy = "user")
+	private List<Retailer> retailerList = new ArrayList<>();
 
 	@Column(name = "CREATE_AT", nullable = false, updatable = false)
 	@CreationTimestamp

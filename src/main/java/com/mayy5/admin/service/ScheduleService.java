@@ -54,7 +54,7 @@ public class ScheduleService {
     @Transactional
     public void checkAttend(Long marketId, Long retailerId) {
         Schedule schedule = this.getSchedule(marketId, retailerId);
-        schedule.setCheckAttend(CheckAttend.ABSENT);
+        schedule.setCheckAttend(false); // 결석
     }
 
 }
