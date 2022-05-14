@@ -14,14 +14,16 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,6 +46,7 @@ public class Comment {
 	@UpdateTimestamp
 	private LocalDateTime updateAt;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "POST_ID")
 	private Post post;
