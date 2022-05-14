@@ -49,7 +49,7 @@ public interface UserApi {
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
 	})
 	@PostMapping(value = "/v1/login")
-	ResponseEntity<UserTokenResponseDto> login(@RequestBody UserLoginRequestDto loginDTO);
+	ResponseEntity<UserTokenResponseDto> login(@Valid @RequestBody UserLoginRequestDto loginDTO);
 
 	@ApiOperation(value = "Logout API",
 		notes = "Authrization=accessToken 상태에서만 로그아웃 수행")
@@ -70,7 +70,7 @@ public interface UserApi {
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
 	})
 	@PostMapping(path = "/v1/signUp", consumes = "application/json")
-	ResponseEntity<UserResponseDto> signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto);
+	ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto);
 
 	@ApiOperation(value = "메일 인증 API",
 		notes = "메일 인증 서비스")

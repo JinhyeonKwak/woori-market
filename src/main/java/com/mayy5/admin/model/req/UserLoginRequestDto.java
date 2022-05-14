@@ -1,5 +1,7 @@
 package com.mayy5.admin.model.req;
 
+import javax.validation.constraints.NotBlank;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +15,10 @@ import lombok.ToString;
 public class UserLoginRequestDto {
 
 	@ApiModelProperty(value = "admin", required = true, example = "mayy5")
+	@NotBlank
 	private String id;
+
 	@ApiModelProperty(value = "admin", required = true, example = "admin")
+	@NotBlank
 	private String password;
 }

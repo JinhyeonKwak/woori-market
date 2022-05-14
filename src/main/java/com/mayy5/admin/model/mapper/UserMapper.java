@@ -10,7 +10,7 @@ import com.mayy5.admin.model.req.UserUpdateRequestDto;
 import com.mayy5.admin.model.res.UserResponseDto;
 
 @Component
-@Mapper(componentModel = "spring", uses = UserMapperQualifier.class)
+@Mapper(componentModel = "spring", uses = UserQualifier.class)
 public interface UserMapper {
 
 	@Mapping(source = "password", target = "password", qualifiedByName = {"EncodePassword"})
