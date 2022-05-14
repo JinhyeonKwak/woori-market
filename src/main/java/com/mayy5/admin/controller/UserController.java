@@ -93,6 +93,7 @@ public class UserController implements UserApi {
 	}
 
 	public ResponseEntity<List<UserResponseDto>> getUserList() {
+
 		List<User> userList = userService.getUserList();
 		return new ResponseEntity<>(userList.stream()
 			.map(user -> userMapper.toDto(user))
