@@ -51,10 +51,6 @@ public class PostController implements PostApi {
 	public ResponseEntity<PostResponseDto> getPost(Long idx) {
 		try {
 			Post post = postService.findPostByIdx(idx);
-
-			log.info("Post {}", post);
-
-			post = null;
 			return new ResponseEntity<>(postMapper.toDto(post), HttpStatus.OK);
 		} catch (CommonException e) {
 			throw e;
