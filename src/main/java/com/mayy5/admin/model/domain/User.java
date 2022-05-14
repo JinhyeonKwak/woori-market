@@ -20,8 +20,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.type.UserMetaType;
 
@@ -41,7 +39,7 @@ import lombok.ToString;
 public class User {
 
 	@Id
-	@Column
+	@Column(name = "USER_ID")
 	private String id;
 
 	@Column(unique = true)
