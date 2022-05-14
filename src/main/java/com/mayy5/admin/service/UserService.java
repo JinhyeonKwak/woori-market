@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -152,4 +154,8 @@ public class UserService {
 		userRepository.save(user);
 	}
 
+	public String getLoginUserId() {
+		return Optional.ofNullable((String)SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+			.orElseThrow(() -> new CommonException(BError.NOT_VALID,"User"));
+	}
 }
