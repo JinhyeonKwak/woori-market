@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScheduleResponse {
+public class ScheduleResponseDto {
 
     @ApiModelProperty(value = "Retailer ID", position = 1)
     private Long retailerId;

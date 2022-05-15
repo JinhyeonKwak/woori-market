@@ -6,21 +6,19 @@ import com.mayy5.admin.model.dto.MarketDTO;
 import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.MarketMapper;
-import com.mayy5.admin.model.req.MarketRequest;
-import com.mayy5.admin.model.res.MarketAgentResponse;
-import com.mayy5.admin.model.res.MarketResponse;
-import com.mayy5.admin.model.res.ScheduleResponse;
+import com.mayy5.admin.model.req.MarketRequestDto;
+import com.mayy5.admin.model.res.MarketAgentResponseDto;
+import com.mayy5.admin.model.res.MarketResponseDto;
+import com.mayy5.admin.model.res.RetailerResponseDto;
+import com.mayy5.admin.model.res.ScheduleResponseDto;
 import com.mayy5.admin.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,30 +38,29 @@ public class MarketController implements MarketApi {
     private final MarketAgentMapper marketAgentMapper;
 
     @Override
-    public ResponseEntity<MarketResponse> createMarket(@RequestBody @Valid MarketRequest marketRequest) {
-        Long marketAgentId = marketRequest.getMarketAgentId();
+    public ResponseEntity<MarketResponseDto> createMarket(MarketRequestDto marketRequest) {
         MarketDTO marketDTO = marketMapper.toMarketDTO(marketRequest);
-        Market market = marketService.createMarket(marketAgentId, marketDTO);
+        Market market = marketService.createMarket(marketDTO);
         return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
     }
 
     @Override
-    public List<ResponseEntity<MarketResponse>> getMarketsOfMarketAgent(@PathVariable String userId) {
+    public List<ResponseEntity<MarketResponseDto>> getMarketsOfMarketAgent(String userId) {
         User user = userService.getUser(userId);
         MarketAgent findMarketAgent = user.getMarketAgent();
         MarketAgent marketAgent = marketAgentService.getMarketAgent(findMarketAgent.getId());
         List<Market> marketList = marketAgent.getMarketList();
-        List<ResponseEntity<MarketResponse>> responseEntities = marketList.stream()
+        List<ResponseEntity<MarketResponseDto>> responseEntities = marketList.stream()
                 .map(market -> new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK))
                 .collect(Collectors.toList());
         return responseEntities;
     }
 
     @Override
-    public List<ResponseEntity<MarketResponse>> getMarketsOfRetailer(@PathVariable Long retailerId) {
+    public List<ResponseEntity<MarketResponseDto>> getMarketsOfRetailer(Long retailerId) {
         Retailer findRetailer = retailerService.getRetailer(retailerId);
         List<MarketRetailer> marketRetailerList = findRetailer.getMarketRetailerList();
-        List<ResponseEntity<MarketResponse>> responseEntities = marketRetailerList.stream()
+        List<ResponseEntity<MarketResponseDto>> responseEntities = marketRetailerList.stream()
                 .map(MarketRetailer::getMarket)
                 .map(market -> new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK))
                 .collect(Collectors.toList());
@@ -71,14 +68,13 @@ public class MarketController implements MarketApi {
     }
 
     @Override
-    public ResponseEntity<MarketResponse> getMarket(@PathVariable Long marketId) {
+    public ResponseEntity<MarketResponseDto> getMarket(Long marketId) {
         Market market = marketService.getMarket(marketId);
         return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<MarketResponse> updateMarket(@PathVariable Long marketId,
-                                                       @RequestBody @Valid MarketRequest marketRequest) {
+    public ResponseEntity<MarketResponseDto> updateMarket(Long marketId, MarketRequestDto marketRequest) {
         Market market = marketService.getMarket(marketId);
         marketMapper.update(marketRequest, market);
         Market updateMarket = marketService.updateMarket(market);
@@ -86,7 +82,7 @@ public class MarketController implements MarketApi {
     }
 
     @Override
-    public ResponseEntity<MarketAgentResponse> deleteMarket(@PathVariable Long marketId) {
+    public ResponseEntity<MarketAgentResponseDto> deleteMarket(Long marketId) {
         Market findMarket = marketService.getMarket(marketId);
         MarketAgent marketAgent = findMarket.getMarketAgent();
         marketService.deleteMarket(marketId);
@@ -94,16 +90,36 @@ public class MarketController implements MarketApi {
     }
 
     @Override
-    public ResponseEntity<MarketResponse> approveRetailer(@PathVariable Long retailerId, @PathVariable Long marketId) {
+    public ResponseEntity<MarketResponseDto> approveRetailer(Long retailerId, Long marketId) {
         marketService.approveRetailer(marketId, retailerId);
         Market market = marketService.getMarket(marketId);
         return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<ScheduleResponse> checkAttend(@PathVariable Long retailerId, @PathVariable Long marketId) {
+    public ResponseEntity<ScheduleResponseDto> checkAttend(Long retailerId, Long marketId) {
         Schedule schedule = scheduleService.checkAttend(marketId, retailerId);
         return new ResponseEntity<>(marketMapper.toScheduleResponse(schedule), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<MarketAgentResponseDto> registerMarketAgent(Long marketId, Long marketAgentId) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<MarketAgentResponseDto> updateMarketAgent(Long marketAgentId) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<RetailerResponseDto> registerRetailer(Long marketId, Long retailerId) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<MarketResponseDto> dropRetailer(Long marketId, Long retailerId) {
+        return null;
     }
 
 

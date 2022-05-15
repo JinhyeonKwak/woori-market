@@ -14,21 +14,18 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarketRequest {
+public class MarketRequestDto {
 
-    @ApiModelProperty(value = "MarketAgent ID", position = 1)
-    private Long marketAgentId;
-
-    @ApiModelProperty(value = "Market Location", position = 2)
+    @ApiModelProperty(value = "Market Location")
     private Address address;
 
-    @ApiModelProperty(value = "Start Date", position = 3)
+    @ApiModelProperty(value = "Start Date")
     private LocalDate startDate;
 
-    @ApiModelProperty(value = "End Date", position = 4)
+    @ApiModelProperty(value = "End Date")
     private LocalDate endDate;
 
-    @ApiModelProperty(value = "Market Day", position = 5)
+    @ApiModelProperty(value = "Market Day")
     private DayOfWeek marketDay;
 
 }

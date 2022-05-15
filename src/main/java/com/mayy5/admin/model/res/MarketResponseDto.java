@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarketResponse {
+public class MarketResponseDto {
 
     @ApiModelProperty(value = "Market ID", position = 1)
     private Long marketId;

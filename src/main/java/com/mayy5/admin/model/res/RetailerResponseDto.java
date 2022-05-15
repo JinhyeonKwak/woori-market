@@ -17,18 +17,15 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RetailerResponse {
+public class RetailerResponseDto {
 
-    @ApiModelProperty(value = "User ID", position = 1)
-    private String userId;
 
     @ApiModelProperty(value = "A RetailerPropType map of key/value pairs",
             example = "{'BUSINESS_TYPE' : 'FOOD'}",
-            dataType = "Map[String,String]",
-            position = 2)
+            dataType = "Map[String,String]")
     private Map<RetailerMetaType, String> meta = new HashMap<>();
 
-    @ApiModelProperty(value = "Market ID", position = 3)
+    @ApiModelProperty(value = "Market ID")
     private List<Long> marketId = new ArrayList<>();
 
     @ApiModelProperty(hidden = true)
