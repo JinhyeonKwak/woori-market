@@ -25,13 +25,10 @@ public class MarketService {
 
 
     @Transactional
-    public Market createMarket(Long marketAgentId, MarketDTO marketDTO) {
-
-        // 장주 조회
-        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
+    public Market createMarket(MarketDTO marketDTO) {
 
         // 장 생성
-        Market market = Market.createMarket(marketAgent, marketDTO);
+        Market market = Market.createMarket(marketDTO);
         return marketRepository.save(market);
     }
 

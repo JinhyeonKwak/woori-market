@@ -3,7 +3,7 @@ package com.mayy5.admin.service;
 import com.mayy5.admin.model.domain.MarketAgent;
 import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
-import com.mayy5.admin.model.req.MarketAgentRequest;
+import com.mayy5.admin.model.req.MarketAgentRequestDto;
 import com.mayy5.admin.type.MarketAgentMetaType;
 import com.mayy5.admin.type.UserMetaType;
 import org.assertj.core.api.Assertions;
@@ -41,11 +41,11 @@ class MarketAgentServiceTest {
         User user = userService.createUser(userInput);
 
         // marketAgentRequest 생성
-        MarketAgentRequest marketAgentRequest = new MarketAgentRequest();
-        marketAgentRequest.setUserId(user.getId());
+        MarketAgentRequestDto marketAgentRequestDto = new MarketAgentRequestDto();
+        marketAgentRequestDto.setUserId(user.getId());
 
         // marketAgent 영속성 엔티티 생성
-        MarketAgent input = marketAgentMapper.toEntity(marketAgentRequest);
+        MarketAgent input = marketAgentMapper.toEntity(marketAgentRequestDto);
         input.setUser(user);
         MarketAgent marketAgent = marketAgentService.createMarketAgent(input);
 
@@ -68,26 +68,26 @@ class MarketAgentServiceTest {
         User user = userService.createUser(userInput);
 
         // marketAgentRequest
-        MarketAgentRequest marketAgentRequest = new MarketAgentRequest();
-        marketAgentRequest.setUserId(user.getId());
+        MarketAgentRequestDto marketAgentRequestDto = new MarketAgentRequestDto();
+        marketAgentRequestDto.setUserId(user.getId());
         Map<MarketAgentMetaType, String> meta = new HashMap<>();
         meta.put(MarketAgentMetaType.CORPORATE_NAME, "NATURE");
-        marketAgentRequest.setMeta(meta);
+        marketAgentRequestDto.setMeta(meta);
 
         // marketAgent 영속성 엔티티 생성
-        MarketAgent input = marketAgentMapper.toEntity(marketAgentRequest);
+        MarketAgent input = marketAgentMapper.toEntity(marketAgentRequestDto);
         input.setUser(user);
         MarketAgent marketAgent = marketAgentService.createMarketAgent(input);
 
         // marketAgentRequest2
-        String userId = marketAgentRequest.getUserId();
+        String userId = marketAgentRequestDto.getUserId();
         Long marketAgentId = userService.getUser(userId).getMarketAgent().getId();
         MarketAgent ma = marketAgentService.getMarketAgent(marketAgentId);
 
         Map<MarketAgentMetaType, String> updateMeta = new HashMap<>();
         updateMeta.put(MarketAgentMetaType.CORPORATE_NAME, "SCIENCE");
-        MarketAgentRequest marketAgentRequest2 = new MarketAgentRequest(userId, updateMeta);
-        marketAgentMapper.update(marketAgentRequest2, ma);
+        MarketAgentRequestDto marketAgentRequestDto2 = new MarketAgentRequestDto(userId, updateMeta);
+        marketAgentMapper.update(marketAgentRequestDto2, ma);
 
         // marketAgent 수정
         marketAgentService.updateMarketAgent(marketAgent);
@@ -107,15 +107,15 @@ class MarketAgentServiceTest {
         User user = userService.createUser(userInput);
 
         // marketAgentRequest
-        MarketAgentRequest marketAgentRequest = new MarketAgentRequest();
-        marketAgentRequest.setUserId(user.getId());
+        MarketAgentRequestDto marketAgentRequestDto = new MarketAgentRequestDto();
+        marketAgentRequestDto.setUserId(user.getId());
         Map<MarketAgentMetaType, String> meta = new HashMap<>();
         meta.put(MarketAgentMetaType.CORPORATE_NAME, "NATURE");
-        marketAgentRequest.setMeta(meta);
+        marketAgentRequestDto.setMeta(meta);
 
 
         // marketAgent 영속성 엔티티 생성
-        MarketAgent input = marketAgentMapper.toEntity(marketAgentRequest);
+        MarketAgent input = marketAgentMapper.toEntity(marketAgentRequestDto);
         input.setUser(user);
         MarketAgent marketAgent = marketAgentService.createMarketAgent(input);
 

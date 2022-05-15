@@ -3,7 +3,7 @@ package com.mayy5.admin.service;
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.domain.User;
+import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.repository.MarketAgentRepository;
 import com.mayy5.admin.type.MarketAgentMetaType;
 import lombok.RequiredArgsConstructor;
