@@ -32,8 +32,9 @@ public class Schedule {
 
     //==생성 메서드==//
     public static Schedule createSchedule(MarketRetailer marketRetailer) {
-        Schedule schedule = new Schedule();
-        schedule.setCheckAttend(true); // default : 출석
+        Schedule schedule = Schedule.builder()
+                        .checkAttend(true) // default : 출석
+                        .build();
         schedule.setMarketRetailer(marketRetailer);
         return schedule;
     }

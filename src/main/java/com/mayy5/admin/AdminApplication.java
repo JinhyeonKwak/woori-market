@@ -26,6 +26,7 @@ public class AdminApplication {
 		SpringApplication.run(AdminApplication.class, args);
 	}
 
+
 	@Bean
 	public CommandLineRunner adminUser(UserService userService, PasswordEncoder passwordEncoder, PostRepository postRepository) {
 		return args -> {
@@ -54,4 +55,5 @@ public class AdminApplication {
 
 		};
 	}
+
 }

@@ -30,31 +30,30 @@ public class ScheduleService {
 
     @Transactional
     public Schedule createSchedule(Long marketId, Long retailerId) {
-        Market market = marketRepository.getById(marketId);
-        Retailer retailer = retailerRepository.getById(retailerId);
-        MarketRetailer marketRetailer = marketRetailerRepository.getMarketRetailer(market, retailer);
-        return Schedule.createSchedule(marketRetailer);
+        MarketRetailer marketRetailer = marketRetailerRepository.getMarketRetailer(marketId, retailerId);
+        Schedule schedule = Schedule.createSchedule(marketRetailer);
+        return scheduleRepository.save(schedule);
     }
 
     @Transactional(readOnly = true)
     public Schedule getSchedule(Long marketId, Long retailerId) {
-        Market market = marketRepository.getById(marketId);
-        Retailer retailer = retailerRepository.getById(retailerId);
-        MarketRetailer marketRetailer = marketRetailerRepository.getMarketRetailer(market, retailer);
+        MarketRetailer marketRetailer = marketRetailerRepository.getMarketRetailer(marketId, retailerId);
         Schedule schedule = scheduleRepository.getSchedule(marketRetailer, LocalDate.now());
 
         return schedule;
     }
 
+    // 해당 Market의 모든 스케줄 조회
     @Transactional(readOnly = true)
-    public List<Schedule> getScheduleList() {
-        return scheduleRepository.findAll();
+    public List<Schedule> getScheduleOfMarket(Long marketId) {
+        return scheduleRepository.getScheduleOfMarket(marketId);
     }
 
     @Transactional
-    public void checkAttend(Long marketId, Long retailerId) {
+    public Schedule checkAttend(Long marketId, Long retailerId) {
         Schedule schedule = this.getSchedule(marketId, retailerId);
         schedule.setCheckAttend(false); // 결석
+        return scheduleRepository.save(schedule);
     }
 
 }
