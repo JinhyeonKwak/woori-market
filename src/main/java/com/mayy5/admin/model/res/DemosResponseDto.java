@@ -16,8 +16,8 @@ import lombok.NonNull;
 @Builder
 @JsonSerialize
 @AllArgsConstructor
-public class DemosRTO {
+public class DemosResponseDto {
 	@ApiModelProperty(required = true, position = 1, value = "데모 목록")
 	@NonNull
-	private List<DemoRTO> demos;
+	private List<DemoResponseDto> demos;
 }

@@ -2,15 +2,13 @@ package com.mayy5.admin;
 
 import java.util.HashMap;
 
-import com.mayy5.admin.model.domain.Market;
-import com.mayy5.admin.model.domain.MarketAgent;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.service.UserService;
 import com.mayy5.admin.type.UserMetaType;

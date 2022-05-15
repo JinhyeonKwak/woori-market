@@ -1,0 +1,90 @@
+package com.mayy5.admin.controller;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mayy5.admin.apis.PostApi;
+import com.mayy5.admin.common.BError;
+import com.mayy5.admin.common.CommonException;
+import com.mayy5.admin.model.domain.Comment;
+import com.mayy5.admin.model.domain.Post;
+import com.mayy5.admin.model.mapper.CommentMapper;
+import com.mayy5.admin.model.mapper.PostMapper;
+import com.mayy5.admin.model.req.CommentRequestDto;
+import com.mayy5.admin.model.req.PostRequestDto;
+import com.mayy5.admin.model.res.CommentResponseDto;
+import com.mayy5.admin.model.res.PostResponseDto;
+import com.mayy5.admin.service.PostService;
+import com.mayy5.admin.service.UserService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+public class PostController implements PostApi {
+
+	private final UserService userService;
+	private final PostService postService;
+	private final PostMapper postMapper;
+	private final CommentMapper commentMapper;
+
+	@Override
+	public ResponseEntity<PostResponseDto> createPost(PostRequestDto postRequestDto) {
+		try {
+			Post input = postMapper.toEntity(postRequestDto);
+			Post post = postService.savePost(userService.getLoginUserId(), input);
+			return new ResponseEntity<>(postMapper.toDto(post), HttpStatus.OK);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "createPost");
+		}
+	}
+
+	@Override
+	public ResponseEntity<PostResponseDto> getPost(Long idx) {
+		try {
+			Post post = postService.findPostByIdx(idx);
+			return new ResponseEntity<>(postMapper.toDto(post), HttpStatus.OK);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "createPost");
+		}
+	}
+
+	@Override
+	public ResponseEntity<Page<Post>> getPostList(Pageable pageable) {
+		try {
+			Page<Post> posts = postService.findPostList(pageable);
+			return new ResponseEntity<>(posts, HttpStatus.OK);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "getPostList");
+		}
+	}
+
+	@Override
+	public ResponseEntity<CommentResponseDto> saveComment(Long idx, CommentRequestDto dto) {
+		try {
+			String userId = userService.getLoginUserId();
+			Comment input = commentMapper.toEntity(dto);
+			Comment comment = postService.saveComment(userId, idx, input);
+			return new ResponseEntity<>(commentMapper.toDto(comment), HttpStatus.OK);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "saveComment");
+		}
+	}
+}

@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserRTO {
+public class UserResponseDto {
 
     @ApiModelProperty(value = "User ID", example = "admin", position = 1)
     private String id;

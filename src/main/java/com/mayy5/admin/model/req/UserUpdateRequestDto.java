@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserUpdateRTO {
+public class UserUpdateRequestDto {
 
 	@ApiModelProperty(value = "mail", example = "mayy5.master@gmail.com", position = 2)
 	@NotBlank
@@ -28,7 +28,7 @@ public class UserUpdateRTO {
 	private String password;
 
 	@NotBlank
-	@ApiModelProperty(value = "newPassword", required = true, example = "admin", position = 3)
+	@ApiModelProperty(value = "newPassword", required = true, example = "admin", position = 4)
 	private String newPassword;
 
 	@ApiModelProperty(value = "name", required = true, example = "010 ", position = 5)
@@ -39,6 +39,6 @@ public class UserUpdateRTO {
 	@ApiModelProperty(
 		value = "A UserPropType map of key/value pairs",
 		example = "{'MAIL': 'xxx@yyy.com', 'ROLE' : 'ROLE_MARKET_AGENT'}",
-		dataType = "Map[String,String]", position = 4)
+		dataType = "Map[String,String]", position = 6)
 	private Map<UserMetaType, String> meta;
 }

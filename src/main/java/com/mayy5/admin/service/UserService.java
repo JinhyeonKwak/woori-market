@@ -5,16 +5,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.mayy5.admin.model.domain.MarketAgent;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
-import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.repository.UserRepository;
 import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.type.UserMetaType;
@@ -153,4 +154,8 @@ public class UserService {
 		userRepository.save(user);
 	}
 
+	public String getLoginUserId() {
+		return Optional.ofNullable((String)SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+			.orElseThrow(() -> new CommonException(BError.NOT_VALID,"User"));
+	}
 }

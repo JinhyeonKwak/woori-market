@@ -1,7 +1,7 @@
 package com.mayy5.admin.service;
 
 import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.req.MarketAgentRequest;
 import com.mayy5.admin.type.MarketAgentMetaType;

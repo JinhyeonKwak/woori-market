@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SignUpRTO {
+public class SignUpRequestDto {
 
 	@ApiModelProperty(value = "id", example = "mayy5", position = 1)
 	@NotBlank
