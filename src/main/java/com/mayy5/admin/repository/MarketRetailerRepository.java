@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MarketRetailerRepository extends JpaRepository<MarketRetailer, Long> {
 
-    @Query("select r from MarketRetailer r where r.market = :market and r.retailer = :retailer")
-    MarketRetailer getMarketRetailer(Market market, Retailer retailer);
+    @Query("select r from MarketRetailer r where r.market.id = :marketId and r.retailer.id = :retailerId")
+    MarketRetailer getMarketRetailer(Long marketId, Long retailerId);
 
 }

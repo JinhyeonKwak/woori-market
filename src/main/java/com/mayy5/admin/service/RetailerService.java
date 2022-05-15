@@ -40,7 +40,7 @@ public class RetailerService {
     }
 
     @Transactional(readOnly = true)
-    public List<Retailer> getRetailerList() {
+    public List<Retailer> getAllRetailers() {
         return retailerRepository.findAll();
     }
 

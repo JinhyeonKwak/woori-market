@@ -87,7 +87,7 @@ class MarketAgentServiceTest {
         Map<MarketAgentMetaType, String> updateMeta = new HashMap<>();
         updateMeta.put(MarketAgentMetaType.CORPORATE_NAME, "SCIENCE");
         MarketAgentRequest marketAgentRequest2 = new MarketAgentRequest(userId, updateMeta);
-        marketAgentMapper.update(marketAgentRequest2, ma); // 여기서 변경 감지로 인해 이미 수정이 됨
+        marketAgentMapper.update(marketAgentRequest2, ma);
 
         // marketAgent 수정
         marketAgentService.updateMarketAgent(marketAgent);

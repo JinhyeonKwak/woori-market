@@ -31,6 +31,7 @@ public class Market {
     @Column(name = "END_AT")
     private LocalDate endDate;
 
+
     private DayOfWeek marketDay;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,12 +44,14 @@ public class Market {
 
     //==생성 메서드==//
     public static Market createMarket(MarketAgent marketAgent, MarketDTO marketDTO) {
-        Market market = new Market();
+        Market market = Market.builder()
+                .address(marketDTO.getAddress())
+                .startDate(marketDTO.getStartDate())
+                .endDate(marketDTO.getEndDate())
+                .marketDay(marketDTO.getMarketDay())
+                .build();
+
         market.setMarketAgent(marketAgent);
-        market.setAddress(marketDTO.getAddress());
-        market.setStartDate(marketDTO.getStartDate());
-        market.setEndDate(marketDTO.getEndDate());
-        market.setMarketDay(marketDTO.getMarketDay());
 
         return market;
     }
