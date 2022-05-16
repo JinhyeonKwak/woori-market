@@ -1,7 +1,6 @@
 package com.mayy5.admin.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,23 +28,19 @@ public class PostService {
 	private final UserRepository userRepository;
 
 	public Page<Post> findPostList(PostType postType, Pageable pageable) {
-
-		pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1,
-			pageable.getPageSize(),pageable.getSort());
-
 		return postRepository.findAllByPostType(postType, pageable);
 	}
 
-	public Post findPostByIdx(Long idx) {
-		return postRepository.findById(idx).orElse(new Post());
+	public Post findPostById(Long id) {
+		return postRepository.findById(id).orElse(new Post());
 	}
 
 	@Transactional
-	public Comment saveComment(String userId, Long postIdx, Comment input) {
+	public Comment saveComment(String userId, Long postId, Comment input) {
 		User user = userRepository.findById(userId).orElseThrow(() ->
 			new CommonException(BError.NOT_EXIST, userId));
-		Post post = postRepository.findById(postIdx).orElseThrow(() ->
-			new CommonException(BError.NOT_EXIST, "POST - " + postIdx));
+		Post post = postRepository.findById(postId).orElseThrow(() ->
+			new CommonException(BError.NOT_EXIST, "POST - " + postId));
 		input.setPost(post);
 		input.setUser(user);
 		return commentRepository.save(input);

@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,14 +41,14 @@ public interface PostApi {
 	ResponseEntity<PostResponseDto> createPost(@Valid @RequestBody PostRequestDto postRequestDto);
 
 	@ApiOperation(value = "Post 조회 API",
-		notes = "Post idx를 기반으로 내용 조회")
+		notes = "Post id를 기반으로 내용 조회")
 	@ApiResponses(value = {
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = UserTokenResponseDto.class),
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
 	})
-	@GetMapping("/v1/posts/{idx}")
-	ResponseEntity<PostResponseDto> getPost(@Valid @PathVariable(value = "idx") Long idx);
+	@GetMapping("/v1/posts/{id}")
+	ResponseEntity<PostResponseDto> getPost(@Valid @PathVariable(value = "id") Long id);
 
 	@ApiOperation(value = "Post Pagination 조회 API",
 		notes = "Post Pageable 기반으로 내용 조회")
@@ -58,7 +59,7 @@ public interface PostApi {
 	})
 	@GetMapping("/v1/posts")
 	ResponseEntity<Page<PostPageResponseDto>> getPostList(@RequestParam PostType postType,
-		@PageableDefault Pageable pageable);
+		@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable);
 
 	@ApiOperation(value = "Comment 저장 API",
 		notes = "특정 Post에 Comment 저장")
@@ -67,7 +68,7 @@ public interface PostApi {
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
 	})
-	@PostMapping("/v1/posts/{idx}/comments")
-	ResponseEntity<CommentResponseDto> saveComment(@PathVariable Long idx, @Valid @RequestBody CommentRequestDto dto);
+	@PostMapping("/v1/posts/{id}/comments")
+	ResponseEntity<CommentResponseDto> saveComment(@PathVariable Long id, @Valid @RequestBody CommentRequestDto dto);
 
 }

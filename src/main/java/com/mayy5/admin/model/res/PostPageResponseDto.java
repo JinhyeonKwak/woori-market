@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostPageResponseDto {
 
-	private Long idx;
+	private Long id;
 	private PostType postType;
 	private String title;
 	private String subTitle;
 	private LocalDateTime createAt;
 	private LocalDateTime updateAt;
 	private String userId;
-
+	private Integer commentCount;
 }

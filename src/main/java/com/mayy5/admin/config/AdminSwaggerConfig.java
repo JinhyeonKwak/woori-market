@@ -77,13 +77,13 @@ public class AdminSwaggerConfig {
 	@Setter
 	@ApiModel
 	static class Page {
-		@ApiModelProperty(value = "페이지 번호(0..N)")
-		private Integer page;
+		@ApiModelProperty(value = "페이지 번호(0..N)", example = "0")
+		private Long page;
 
-		@ApiModelProperty(value = "페이지 크기", allowableValues = "range[0, 100]")
+		@ApiModelProperty(value = "페이지 크기", allowableValues = "range[0, 100]", example = "20")
 		private Integer size;
 
-		@ApiModelProperty(value = "정렬(사용법: 컬럼명,ASC|DESC)")
+		@ApiModelProperty(value = "정렬(사용법: 컬럼명,ASC|DESC)", example = "id,DESC")
 		private List<String> sort;
 	}
 }

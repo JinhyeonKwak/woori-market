@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostResponseDto {
 
-	private Long idx;
+	private Long id;
 	private PostType postType;
 	private String title;
 	private String subTitle;
