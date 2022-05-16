@@ -50,9 +50,9 @@ public class PostController implements PostApi {
 	}
 
 	@Override
-	public ResponseEntity<PostResponseDto> getPost(Long idx) {
+	public ResponseEntity<PostResponseDto> getPost(Long id) {
 		try {
-			Post post = postService.findPostByIdx(idx);
+			Post post = postService.findPostById(id);
 			return new ResponseEntity<>(postMapper.toDto(post), HttpStatus.OK);
 		} catch (CommonException e) {
 			throw e;
@@ -76,11 +76,11 @@ public class PostController implements PostApi {
 	}
 
 	@Override
-	public ResponseEntity<CommentResponseDto> saveComment(Long idx, CommentRequestDto dto) {
+	public ResponseEntity<CommentResponseDto> saveComment(Long id, CommentRequestDto dto) {
 		try {
 			String userId = userService.getLoginUserId();
 			Comment input = commentMapper.toEntity(dto);
-			Comment comment = postService.saveComment(userId, idx, input);
+			Comment comment = postService.saveComment(userId, id, input);
 			return new ResponseEntity<>(commentMapper.toDto(comment), HttpStatus.OK);
 		} catch (CommonException e) {
 			throw e;

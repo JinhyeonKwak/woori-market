@@ -27,8 +27,14 @@ public interface PostMapper {
 	@Mapping(source = "user", target = "userId", qualifiedByName = "UserToUserId")
 	PostResponseDto toDto(Post post);
 
+	@Mapping(source = "comments", target = "commentCount", qualifiedByName = "CommentToCommentCount")
 	@Mapping(source = "user", target = "userId", qualifiedByName = "UserToUserId")
 	PostPageResponseDto toPageDto(Post post);
+
+	@Named("CommentToCommentCount")
+	default int CommentToCommentCount(final List<Comment> comments) {
+		return comments.size();
+	}
 
 	@Named("CommentToCommentDto")
 	default List<CommentResponseDto> commentToCommentDto(final List<Comment> comments) {
@@ -40,7 +46,7 @@ public interface PostMapper {
 					.userId(comment.getUser().getId())
 					.createAt(comment.getCreateAt())
 					.updateAt(comment.getUpdateAt())
-					.postId(comment.getPost().getIdx())
+					.postId(comment.getPost().getId())
 					.build()
 			).collect(Collectors.toList());
 	}

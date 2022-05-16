@@ -41,7 +41,7 @@ public class Post implements Serializable {
 	@Id
 	@Column(name = "POST_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idx;
+	private Long id;
 
 	@Column
 	private String title;

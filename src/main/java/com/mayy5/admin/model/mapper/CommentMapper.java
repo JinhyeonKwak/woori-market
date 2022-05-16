@@ -21,8 +21,8 @@ public interface CommentMapper {
 	CommentResponseDto toDto(Comment entity);
 
 	@Named("PostToPostId")
-	default Long postToPostIdx(final Post post) {
-		return post.getIdx();
+	default Long postToPostId(final Post post) {
+		return post.getId();
 	}
 }
 
