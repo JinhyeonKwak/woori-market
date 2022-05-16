@@ -25,6 +25,7 @@ public class PostService {
 
 	private final PostRepository postRepository;
 	private final CommentRepository commentRepository;
+	private final UserService userService;
 	private final UserRepository userRepository;
 
 	public Page<Post> findPostList(PostType postType, Pageable pageable) {
@@ -36,6 +37,21 @@ public class PostService {
 	}
 
 	@Transactional
+	public Comment updateComment(String userId, Long commentId, Comment input) {
+		User user = userRepository.findById(userId).orElseThrow(() ->
+			new CommonException(BError.NOT_EXIST, userId));
+		Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+			new CommonException(BError.NOT_EXIST, "Comment"));
+
+		if (userService.isValidUser(user,comment.getUser())) {
+			comment.setComment(input.getComment());
+		} else {
+			throw new CommonException(BError.NOT_MATCH, "User");
+		}
+		return commentRepository.save(comment);
+	}
+
+	@Transactional
 	public Comment saveComment(String userId, Long postId, Comment input) {
 		User user = userRepository.findById(userId).orElseThrow(() ->
 			new CommonException(BError.NOT_EXIST, userId));
@@ -44,6 +60,21 @@ public class PostService {
 		input.setPost(post);
 		input.setUser(user);
 		return commentRepository.save(input);
+	}
+
+	@Transactional
+	public void deleteComment(String userId, Long commentId) throws CommonException {
+		User user = userRepository.findById(userId).orElseThrow(() ->
+			new CommonException(BError.NOT_EXIST, userId));
+
+		commentRepository.findById(commentId).ifPresent(comment -> {
+			if (userService.isValidUser(user,comment.getUser())) {
+				commentRepository.deleteById(commentId);
+			} else {
+				throw new CommonException(BError.NOT_MATCH, "User");
+			}
+		});
+		return;
 	}
 
 	@Transactional

@@ -158,4 +158,12 @@ public class UserService {
 		return Optional.ofNullable((String)SecurityContextHolder.getContext().getAuthentication().getPrincipal())
 			.orElseThrow(() -> new CommonException(BError.NOT_VALID,"User"));
 	}
+
+	public boolean isValidUser(User executeUser, User originUser) {
+		//admin User일때는 항상 모든 명령에 대해 유효하다고 판단한다.
+		if(executeUser.getId().equals(AuthConstant.ADMIN_USER)){
+			return true;
+		}
+		return executeUser.getId().equals(originUser.getId());
+	}
 }

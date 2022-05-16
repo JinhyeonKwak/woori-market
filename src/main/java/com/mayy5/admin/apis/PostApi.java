@@ -7,7 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,5 +72,25 @@ public interface PostApi {
 	})
 	@PostMapping("/v1/posts/{id}/comments")
 	ResponseEntity<CommentResponseDto> saveComment(@PathVariable Long id, @Valid @RequestBody CommentRequestDto dto);
+
+	@ApiOperation(value = "Comment 수정 API",
+		notes = "특정 Post에 Comment 수정")
+	@ApiResponses(value = {
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = CommentResponseDto.class),
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
+	})
+	@PatchMapping("/v1/comments/{id}")
+	ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long id, @Valid @RequestBody CommentRequestDto dto);
+
+	@ApiOperation(value = "Comment 삭제 API",
+		notes = "특정 Post에 Comment 삭제")
+	@ApiResponses(value = {
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = CommentResponseDto.class),
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
+	})
+	@DeleteMapping("/v1/comments/{id}")
+	ResponseEntity deleteComment(@PathVariable Long id);
 
 }
