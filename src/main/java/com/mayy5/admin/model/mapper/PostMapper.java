@@ -14,6 +14,7 @@ import com.mayy5.admin.model.domain.Comment;
 import com.mayy5.admin.model.domain.Post;
 import com.mayy5.admin.model.req.PostRequestDto;
 import com.mayy5.admin.model.res.CommentResponseDto;
+import com.mayy5.admin.model.res.PostPageResponseDto;
 import com.mayy5.admin.model.res.PostResponseDto;
 
 @Component
@@ -25,6 +26,9 @@ public interface PostMapper {
 	@Mapping(source = "comments", target = "comments", qualifiedByName = "CommentToCommentDto")
 	@Mapping(source = "user", target = "userId", qualifiedByName = "UserToUserId")
 	PostResponseDto toDto(Post post);
+
+	@Mapping(source = "user", target = "userId", qualifiedByName = "UserToUserId")
+	PostPageResponseDto toPageDto(Post post);
 
 	@Named("CommentToCommentDto")
 	default List<CommentResponseDto> commentToCommentDto(final List<Comment> comments) {

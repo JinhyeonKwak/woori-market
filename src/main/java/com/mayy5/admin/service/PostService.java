@@ -14,9 +14,12 @@ import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.repository.CommentRepository;
 import com.mayy5.admin.repository.PostRepository;
 import com.mayy5.admin.repository.UserRepository;
+import com.mayy5.admin.type.PostType;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PostService {
@@ -25,10 +28,12 @@ public class PostService {
 	private final CommentRepository commentRepository;
 	private final UserRepository userRepository;
 
-	public Page<Post> findPostList(Pageable pageable) {
+	public Page<Post> findPostList(PostType postType, Pageable pageable) {
+
 		pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1,
-			pageable.getPageSize());
-		return postRepository.findAll(pageable);
+			pageable.getPageSize(),pageable.getSort());
+
+		return postRepository.findAllByPostType(postType, pageable);
 	}
 
 	public Post findPostByIdx(Long idx) {

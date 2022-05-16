@@ -16,9 +16,11 @@ import com.mayy5.admin.model.mapper.PostMapper;
 import com.mayy5.admin.model.req.CommentRequestDto;
 import com.mayy5.admin.model.req.PostRequestDto;
 import com.mayy5.admin.model.res.CommentResponseDto;
+import com.mayy5.admin.model.res.PostPageResponseDto;
 import com.mayy5.admin.model.res.PostResponseDto;
 import com.mayy5.admin.service.PostService;
 import com.mayy5.admin.service.UserService;
+import com.mayy5.admin.type.PostType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,10 +63,10 @@ public class PostController implements PostApi {
 	}
 
 	@Override
-	public ResponseEntity<Page<Post>> getPostList(Pageable pageable) {
+	public ResponseEntity<Page<PostPageResponseDto>> getPostList(PostType postType, Pageable pageable) {
 		try {
-			Page<Post> posts = postService.findPostList(pageable);
-			return new ResponseEntity<>(posts, HttpStatus.OK);
+			Page<Post> posts = postService.findPostList(postType, pageable);
+			return new ResponseEntity<>(posts.map(post -> postMapper.toPageDto(post)), HttpStatus.OK);
 		} catch (CommonException e) {
 			throw e;
 		} catch (Exception e) {
