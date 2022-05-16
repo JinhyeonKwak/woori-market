@@ -50,6 +50,20 @@ public class PostController implements PostApi {
 	}
 
 	@Override
+	public ResponseEntity<PostResponseDto> updatePost(Long id, PostRequestDto postRequestDto) {
+		try {
+			Post input = postMapper.toEntity(postRequestDto);
+			Post post = postService.updatePost(userService.getLoginUserId(), id, input);
+			return new ResponseEntity<>(postMapper.toDto(post), HttpStatus.OK);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "updatePost");
+		}
+	}
+
+	@Override
 	public ResponseEntity<PostResponseDto> getPost(Long id) {
 		try {
 			Post post = postService.findPostById(id);
@@ -59,6 +73,20 @@ public class PostController implements PostApi {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new CommonException(BError.FAIL, "createPost");
+		}
+	}
+
+	@Override
+	public ResponseEntity deletePost(Long id) {
+		try {
+			String userId = userService.getLoginUserId();
+			postService.deletePost(userId, id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "Delete Post");
 		}
 	}
 

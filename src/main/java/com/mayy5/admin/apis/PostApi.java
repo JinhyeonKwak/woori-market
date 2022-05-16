@@ -42,6 +42,16 @@ public interface PostApi {
 	@PostMapping(path = "/v1/posts", consumes = "application/json")
 	ResponseEntity<PostResponseDto> createPost(@Valid @RequestBody PostRequestDto postRequestDto);
 
+	@ApiOperation(value = "Post 수정 API",
+		notes = "Post 수정 및 저장")
+	@ApiResponses(value = {
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = PostResponseDto.class),
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
+	})
+	@PatchMapping(path = "/v1/posts/{id}", consumes = "application/json")
+	ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @Valid @RequestBody PostRequestDto postRequestDto);
+
 	@ApiOperation(value = "Post 조회 API",
 		notes = "Post id를 기반으로 내용 조회")
 	@ApiResponses(value = {
@@ -51,6 +61,17 @@ public interface PostApi {
 	})
 	@GetMapping("/v1/posts/{id}")
 	ResponseEntity<PostResponseDto> getPost(@Valid @PathVariable(value = "id") Long id);
+
+
+	@ApiOperation(value = "Post 삭제 API",
+		notes = "특정 Post 삭제")
+	@ApiResponses(value = {
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = CommentResponseDto.class),
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
+		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
+	})
+	@DeleteMapping("/v1/posts/{id}")
+	ResponseEntity deletePost(@PathVariable Long id);
 
 	@ApiOperation(value = "Post Pagination 조회 API",
 		notes = "Post Pageable 기반으로 내용 조회")
