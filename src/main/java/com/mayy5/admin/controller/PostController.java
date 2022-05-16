@@ -86,7 +86,36 @@ public class PostController implements PostApi {
 			throw e;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			throw new CommonException(BError.FAIL, "saveComment");
+			throw new CommonException(BError.FAIL, "Save Comment");
+		}
+	}
+
+	@Override
+	public ResponseEntity<CommentResponseDto> updateComment(Long id, CommentRequestDto dto) {
+		try {
+			String userId = userService.getLoginUserId();
+			Comment input = commentMapper.toEntity(dto);
+			Comment comment = postService.updateComment(userId, id, input);
+			return new ResponseEntity<>(commentMapper.toDto(comment), HttpStatus.OK);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "Update Comment");
+		}
+	}
+
+	@Override
+	public ResponseEntity deleteComment(Long id) {
+		try {
+			String userId = userService.getLoginUserId();
+			postService.deleteComment(userId, id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "Delete Comment");
 		}
 	}
 }
