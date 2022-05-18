@@ -59,7 +59,7 @@ public interface MarketMemberApi {
     ResponseEntity<UserRTO> deleteMarketAgent();
 
     //==장원 CRUD==//
-    @ApiOperation(value = "장원 등록 API")
+    @ApiOperation(value = "장원 생성 API")
     @ApiResponses(value = {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = RetailerResponseDto.class),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
@@ -96,7 +96,7 @@ public interface MarketMemberApi {
     ResponseEntity<RetailerResponseDto> updateRetailer(@PathVariable Long retailerId,
                                                        @RequestBody @Valid RetailerRequestDto retailerRequest);
 
-    @ApiOperation(value = "등록 장원 삭제 API")
+    @ApiOperation(value = "생성 장원 삭제 API")
     @ApiResponses(value = {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = UserRTO.class),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),

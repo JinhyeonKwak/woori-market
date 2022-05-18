@@ -3,8 +3,10 @@ package com.mayy5.admin.service;
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.MarketAgent;
+import com.mayy5.admin.model.domain.MarketRetailer;
 import com.mayy5.admin.model.domain.Retailer;
-import com.mayy5.admin.model.domain.User;
+import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.repository.MarketRetailerRepository;
 import com.mayy5.admin.repository.RetailerRepository;
 import com.mayy5.admin.type.RetailerMetaType;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.Optional;
 public class RetailerService {
 
     private final RetailerRepository retailerRepository;
+    private final MarketRetailerRepository marketRetailerRepository;
     private final UserService userService;
 
     @Transactional
@@ -64,5 +67,17 @@ public class RetailerService {
             log.debug(e.getMessage(), e);
             throw new CommonException(BError.FAIL, "Retailer Delete");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Retailer> getRetailersByUserId(String userId) {
+        List<Retailer> retailers = retailerRepository.getRetailersByUserId(userId);
+        return retailers;
+    }
+
+    @Transactional(readOnly = true)
+    public List<MarketRetailer> getMarketRetailersOfRetailer(Long retailerId) {
+        List<MarketRetailer> marketRetailers = marketRetailerRepository.getMarketRetailersByRetailerId(retailerId);
+        return marketRetailers;
     }
 }

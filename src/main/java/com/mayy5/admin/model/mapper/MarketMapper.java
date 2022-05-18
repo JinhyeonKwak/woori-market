@@ -21,26 +21,13 @@ public interface MarketMapper {
 
     MarketMapper marketMapper = Mappers.getMapper(MarketMapper.class);
 
-    @Mapping(source = "address", target = "address")
-    @Mapping(source = "startDate", target = "startDate")
-    @Mapping(source = "endDate", target = "endDate")
-    @Mapping(source = "marketDay", target = "marketDay")
     MarketDTO toMarketDTO(MarketRequestDto dto);
 
     @Mapping(source = "id", target = "marketId")
-    @Mapping(source = "address", target = "address")
-    @Mapping(source = "startDate", target = "startDate")
-    @Mapping(source = "endDate", target = "endDate")
-    @Mapping(source = "marketDay", target = "marketDay")
     MarketResponseDto toMarketResponse(Market market);
 
-    @Mapping(source = "address", target = "address")
-    @Mapping(source = "startDate", target = "startDate")
-    @Mapping(source = "endDate", target = "endDate")
-    @Mapping(source = "marketDay", target = "marketDay")
     void update(MarketRequestDto marketRequest, @MappingTarget Market market);
 
     @Mapping(source = "marketRetailer.retailer.id", target = "retailerId")
-    @Mapping(source = "checkAttend", target = "checkAttend")
     ScheduleResponseDto toScheduleResponse(Schedule schedule);
 }

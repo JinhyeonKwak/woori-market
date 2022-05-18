@@ -16,19 +16,19 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class MarketResponseDto {
 
-    @ApiModelProperty(value = "Market ID", position = 1)
+    @ApiModelProperty(value = "Market ID")
     private Long marketId;
 
-    @ApiModelProperty(value = "Market Location", position = 2)
+    @ApiModelProperty(value = "Market Location")
     private Address address;
 
-    @ApiModelProperty(value = "Start Date", position = 3)
+    @ApiModelProperty(value = "Start Date")
     private LocalDate startDate;
 
-    @ApiModelProperty(value = "End Date", position = 4)
+    @ApiModelProperty(value = "End Date")
     private LocalDate endDate;
 
-    @ApiModelProperty(value = "Market Day", position = 5)
+    @ApiModelProperty(value = "Market Day")
     private DayOfWeek marketDay;
 
 }

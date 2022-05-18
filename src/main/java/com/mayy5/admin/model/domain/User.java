@@ -59,12 +59,6 @@ public class User {
 	@Column(name = "META_VALUE")
 	private Map<UserMetaType, String> meta = new HashMap<>();
 
-	@OneToOne(mappedBy = "user")
-	private	MarketAgent marketAgent;
-
-	@OneToMany(mappedBy = "user")
-	private List<Retailer> retailerList = new ArrayList<>();
-
 	@Column(name = "CREATE_AT", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime createAt;

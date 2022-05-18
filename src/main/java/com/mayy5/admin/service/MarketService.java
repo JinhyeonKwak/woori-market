@@ -5,11 +5,13 @@ import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.*;
 import com.mayy5.admin.model.dto.MarketDTO;
 import com.mayy5.admin.repository.MarketRepository;
+import com.mayy5.admin.repository.MarketRetailerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 @Slf4j
@@ -18,10 +20,11 @@ import java.util.Optional;
 public class MarketService {
 
     private final MarketRepository marketRepository;
+    private final MarketRetailerRepository marketRetailerRepository;
 
-    private final MarketAgentService marketAgentService;
     private final RetailerService retailerService;
     private final ScheduleService scheduleService;
+    private final EntityManager em;
 
 
     @Transactional
@@ -39,15 +42,20 @@ public class MarketService {
     }
 
     @Transactional
-    public void approveRetailer(Long marketId, Long retailerId) {
+    public void addRetailer(Long marketId, Long retailerId) {
         // 장 조회
         Market market = this.getMarket(marketId);
 
         // 장원 조회
         Retailer retailer = retailerService.getRetailer(retailerId);
 
-        // 장원 승인
-        market.addRetailer(retailer);
+        // 장-장원 관계 엔티티 생성 & 영속화
+        MarketRetailer marketRetailer = MarketRetailer.createMarketRetailer(market, retailer);
+        em.persist(marketRetailer);
+
+        // 연관 관계
+        market.getMarketRetailerList().add(marketRetailer);
+        retailer.getMarketRetailerList().add(marketRetailer);
 
         // 출석 관리 엔티티 생성
         scheduleService.createSchedule(marketId, retailerId);
@@ -73,5 +81,11 @@ public class MarketService {
             log.debug(e.getMessage(), e);
             throw new CommonException(BError.FAIL, "Market Delete");
         }
+    }
+
+    @Transactional
+    public void dropRetailer(Long marketId, Long retailerId) {
+        MarketRetailer marketRetailer = marketRetailerRepository.getMarketRetailer(marketId, retailerId);
+        marketRetailerRepository.deleteById(marketRetailer.getId());
     }
 }

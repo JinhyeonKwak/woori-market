@@ -6,11 +6,13 @@ import com.mayy5.admin.model.dto.MarketDTO;
 import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.MarketMapper;
+import com.mayy5.admin.model.mapper.RetailerMapper;
 import com.mayy5.admin.model.req.MarketRequestDto;
 import com.mayy5.admin.model.res.MarketAgentResponseDto;
 import com.mayy5.admin.model.res.MarketResponseDto;
 import com.mayy5.admin.model.res.RetailerResponseDto;
 import com.mayy5.admin.model.res.ScheduleResponseDto;
+import com.mayy5.admin.repository.MarketRetailerRepository;
 import com.mayy5.admin.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,19 +38,19 @@ public class MarketController implements MarketApi {
 
     private final MarketMapper marketMapper;
     private final MarketAgentMapper marketAgentMapper;
+    private final RetailerMapper retailerMapper;
 
     @Override
-    public ResponseEntity<MarketResponseDto> createMarket(MarketRequestDto marketRequest) {
-        MarketDTO marketDTO = marketMapper.toMarketDTO(marketRequest);
+    public ResponseEntity<MarketResponseDto> createMarket(MarketRequestDto marketRequestDto) {
+        MarketDTO marketDTO = marketMapper.toMarketDTO(marketRequestDto);
         Market market = marketService.createMarket(marketDTO);
         return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
     }
 
     @Override
-    public List<ResponseEntity<MarketResponseDto>> getMarketsOfMarketAgent(String userId) {
-        User user = userService.getUser(userId);
-        MarketAgent findMarketAgent = user.getMarketAgent();
-        MarketAgent marketAgent = marketAgentService.getMarketAgent(findMarketAgent.getId());
+    public List<ResponseEntity<MarketResponseDto>> getMarketsOfMarketAgent() {
+        String loginUserId = userService.getLoginUserId();
+        MarketAgent marketAgent = marketAgentService.getMarketAgentByUserId(loginUserId);
         List<Market> marketList = marketAgent.getMarketList();
         List<ResponseEntity<MarketResponseDto>> responseEntities = marketList.stream()
                 .map(market -> new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK))
@@ -58,8 +60,7 @@ public class MarketController implements MarketApi {
 
     @Override
     public List<ResponseEntity<MarketResponseDto>> getMarketsOfRetailer(Long retailerId) {
-        Retailer findRetailer = retailerService.getRetailer(retailerId);
-        List<MarketRetailer> marketRetailerList = findRetailer.getMarketRetailerList();
+        List<MarketRetailer> marketRetailerList = retailerService.getMarketRetailersOfRetailer(retailerId);
         List<ResponseEntity<MarketResponseDto>> responseEntities = marketRetailerList.stream()
                 .map(MarketRetailer::getMarket)
                 .map(market -> new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK))
@@ -90,37 +91,35 @@ public class MarketController implements MarketApi {
     }
 
     @Override
-    public ResponseEntity<MarketResponseDto> approveRetailer(Long retailerId, Long marketId) {
-        marketService.approveRetailer(marketId, retailerId);
-        Market market = marketService.getMarket(marketId);
-        return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
-    }
-
-    @Override
     public ResponseEntity<ScheduleResponseDto> checkAttend(Long retailerId, Long marketId) {
         Schedule schedule = scheduleService.checkAttend(marketId, retailerId);
         return new ResponseEntity<>(marketMapper.toScheduleResponse(schedule), HttpStatus.OK);
     }
 
+    //==장주 관련==//
     @Override
     public ResponseEntity<MarketAgentResponseDto> registerMarketAgent(Long marketId, Long marketAgentId) {
-        return null;
+        Market market = marketService.getMarket(marketId);
+        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
+        market.setMarketAgent(marketAgent);
+        marketService.updateMarket(market);
+        return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<MarketAgentResponseDto> updateMarketAgent(Long marketAgentId) {
-        return null;
-    }
-
+    //==장원 관련==//
     @Override
     public ResponseEntity<RetailerResponseDto> registerRetailer(Long marketId, Long retailerId) {
-        return null;
+        Market market = marketService.getMarket(marketId);
+        Retailer retailer = retailerService.getRetailer(retailerId);
+        marketService.addRetailer(marketId, retailerId);
+        marketService.updateMarket(market);
+        return new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<MarketResponseDto> dropRetailer(Long marketId, Long retailerId) {
-        return null;
+        marketService.dropRetailer(marketId, retailerId);
+        Market market = marketService.getMarket(marketId);
+        return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
     }
-
-
 }

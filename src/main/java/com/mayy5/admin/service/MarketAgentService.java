@@ -60,4 +60,9 @@ public class MarketAgentService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public MarketAgent getMarketAgentByUserId(String userId) {
+        MarketAgent findMarketAgent = marketAgentRepository.getMarketAgentByUserId(userId);
+        return findMarketAgent;
+    }
 }

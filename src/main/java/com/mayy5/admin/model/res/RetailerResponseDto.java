@@ -25,9 +25,6 @@ public class RetailerResponseDto {
             dataType = "Map[String,String]")
     private Map<RetailerMetaType, String> meta = new HashMap<>();
 
-    @ApiModelProperty(value = "Market ID")
-    private List<Long> marketId = new ArrayList<>();
-
     @ApiModelProperty(hidden = true)
     private LocalDateTime createAt;
 
