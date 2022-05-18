@@ -31,14 +31,24 @@ public interface MarketMemberApi {
     @PostMapping(path = "/v1/market-agent", consumes = "application/json")
     ResponseEntity<MarketAgentResponseDto> createMarketAgent(@RequestBody @Valid MarketAgentRequestDto marketAgentRequestDto);
 
-    @ApiOperation(value = "장주 조회 API")
+    @ApiOperation(value = "특정 유저의 장주 리스트 조회 API")
     @ApiResponses(value = {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = MarketAgentResponseDto.class),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @GetMapping(path = "/v1/market-agent")
-    ResponseEntity<MarketAgentResponseDto> getMarketAgent();
+    List<ResponseEntity<MarketAgentResponseDto>> getMarketAgents();
+
+
+    @ApiOperation(value = "장주 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = MarketAgentResponseDto.class),
+            @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
+            @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
+    })
+    @GetMapping(path = "/v1/market-agent/{marketAgentId}")
+    ResponseEntity<MarketAgentResponseDto> getMarketAgent(@PathVariable Long marketAgentId);
 
     @ApiOperation(value = "장주 정보 수정 API")
     @ApiResponses(value = {
@@ -46,8 +56,9 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @PatchMapping(path = "/v1/market-agent", consumes = "application/json")
-    ResponseEntity<MarketAgentResponseDto> updateMarketAgent(@RequestBody @Valid MarketAgentRequestDto marketAgentRequestDto);
+    @PatchMapping(path = "/v1/market-agent/{marketAgentId}", consumes = "application/json")
+    ResponseEntity<MarketAgentResponseDto> updateMarketAgent(@RequestBody @Valid MarketAgentRequestDto marketAgentRequestDto,
+                                                             @PathVariable Long marketAgentId);
 
     @ApiOperation(value = "등록 장주 삭제 API")
     @ApiResponses(value = {
@@ -55,8 +66,8 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @DeleteMapping(path = "/v1/market-agent")
-    ResponseEntity<UserRTO> deleteMarketAgent();
+    @DeleteMapping(path = "/v1/market-agent/{marketAgentId}")
+    ResponseEntity<UserRTO> deleteMarketAgent(@PathVariable Long marketAgentId);
 
     //==장원 CRUD==//
     @ApiOperation(value = "장원 생성 API")
