@@ -16,9 +16,11 @@ import com.mayy5.admin.model.mapper.PostMapper;
 import com.mayy5.admin.model.req.CommentRequestDto;
 import com.mayy5.admin.model.req.PostRequestDto;
 import com.mayy5.admin.model.res.CommentResponseDto;
+import com.mayy5.admin.model.res.PostPageResponseDto;
 import com.mayy5.admin.model.res.PostResponseDto;
 import com.mayy5.admin.service.PostService;
 import com.mayy5.admin.service.UserService;
+import com.mayy5.admin.type.PostType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +50,23 @@ public class PostController implements PostApi {
 	}
 
 	@Override
-	public ResponseEntity<PostResponseDto> getPost(Long idx) {
+	public ResponseEntity<PostResponseDto> updatePost(Long id, PostRequestDto postRequestDto) {
 		try {
-			Post post = postService.findPostByIdx(idx);
+			Post input = postMapper.toEntity(postRequestDto);
+			Post post = postService.updatePost(userService.getLoginUserId(), id, input);
+			return new ResponseEntity<>(postMapper.toDto(post), HttpStatus.OK);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "updatePost");
+		}
+	}
+
+	@Override
+	public ResponseEntity<PostResponseDto> getPost(Long id) {
+		try {
+			Post post = postService.findPostById(id);
 			return new ResponseEntity<>(postMapper.toDto(post), HttpStatus.OK);
 		} catch (CommonException e) {
 			throw e;
@@ -61,10 +77,24 @@ public class PostController implements PostApi {
 	}
 
 	@Override
-	public ResponseEntity<Page<Post>> getPostList(Pageable pageable) {
+	public ResponseEntity deletePost(Long id) {
 		try {
-			Page<Post> posts = postService.findPostList(pageable);
-			return new ResponseEntity<>(posts, HttpStatus.OK);
+			String userId = userService.getLoginUserId();
+			postService.deletePost(userId, id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "Delete Post");
+		}
+	}
+
+	@Override
+	public ResponseEntity<Page<PostPageResponseDto>> getPostList(PostType postType, Pageable pageable) {
+		try {
+			Page<Post> posts = postService.findPostList(postType, pageable);
+			return new ResponseEntity<>(posts.map(post -> postMapper.toPageDto(post)), HttpStatus.OK);
 		} catch (CommonException e) {
 			throw e;
 		} catch (Exception e) {
@@ -74,17 +104,46 @@ public class PostController implements PostApi {
 	}
 
 	@Override
-	public ResponseEntity<CommentResponseDto> saveComment(Long idx, CommentRequestDto dto) {
+	public ResponseEntity<CommentResponseDto> saveComment(Long id, CommentRequestDto dto) {
 		try {
 			String userId = userService.getLoginUserId();
 			Comment input = commentMapper.toEntity(dto);
-			Comment comment = postService.saveComment(userId, idx, input);
+			Comment comment = postService.saveComment(userId, id, input);
 			return new ResponseEntity<>(commentMapper.toDto(comment), HttpStatus.OK);
 		} catch (CommonException e) {
 			throw e;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			throw new CommonException(BError.FAIL, "saveComment");
+			throw new CommonException(BError.FAIL, "Save Comment");
+		}
+	}
+
+	@Override
+	public ResponseEntity<CommentResponseDto> updateComment(Long id, CommentRequestDto dto) {
+		try {
+			String userId = userService.getLoginUserId();
+			Comment input = commentMapper.toEntity(dto);
+			Comment comment = postService.updateComment(userId, id, input);
+			return new ResponseEntity<>(commentMapper.toDto(comment), HttpStatus.OK);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "Update Comment");
+		}
+	}
+
+	@Override
+	public ResponseEntity deleteComment(Long id) {
+		try {
+			String userId = userService.getLoginUserId();
+			postService.deleteComment(userId, id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (CommonException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new CommonException(BError.FAIL, "Delete Comment");
 		}
 	}
 }

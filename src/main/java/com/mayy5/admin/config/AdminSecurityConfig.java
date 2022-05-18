@@ -48,7 +48,7 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http
-			.cors().and()
+			.cors().configurationSource(corsConfigurationSource()).and()
 			.csrf().disable()
 			//                .csrf()
 			//                .ignoringAntMatchers(AUTH_WHITELIST)

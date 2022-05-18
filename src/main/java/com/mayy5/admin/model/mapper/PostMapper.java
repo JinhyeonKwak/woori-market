@@ -14,6 +14,7 @@ import com.mayy5.admin.model.domain.Comment;
 import com.mayy5.admin.model.domain.Post;
 import com.mayy5.admin.model.req.PostRequestDto;
 import com.mayy5.admin.model.res.CommentResponseDto;
+import com.mayy5.admin.model.res.PostPageResponseDto;
 import com.mayy5.admin.model.res.PostResponseDto;
 
 @Component
@@ -26,6 +27,15 @@ public interface PostMapper {
 	@Mapping(source = "user", target = "userId", qualifiedByName = "UserToUserId")
 	PostResponseDto toDto(Post post);
 
+	@Mapping(source = "comments", target = "commentCount", qualifiedByName = "CommentToCommentCount")
+	@Mapping(source = "user", target = "userId", qualifiedByName = "UserToUserId")
+	PostPageResponseDto toPageDto(Post post);
+
+	@Named("CommentToCommentCount")
+	default int CommentToCommentCount(final List<Comment> comments) {
+		return comments.size();
+	}
+
 	@Named("CommentToCommentDto")
 	default List<CommentResponseDto> commentToCommentDto(final List<Comment> comments) {
 		return Optional.ofNullable(comments).orElse(new ArrayList<>())
@@ -36,7 +46,7 @@ public interface PostMapper {
 					.userId(comment.getUser().getId())
 					.createAt(comment.getCreateAt())
 					.updateAt(comment.getUpdateAt())
-					.postId(comment.getPost().getIdx())
+					.postId(comment.getPost().getId())
 					.build()
 			).collect(Collectors.toList());
 	}
