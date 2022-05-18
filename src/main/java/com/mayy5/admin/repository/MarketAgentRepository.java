@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MarketAgentRepository extends JpaRepository<MarketAgent, Long> {
 
+    @Query("select m from MarketAgent m where m.user.id = :userId")
+    MarketAgent getMarketAgentByUserId(String userId);
 }

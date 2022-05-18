@@ -18,15 +18,9 @@ public interface RetailerMapper {
 
     RetailerMapper retailerMapper =  Mappers.getMapper(RetailerMapper.class);
 
-    @Mapping(source = "meta", target = "meta")
     Retailer toEntity(RetailerRequestDto dto);
 
-    @Mapping(source = "meta", target = "meta")
     void update(RetailerRequestDto retailerRequestDto, @MappingTarget Retailer retailer);
 
-    @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "meta", target = "meta")
-    @Mapping(source = "createAt", target = "createAt")
-    @Mapping(source = "updateAt", target = "updateAt")
     RetailerResponseDto toDto(Retailer entity);
 }

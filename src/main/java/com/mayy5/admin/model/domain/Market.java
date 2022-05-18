@@ -9,8 +9,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@ToString
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,7 +18,7 @@ import java.util.List;
 public class Market {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MARKET_ID")
     private Long id;
 
@@ -38,7 +38,7 @@ public class Market {
     @JoinColumn(name = "MARKET_AGENT_ID")
     private MarketAgent marketAgent;
 
-    @OneToMany(mappedBy = "market", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "market", orphanRemoval = true)
     private List<MarketRetailer> marketRetailerList = new ArrayList<>();
 
 
@@ -49,6 +49,7 @@ public class Market {
                 .startDate(marketDTO.getStartDate())
                 .endDate(marketDTO.getEndDate())
                 .marketDay(marketDTO.getMarketDay())
+                .marketRetailerList(new ArrayList<>())
                 .build();
         return market;
     }
@@ -57,16 +58,5 @@ public class Market {
     public void setMarketAgent(MarketAgent marketAgent) {
         this.marketAgent = marketAgent;
         marketAgent.getMarketList().add(this);
-    }
-
-    public void addRetailer(Retailer retailer) {
-
-        MarketRetailer marketRetailer = MarketRetailer.builder()
-                .market(this)
-                .retailer(retailer)
-                .build();
-        this.marketRetailerList.add(marketRetailer);
-        retailer.getMarketRetailerList().add(marketRetailer);
-
     }
 }

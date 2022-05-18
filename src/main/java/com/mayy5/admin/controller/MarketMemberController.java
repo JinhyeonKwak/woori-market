@@ -2,6 +2,7 @@ package com.mayy5.admin.controller;
 
 import com.mayy5.admin.apis.MarketMemberApi;
 import com.mayy5.admin.model.domain.MarketAgent;
+import com.mayy5.admin.model.domain.MarketRetailer;
 import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
@@ -12,6 +13,7 @@ import com.mayy5.admin.model.req.RetailerRequestDto;
 import com.mayy5.admin.model.res.MarketAgentResponseDto;
 import com.mayy5.admin.model.res.RetailerResponseDto;
 import com.mayy5.admin.model.res.UserRTO;
+import com.mayy5.admin.repository.MarketRetailerRepository;
 import com.mayy5.admin.service.MarketAgentService;
 import com.mayy5.admin.service.RetailerService;
 import com.mayy5.admin.service.UserService;
@@ -34,6 +36,7 @@ public class MarketMemberController implements MarketMemberApi {
     private final MarketAgentService marketAgentService;
     private final RetailerService retailerService;
     private final UserService userService;
+
     private final RetailerMapper retailerMapper;
     private final UserMapper userMapper;
     private final MarketAgentMapper marketAgentMapper;
@@ -41,26 +44,25 @@ public class MarketMemberController implements MarketMemberApi {
     @Override
     public ResponseEntity<MarketAgentResponseDto> createMarketAgent(MarketAgentRequestDto marketAgentRequestDto) {
         MarketAgent input = marketAgentMapper.toEntity(marketAgentRequestDto);
-        User user = userService.getUser(marketAgentRequestDto.getUserId());
+        String loginUserId = userService.getLoginUserId();
+        User user = userService.getUser(loginUserId);
         input.setUser(user);
-
         MarketAgent marketAgent = marketAgentService.createMarketAgent(input);
         return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<MarketAgentResponseDto> getMarketAgent() {
-        User user = userService.getUser(userId);
-        MarketAgent marketAgent = user.getMarketAgent();
+        String loginUserId = userService.getLoginUserId();
+        MarketAgent marketAgent = marketAgentService.getMarketAgentByUserId(loginUserId);
         return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<MarketAgentResponseDto> updateMarketAgent(MarketAgentRequestDto marketAgentRequestDto) {
-        String userId = marketAgentRequestDto.getUserId();
-        Long marketAgentId = userService.getUser(userId).getMarketAgent().getId();
+        String loginUserId = userService.getLoginUserId();
+        MarketAgent marketAgent = marketAgentService.getMarketAgentByUserId(loginUserId);
 
-        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
         marketAgentMapper.update(marketAgentRequestDto, marketAgent);
         MarketAgent updateMarketAgent = marketAgentService.updateMarketAgent(marketAgent);
 
@@ -69,9 +71,11 @@ public class MarketMemberController implements MarketMemberApi {
 
     @Override
     public ResponseEntity<UserRTO> deleteMarketAgent() {
-        User user = userService.getUser(userId);
-        Long marketAgentId = user.getMarketAgent().getId();
-        marketAgentService.deleteMarketAgent(marketAgentId);
+        String loginUserId = userService.getLoginUserId();
+        User user = userService.getUser(loginUserId);
+        MarketAgent marketAgent = marketAgentService.getMarketAgentByUserId(loginUserId);
+
+        marketAgentService.deleteMarketAgent(marketAgent.getId());
         return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
     }
 
@@ -80,7 +84,8 @@ public class MarketMemberController implements MarketMemberApi {
     @Override
     public ResponseEntity<RetailerResponseDto> createRetailer(RetailerRequestDto retailerRequest) {
         Retailer input = retailerMapper.toEntity(retailerRequest);
-        User user = userService.getUser(retailerRequest.getUserId());
+        String loginUserId = userService.getLoginUserId();
+        User user = userService.getUser(loginUserId);
         input.setUser(user);
         Retailer retailer = retailerService.createRetailer(input);
         return new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK);
@@ -88,8 +93,8 @@ public class MarketMemberController implements MarketMemberApi {
 
     @Override
     public List<ResponseEntity<RetailerResponseDto>> getRetailers() {
-        User user = userService.getUser(userId);
-        List<Retailer> retailerList = user.getRetailerList();
+        String loginUserId = userService.getLoginUserId();
+        List<Retailer> retailerList = retailerService.getRetailersByUserId(loginUserId);
         List<ResponseEntity<RetailerResponseDto>> responseEntities = retailerList.stream()
                 .map(retailer -> new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK))
                 .collect(Collectors.toList());

@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Data
-@ToString
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,7 +21,7 @@ import java.util.Map;
 public class Retailer {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RETAILER_ID")
     private Long id;
 
@@ -39,7 +39,7 @@ public class Retailer {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToMany(mappedBy = "retailer")
+    @OneToMany(mappedBy = "retailer", orphanRemoval = true)
     private List<MarketRetailer> marketRetailerList = new ArrayList<>();
 
     @Column(name = "CREATE_AT", nullable = false, updatable = false)
@@ -52,14 +52,11 @@ public class Retailer {
 
     //==생성 메서드==//
     public static Retailer createRetailer(User user, Map<RetailerMetaType, String> meta) {
-        Retailer retailer = Retailer.builder().meta(meta).build();
-        retailer.setUser(user);
+        Retailer retailer = Retailer.builder()
+                .meta(meta)
+                .marketRetailerList(new ArrayList<>())
+                .user(user)
+                .build();
         return retailer;
-    }
-
-    //==연관 관계 메서드==//
-    public void setUser(User user) {
-        this.user = user;
-        user.getRetailerList().add(this);
     }
 }

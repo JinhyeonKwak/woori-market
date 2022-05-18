@@ -16,17 +16,10 @@ public interface MarketAgentMapper {
 
     MarketAgentMapper marketAgentMapper = Mappers.getMapper(MarketAgentMapper.class);
 
-    @Mapping(source = "meta", target = "meta")
     MarketAgent toEntity(MarketAgentRequestDto dto);
 
-    // marketAgentService의 updateMarketAgent() 메서드를 쓸 필요가 없다
-    @Mapping(source = "meta", target = "meta")
     void update(MarketAgentRequestDto marketAgentRequestDto, @MappingTarget MarketAgent marketAgent);
 
-    @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "meta", target = "meta")
-    @Mapping(source = "createAt", target = "createAt")
-    @Mapping(source = "updateAt", target = "updateAt")
     MarketAgentResponseDto toDto(MarketAgent entity);
 
 
