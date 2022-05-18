@@ -27,7 +27,7 @@ public class MarketRetailer {
     @JoinColumn(name = "RETAILER_ID")
     private Retailer retailer;
 
-    @OneToMany(mappedBy = "marketRetailer", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "marketRetailer", cascade = CascadeType.ALL)
     private List<Schedule> scheduleList = new ArrayList<>();
 
     public static MarketRetailer createMarketRetailer(Market market, Retailer retailer) {

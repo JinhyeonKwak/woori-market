@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -61,8 +62,7 @@ public class MarketAgentService {
     }
 
     @Transactional(readOnly = true)
-    public MarketAgent getMarketAgentByUserId(String userId) {
-        MarketAgent findMarketAgent = marketAgentRepository.getMarketAgentByUserId(userId);
-        return findMarketAgent;
+    public List<MarketAgent> getMarketAgentsByUserId(String userId) {
+        return marketAgentRepository.getMarketAgentsByUserId(userId);
     }
 }

@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,17 +53,25 @@ public class MarketMemberController implements MarketMemberApi {
     }
 
     @Override
-    public ResponseEntity<MarketAgentResponseDto> getMarketAgent() {
+    public List<ResponseEntity<MarketAgentResponseDto>> getMarketAgents() {
         String loginUserId = userService.getLoginUserId();
-        MarketAgent marketAgent = marketAgentService.getMarketAgentByUserId(loginUserId);
+        List<MarketAgent> marketAgentList = marketAgentService.getMarketAgentsByUserId(loginUserId);
+        List<ResponseEntity<MarketAgentResponseDto>> responseEntities = marketAgentList.stream()
+                .map(marketAgent -> new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK))
+                .collect(Collectors.toList());
+        return responseEntities;
+    }
+
+    @Override
+    public ResponseEntity<MarketAgentResponseDto> getMarketAgent(Long marketAgentId) {
+        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
         return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<MarketAgentResponseDto> updateMarketAgent(MarketAgentRequestDto marketAgentRequestDto) {
-        String loginUserId = userService.getLoginUserId();
-        MarketAgent marketAgent = marketAgentService.getMarketAgentByUserId(loginUserId);
-
+    public ResponseEntity<MarketAgentResponseDto> updateMarketAgent(MarketAgentRequestDto marketAgentRequestDto,
+                                                                    Long marketAgentId) {
+        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
         marketAgentMapper.update(marketAgentRequestDto, marketAgent);
         MarketAgent updateMarketAgent = marketAgentService.updateMarketAgent(marketAgent);
 
@@ -70,12 +79,10 @@ public class MarketMemberController implements MarketMemberApi {
     }
 
     @Override
-    public ResponseEntity<UserRTO> deleteMarketAgent() {
+    public ResponseEntity<UserRTO> deleteMarketAgent(Long marketAgentId) {
         String loginUserId = userService.getLoginUserId();
         User user = userService.getUser(loginUserId);
-        MarketAgent marketAgent = marketAgentService.getMarketAgentByUserId(loginUserId);
-
-        marketAgentService.deleteMarketAgent(marketAgent.getId());
+        marketAgentService.deleteMarketAgent(marketAgentId);
         return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
     }
 

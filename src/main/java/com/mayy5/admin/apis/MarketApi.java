@@ -61,7 +61,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @GetMapping(path = "/v1/market-schedule/{retailerId}/{marketId}")
+    @GetMapping(path = "/v1/market/{marketId}/schedule/{retailerId}")
     ResponseEntity<ScheduleResponseDto> checkAttend(@PathVariable Long retailerId, @PathVariable Long marketId);
 
 
@@ -72,7 +72,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @PostMapping(path = "/v1/market/agent/{marketId}/{marketAgentId}")
+    @PostMapping(path = "/v1/market/{marketId}/agent/{marketAgentId}")
     ResponseEntity<MarketAgentResponseDto> registerMarketAgent(@PathVariable Long marketId, @PathVariable Long marketAgentId);
 
     @ApiOperation(value = "장주 전용 장 리스트 조회 API")
@@ -81,8 +81,8 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @GetMapping(path = "/v1/markets/agent")
-    List<ResponseEntity<MarketResponseDto>> getMarketsOfMarketAgent();
+    @GetMapping(path = "/v1/markets/{marketAgentId}/agent")
+    List<ResponseEntity<MarketResponseDto>> getMarketsOfMarketAgent(@PathVariable Long marketAgentId);
 
     //==장원 관련==//
     @ApiOperation(value = "특정 장에 대한 장원 등록 API")
@@ -91,7 +91,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @PostMapping(path = "/v1/market/retailer/{marketId}/{retailerId}")
+    @PostMapping(path = "/v1/market/{marketId}/retailer/{retailerId}")
     ResponseEntity<RetailerResponseDto> registerRetailer(@PathVariable Long marketId, @PathVariable Long retailerId);
 
     @ApiOperation(value = "특정 장에 대한 장원 탈퇴 API")
@@ -100,7 +100,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @PatchMapping(path = "/v1/market/retailer/{marketId}/{retailerId}")
+    @PatchMapping(path = "/v1/market/{marketId}/retailer/{retailerId}")
     ResponseEntity<MarketResponseDto> dropRetailer(@PathVariable Long marketId, @PathVariable Long retailerId);
 
     @ApiOperation(value = "장원 전용 장 리스트 조회 API")
@@ -109,7 +109,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @GetMapping(path = "/v1/markets/retailer/{marketId}/{retailerId}")
+    @GetMapping(path = "/v1/markets/retailer/{retailerId}")
     List<ResponseEntity<MarketResponseDto>> getMarketsOfRetailer(@PathVariable Long retailerId);
 
 

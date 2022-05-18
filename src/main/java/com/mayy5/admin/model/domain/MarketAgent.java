@@ -38,7 +38,7 @@ public class MarketAgent {
     @OneToMany(mappedBy = "marketAgent", cascade = CascadeType.ALL)
     private List<Market> marketList = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
@@ -59,5 +59,10 @@ public class MarketAgent {
                 .build();
 
         return marketAgent;
+    }
+
+    //==연관관계 메서드==//
+    public void addMarketAgent(User user) {
+
     }
 }

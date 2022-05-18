@@ -57,8 +57,6 @@ public class MarketService {
         market.getMarketRetailerList().add(marketRetailer);
         retailer.getMarketRetailerList().add(marketRetailer);
 
-        // 출석 관리 엔티티 생성
-        scheduleService.createSchedule(marketId, retailerId);
     }
 
     @Transactional
