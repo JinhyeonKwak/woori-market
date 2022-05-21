@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarketRequestDto {
+public class MarketUpdateRequestDto {
 
     @ApiModelProperty(value = "Market Location")
     private Address address;

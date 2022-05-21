@@ -4,7 +4,6 @@ import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.model.req.RetailerRequestDto;
 import com.mayy5.admin.model.res.RetailerResponseDto;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;

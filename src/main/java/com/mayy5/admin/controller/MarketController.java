@@ -7,12 +7,13 @@ import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.MarketMapper;
 import com.mayy5.admin.model.mapper.RetailerMapper;
-import com.mayy5.admin.model.req.MarketRequestDto;
+import com.mayy5.admin.model.req.MarketCreateRequestDto;
+import com.mayy5.admin.model.req.MarketUpdateRequestDto;
+import com.mayy5.admin.model.req.RetailerRequestDto;
 import com.mayy5.admin.model.res.MarketAgentResponseDto;
 import com.mayy5.admin.model.res.MarketResponseDto;
 import com.mayy5.admin.model.res.RetailerResponseDto;
 import com.mayy5.admin.model.res.ScheduleResponseDto;
-import com.mayy5.admin.repository.MarketRetailerRepository;
 import com.mayy5.admin.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +42,33 @@ public class MarketController implements MarketApi {
     private final RetailerMapper retailerMapper;
 
     @Override
-    public ResponseEntity<MarketResponseDto> createMarket(MarketRequestDto marketRequestDto) {
-        MarketDTO marketDTO = marketMapper.toMarketDTO(marketRequestDto);
+    public ResponseEntity<MarketResponseDto> createMarket(MarketCreateRequestDto marketCreateRequestDto) {
+
+        // Market 생성
+        MarketDTO marketDTO = marketMapper.marketCreateDTOtoMarketDTO(marketCreateRequestDto);
         Market market = marketService.createMarket(marketDTO);
+        Long marketId = market.getId();
+
+        // MarketAgent 생성 & 등록
+        MarketAgent inputMarketAgent = marketAgentMapper.marketCreateDTOtoEntity(marketCreateRequestDto);
+        String loginUserId = userService.getLoginUserId();
+        User user = userService.getUser(loginUserId);
+        inputMarketAgent.setUser(user);
+        MarketAgent marketAgent = marketAgentService.createMarketAgent(inputMarketAgent);
+        market.setMarketAgent(marketAgent);
+
+        // Retailer 일괄 생성 & 등록
+        List<RetailerRequestDto> retailerRequestList = marketCreateRequestDto.getRetailerRequestDtoList();
+
+        retailerRequestList.stream()
+                .map(retailerMapper::toEntity)
+                .forEach(inputRetailer -> {
+            inputRetailer.setUser(user);
+            Retailer retailer = retailerService.createRetailer(inputRetailer);
+            marketService.addRetailer(marketId, retailer.getId());
+        });
+
+        marketService.updateMarket(market);
         return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
     }
 
@@ -54,7 +79,7 @@ public class MarketController implements MarketApi {
     }
 
     @Override
-    public ResponseEntity<MarketResponseDto> updateMarket(Long marketId, MarketRequestDto marketRequest) {
+    public ResponseEntity<MarketResponseDto> updateMarket(Long marketId, MarketUpdateRequestDto marketRequest) {
         Market market = marketService.getMarket(marketId);
         marketMapper.update(marketRequest, market);
         Market updateMarket = marketService.updateMarket(market);
