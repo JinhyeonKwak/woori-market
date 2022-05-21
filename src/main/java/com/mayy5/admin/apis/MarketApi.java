@@ -1,12 +1,9 @@
 package com.mayy5.admin.apis;
 
 import com.mayy5.admin.apis.type.SwaggerApiTag;
-import com.mayy5.admin.model.req.MarketRequestDto;
+import com.mayy5.admin.model.req.*;
 import com.mayy5.admin.model.res.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +22,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @PostMapping(path = "/v1/market", consumes = "application/json")
-    ResponseEntity<MarketResponseDto> createMarket(@RequestBody @Valid MarketRequestDto marketRequest);
+    ResponseEntity<MarketResponseDto> createMarket(@RequestBody @Valid MarketCreateRequestDto marketCreateRequestDto);
 
     @ApiOperation(value = "장 상세 조회 API")
     @ApiResponses(value = {
@@ -44,7 +41,7 @@ public interface MarketApi {
     })
     @PatchMapping(path = "/v1/market/{marketId}", consumes = "application/json")
     ResponseEntity<MarketResponseDto> updateMarket(@PathVariable Long marketId,
-                                                   @RequestBody @Valid MarketRequestDto marketRequest);
+                                                   @RequestBody @Valid MarketUpdateRequestDto marketUpdateRequestDto);
 
     @ApiOperation(value = "등록 장 삭제 API")
     @ApiResponses(value = {

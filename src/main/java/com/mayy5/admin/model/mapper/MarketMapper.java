@@ -3,7 +3,8 @@ package com.mayy5.admin.model.mapper;
 import com.mayy5.admin.model.domain.Market;
 import com.mayy5.admin.model.domain.Schedule;
 import com.mayy5.admin.model.dto.MarketDTO;
-import com.mayy5.admin.model.req.MarketRequestDto;
+import com.mayy5.admin.model.req.MarketCreateRequestDto;
+import com.mayy5.admin.model.req.MarketUpdateRequestDto;
 import com.mayy5.admin.model.res.MarketResponseDto;
 import com.mayy5.admin.model.res.ScheduleResponseDto;
 import org.mapstruct.Mapper;
@@ -21,12 +22,12 @@ public interface MarketMapper {
 
     MarketMapper marketMapper = Mappers.getMapper(MarketMapper.class);
 
-    MarketDTO toMarketDTO(MarketRequestDto dto);
+    MarketDTO marketCreateDTOtoMarketDTO(MarketCreateRequestDto dto);
 
     @Mapping(source = "id", target = "marketId")
     MarketResponseDto toMarketResponse(Market market);
 
-    void update(MarketRequestDto marketRequest, @MappingTarget Market market);
+    void update(MarketUpdateRequestDto marketRequest, @MappingTarget Market market);
 
     @Mapping(source = "marketRetailer.retailer.id", target = "retailerId")
     ScheduleResponseDto toScheduleResponse(Schedule schedule);
