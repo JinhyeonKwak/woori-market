@@ -59,8 +59,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @GetMapping(path = "/v1/market/{marketId}/schedule/{retailerId}")
-    ResponseEntity<ScheduleResponseDto> checkAttend(@PathVariable Long retailerId, @PathVariable Long marketId);
-
+    ResponseEntity<ScheduleResponseDto> checkAttend(@PathVariable Long marketId, @PathVariable Long retailerId);
 
     //==장주 관련==//
     @ApiOperation(value = "특정 장에 대한 장주 등록/변경 API")
