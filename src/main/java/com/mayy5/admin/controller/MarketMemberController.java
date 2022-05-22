@@ -2,9 +2,8 @@ package com.mayy5.admin.controller;
 
 import com.mayy5.admin.apis.MarketMemberApi;
 import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.domain.MarketRetailer;
 import com.mayy5.admin.model.domain.Retailer;
-import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.RetailerMapper;
 import com.mayy5.admin.model.mapper.UserMapper;
@@ -12,8 +11,7 @@ import com.mayy5.admin.model.req.MarketAgentRequestDto;
 import com.mayy5.admin.model.req.RetailerRequestDto;
 import com.mayy5.admin.model.res.MarketAgentResponseDto;
 import com.mayy5.admin.model.res.RetailerResponseDto;
-import com.mayy5.admin.model.res.UserRTO;
-import com.mayy5.admin.repository.MarketRetailerRepository;
+import com.mayy5.admin.model.res.UserResponseDto;
 import com.mayy5.admin.service.MarketAgentService;
 import com.mayy5.admin.service.RetailerService;
 import com.mayy5.admin.service.UserService;
@@ -23,8 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,7 +75,7 @@ public class MarketMemberController implements MarketMemberApi {
     }
 
     @Override
-    public ResponseEntity<UserRTO> deleteMarketAgent(Long marketAgentId) {
+    public ResponseEntity<UserResponseDto> deleteMarketAgent(Long marketAgentId) {
         String loginUserId = userService.getLoginUserId();
         User user = userService.getUser(loginUserId);
         marketAgentService.deleteMarketAgent(marketAgentId);
@@ -123,7 +119,7 @@ public class MarketMemberController implements MarketMemberApi {
     }
 
     @Override
-    public ResponseEntity<UserRTO> deleteRetailer(Long retailerId) {
+    public ResponseEntity<UserResponseDto> deleteRetailer(Long retailerId) {
         User user = retailerService.getRetailer(retailerId).getUser();
         retailerService.deleteRetailer(retailerId);
         return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);

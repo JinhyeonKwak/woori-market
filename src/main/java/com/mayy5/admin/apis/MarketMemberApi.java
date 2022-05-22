@@ -5,7 +5,7 @@ import com.mayy5.admin.model.req.MarketAgentRequestDto;
 import com.mayy5.admin.model.req.RetailerRequestDto;
 import com.mayy5.admin.model.res.MarketAgentResponseDto;
 import com.mayy5.admin.model.res.RetailerResponseDto;
-import com.mayy5.admin.model.res.UserRTO;
+import com.mayy5.admin.model.res.UserResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -62,12 +62,12 @@ public interface MarketMemberApi {
 
     @ApiOperation(value = "등록 장주 삭제 API")
     @ApiResponses(value = {
-            @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = UserRTO.class),
+            @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = UserResponseDto.class),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @DeleteMapping(path = "/v1/market-agent/{marketAgentId}")
-    ResponseEntity<UserRTO> deleteMarketAgent(@PathVariable Long marketAgentId);
+    ResponseEntity<UserResponseDto> deleteMarketAgent(@PathVariable Long marketAgentId);
 
     //==장원 CRUD==//
     @ApiOperation(value = "장원 생성 API")
@@ -109,10 +109,10 @@ public interface MarketMemberApi {
 
     @ApiOperation(value = "생성 장원 삭제 API")
     @ApiResponses(value = {
-            @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = UserRTO.class),
+            @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = UserResponseDto.class),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @DeleteMapping(path = "/v1/retailer/{retailerId}")
-    ResponseEntity<UserRTO> deleteRetailer(@PathVariable Long retailerId);
+    ResponseEntity<UserResponseDto> deleteRetailer(@PathVariable Long retailerId);
 }
