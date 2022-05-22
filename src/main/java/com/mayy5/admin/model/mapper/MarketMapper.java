@@ -22,7 +22,7 @@ public interface MarketMapper {
 
     MarketMapper marketMapper = Mappers.getMapper(MarketMapper.class);
 
-    MarketDTO marketCreateDTOtoMarketDTO(MarketCreateRequestDto dto);
+    Market marketCreateDTOtoEntity(MarketCreateRequestDto dto);
 
     @Mapping(source = "id", target = "marketId")
     MarketResponseDto toMarketResponse(Market market);

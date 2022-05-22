@@ -58,7 +58,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @GetMapping(path = "/v1/market/{marketId}/schedule/{retailerId}")
+    @PatchMapping(path = "/v1/market/{marketId}/schedule/{retailerId}")
     ResponseEntity<ScheduleResponseDto> checkAttend(@PathVariable Long marketId, @PathVariable Long retailerId);
 
     //==장주 관련==//

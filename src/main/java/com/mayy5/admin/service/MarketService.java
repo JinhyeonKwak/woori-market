@@ -23,15 +23,14 @@ public class MarketService {
     private final MarketRetailerRepository marketRetailerRepository;
 
     private final RetailerService retailerService;
-    private final ScheduleService scheduleService;
     private final EntityManager em;
 
 
     @Transactional
-    public Market createMarket(MarketDTO marketDTO) {
+    public Market createMarket(Market input ) {
 
         // 장 생성
-        Market market = Market.createMarket(marketDTO);
+        Market market = Market.createMarket(input);
         return marketRepository.save(market);
     }
 
