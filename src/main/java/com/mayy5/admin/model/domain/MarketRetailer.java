@@ -6,8 +6,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@ToString
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,7 +15,7 @@ import java.util.List;
 public class MarketRetailer {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MARKET_RETAILER_ID")
     private Long id;
 
@@ -27,7 +27,15 @@ public class MarketRetailer {
     @JoinColumn(name = "RETAILER_ID")
     private Retailer retailer;
 
-    @OneToMany(mappedBy = "marketRetailer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "marketRetailer")
     private List<Schedule> scheduleList = new ArrayList<>();
+
+    public static MarketRetailer createMarketRetailer(Market market, Retailer retailer) {
+        MarketRetailer marketRetailer = MarketRetailer.builder()
+                .market(market)
+                .retailer(retailer)
+                .build();
+        return marketRetailer;
+    }
 
 }

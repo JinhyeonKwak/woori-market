@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Data
-@ToString
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,7 +21,7 @@ import java.util.Map;
 public class MarketAgent {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MARKET_AGENT_ID")
     private Long id;
 
@@ -38,7 +38,7 @@ public class MarketAgent {
     @OneToMany(mappedBy = "marketAgent", cascade = CascadeType.ALL)
     private List<Market> marketList = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
@@ -52,19 +52,17 @@ public class MarketAgent {
 
     //==생성 메서드==//
     public static MarketAgent createMarketAgent(User user, Map<MarketAgentMetaType, String> meta) {
-//        MarketAgent marketAgent = MarketAgent.builder().meta(meta).build();
-        MarketAgent marketAgent = new MarketAgent();
-        marketAgent.setUser(user);
-        marketAgent.setMeta(meta);
+        MarketAgent marketAgent = MarketAgent.builder()
+                .meta(meta)
+                .marketList(new ArrayList<>())
+                .user(user)
+                .build();
+
         return marketAgent;
     }
 
-    //==연관 관계 메서드==//
-    public void setUser(User user) {
-        this.user = user;
-        user.setMarketAgent(this);
+    //==연관관계 메서드==//
+    public void addMarketAgent(User user) {
+
     }
-
-
-
 }

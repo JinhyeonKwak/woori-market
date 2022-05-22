@@ -1,38 +1,33 @@
 package com.mayy5.admin.model.res;
 
-import com.mayy5.admin.model.domain.User;
-import com.mayy5.admin.type.MarketAgentMetaType;
-
+import com.mayy5.admin.type.RetailerMetaType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarketAgentResponse {
+public class RetailerResponseDto {
 
-    @ApiModelProperty(value = "User")
-    @NotBlank
-    private User user;
 
-    @ApiModelProperty(
-            value = "A MarketAgentPropType map of key/value pairs",
-            example = "",
+    @ApiModelProperty(value = "A RetailerPropType map of key/value pairs",
+            example = "{'BUSINESS_TYPE' : 'FOOD'}",
             dataType = "Map[String,String]")
-    private Map<MarketAgentMetaType, String> meta;
+    private Map<RetailerMetaType, String> meta = new HashMap<>();
 
     @ApiModelProperty(hidden = true)
     private LocalDateTime createAt;
 
     @ApiModelProperty(hidden = true)
     private LocalDateTime updateAt;
-
 }
