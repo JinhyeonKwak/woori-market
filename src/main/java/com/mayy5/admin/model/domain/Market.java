@@ -43,12 +43,12 @@ public class Market {
 
 
     //==생성 메서드==//
-    public static Market createMarket(MarketDTO marketDTO) {
+    public static Market createMarket(Market input) {
         Market market = Market.builder()
-                .address(marketDTO.getAddress())
-                .startDate(marketDTO.getStartDate())
-                .endDate(marketDTO.getEndDate())
-                .marketDay(marketDTO.getMarketDay())
+                .address(input.getAddress())
+                .startDate(input.getStartDate())
+                .endDate(input.getEndDate())
+                .marketDay(input.getMarketDay())
                 .marketRetailerList(new ArrayList<>())
                 .build();
         return market;

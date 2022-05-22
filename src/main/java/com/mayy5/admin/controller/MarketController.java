@@ -45,8 +45,8 @@ public class MarketController implements MarketApi {
     public ResponseEntity<MarketResponseDto> createMarket(MarketCreateRequestDto marketCreateRequestDto) {
 
         // Market 생성
-        MarketDTO marketDTO = marketMapper.marketCreateDTOtoMarketDTO(marketCreateRequestDto);
-        Market market = marketService.createMarket(marketDTO);
+        Market inputMarket = marketMapper.marketCreateDTOtoEntity(marketCreateRequestDto);
+        Market market = marketService.createMarket(inputMarket);
         Long marketId = market.getId();
 
         // MarketAgent 생성 & 등록
@@ -63,10 +63,10 @@ public class MarketController implements MarketApi {
         retailerRequestList.stream()
                 .map(retailerMapper::toEntity)
                 .forEach(inputRetailer -> {
-            inputRetailer.setUser(user);
-            Retailer retailer = retailerService.createRetailer(inputRetailer);
-            marketService.addRetailer(marketId, retailer.getId());
-        });
+                    inputRetailer.setUser(user);
+                    Retailer retailer = retailerService.createRetailer(inputRetailer);
+                    marketService.addRetailer(marketId, retailer.getId());
+                });
 
         marketService.updateMarket(market);
         return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
