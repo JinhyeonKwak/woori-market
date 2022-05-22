@@ -2,8 +2,6 @@ package com.mayy5.admin.controller;
 
 import com.mayy5.admin.apis.MarketApi;
 import com.mayy5.admin.model.domain.*;
-import com.mayy5.admin.model.dto.MarketDTO;
-import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.MarketMapper;
 import com.mayy5.admin.model.mapper.RetailerMapper;

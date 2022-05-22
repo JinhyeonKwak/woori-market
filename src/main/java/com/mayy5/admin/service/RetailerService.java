@@ -2,10 +2,9 @@ package com.mayy5.admin.service;
 
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
-import com.mayy5.admin.model.domain.MarketAgent;
 import com.mayy5.admin.model.domain.MarketRetailer;
 import com.mayy5.admin.model.domain.Retailer;
-import com.mayy5.admin.model.dto.User;
+import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.repository.MarketRetailerRepository;
 import com.mayy5.admin.repository.RetailerRepository;
 import com.mayy5.admin.type.RetailerMetaType;

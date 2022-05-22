@@ -1,19 +1,31 @@
 package com.mayy5.admin;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.IntStream;
 
+import com.mayy5.admin.model.domain.*;
+import com.mayy5.admin.repository.MarketRepository;
+import com.mayy5.admin.repository.PostRepository;
+import com.mayy5.admin.service.MarketAgentService;
+import com.mayy5.admin.service.MarketService;
+import com.mayy5.admin.service.RetailerService;
+import com.mayy5.admin.type.*;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.mayy5.admin.model.dto.User;
 import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.service.UserService;
-import com.mayy5.admin.type.UserMetaType;
-import com.mayy5.admin.type.UserRoleType;
 
 @EnableScheduling
 @SpringBootApplication

@@ -77,7 +77,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @GetMapping(path = "/v1/markets/{marketAgentId}/agent")
+    @GetMapping(path = "/v1/markets/agent/{marketAgentId}")
     List<ResponseEntity<MarketResponseDto>> getMarketsOfMarketAgent(@PathVariable Long marketAgentId);
 
     //==장원 관련==//
