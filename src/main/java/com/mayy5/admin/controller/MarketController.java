@@ -95,7 +95,7 @@ public class MarketController implements MarketApi {
     }
 
     @Override
-    public ResponseEntity<ScheduleResponseDto> checkAttend(Long retailerId, Long marketId) {
+    public ResponseEntity<ScheduleResponseDto> checkAttend(Long marketId, Long retailerId) {
         Schedule schedule = scheduleService.checkAttend(marketId, retailerId);
         return new ResponseEntity<>(marketMapper.toScheduleResponse(schedule), HttpStatus.OK);
     }

@@ -27,14 +27,13 @@ public class MarketRetailer {
     @JoinColumn(name = "RETAILER_ID")
     private Retailer retailer;
 
-    @OneToMany(mappedBy = "marketRetailer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "marketRetailer")
     private List<Schedule> scheduleList = new ArrayList<>();
 
     public static MarketRetailer createMarketRetailer(Market market, Retailer retailer) {
         MarketRetailer marketRetailer = MarketRetailer.builder()
                 .market(market)
                 .retailer(retailer)
-                .scheduleList(new ArrayList<>())
                 .build();
         return marketRetailer;
     }

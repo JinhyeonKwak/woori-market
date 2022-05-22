@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mayy5.admin.model.domain.Post;
@@ -19,6 +20,7 @@ import com.mayy5.admin.type.PostType;
 import com.mayy5.admin.type.UserMetaType;
 import com.mayy5.admin.type.UserRoleType;
 
+@EnableScheduling
 @SpringBootApplication
 public class AdminApplication {
 
