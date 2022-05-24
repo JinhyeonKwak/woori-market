@@ -1,6 +1,8 @@
 package com.mayy5.admin.controller;
 
 import com.mayy5.admin.apis.MarketApi;
+import com.mayy5.admin.common.BError;
+import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.*;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.MarketMapper;
@@ -31,9 +33,7 @@ public class MarketController implements MarketApi {
 
     private final MarketService marketService;
     private final UserService userService;
-    private final MarketAgentService marketAgentService;
-    private final RetailerService retailerService;
-    private final ScheduleService scheduleService;
+
 
     private final MarketMapper marketMapper;
     private final MarketAgentMapper marketAgentMapper;
@@ -42,106 +42,160 @@ public class MarketController implements MarketApi {
     @Override
     public ResponseEntity<MarketResponseDto> createMarket(MarketCreateRequestDto marketCreateRequestDto) {
 
-        // Market 생성
-        Market inputMarket = marketMapper.marketCreateDTOtoEntity(marketCreateRequestDto);
-        Market market = marketService.createMarket(inputMarket);
-        Long marketId = market.getId();
+        try {
+            String loginUserId = userService.getLoginUserId();
 
-        // MarketAgent 생성 & 등록
-        MarketAgent inputMarketAgent = marketAgentMapper.marketCreateDTOtoEntity(marketCreateRequestDto);
-        String loginUserId = userService.getLoginUserId();
-        User user = userService.getUser(loginUserId);
-        inputMarketAgent.setUser(user);
-        MarketAgent marketAgent = marketAgentService.createMarketAgent(inputMarketAgent);
-        market.setMarketAgent(marketAgent);
+            MarketAgent inputMarketAgent = marketAgentMapper.toEntity(marketCreateRequestDto);
+            List<RetailerRequestDto> retailerRequestList = marketCreateRequestDto.getRetailerRequestDtoList();
+            List<Retailer> retailerList = retailerMapper.toEntities(retailerRequestList);
+            Market inputMarket = marketMapper.toEntity(marketCreateRequestDto);
 
-        // Retailer 일괄 생성 & 등록
-        List<RetailerRequestDto> retailerRequestList = marketCreateRequestDto.getRetailerRequestDtoList();
+            Market market = marketService.createMarket(loginUserId, inputMarketAgent, retailerList, inputMarket);
 
-        retailerRequestList.stream()
-                .map(retailerMapper::toEntity)
-                .forEach(inputRetailer -> {
-                    inputRetailer.setUser(user);
-                    Retailer retailer = retailerService.createRetailer(inputRetailer);
-                    marketService.addRetailer(marketId, retailer.getId());
-                });
-
-        marketService.updateMarket(market);
-        return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
+            return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "createMarket");
+        }
     }
 
     @Override
     public ResponseEntity<MarketResponseDto> getMarket(Long marketId) {
-        Market market = marketService.getMarket(marketId);
-        return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
+
+        try {
+            Market market = marketService.getMarket(marketId);
+            return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "getMarket");
+        }
     }
 
     @Override
     public ResponseEntity<MarketResponseDto> updateMarket(Long marketId, MarketUpdateRequestDto marketRequest) {
-        Market market = marketService.getMarket(marketId);
-        marketMapper.update(marketRequest, market);
-        Market updateMarket = marketService.updateMarket(market);
-        return new ResponseEntity<>(marketMapper.toMarketResponse(updateMarket), HttpStatus.OK);
+
+        try {
+            Market market = marketService.getMarket(marketId);
+            marketMapper.update(marketRequest, market);
+            Market updateMarket = marketService.updateMarket(market);
+            return new ResponseEntity<>(marketMapper.toMarketResponse(updateMarket), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "updateMarket");
+        }
     }
 
     @Override
     public ResponseEntity<MarketAgentResponseDto> deleteMarket(Long marketId) {
-        Market findMarket = marketService.getMarket(marketId);
-        MarketAgent marketAgent = findMarket.getMarketAgent();
-        marketService.deleteMarket(marketId);
-        return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
+        try {
+            Market findMarket = marketService.getMarket(marketId);
+            MarketAgent marketAgent = findMarket.getMarketAgent();
+            marketService.deleteMarket(marketId);
+            return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "deleteMarket");
+        }
     }
 
     @Override
     public ResponseEntity<ScheduleResponseDto> checkAttend(Long marketId, Long retailerId) {
-        Schedule schedule = scheduleService.checkAttend(marketId, retailerId);
-        return new ResponseEntity<>(marketMapper.toScheduleResponse(schedule), HttpStatus.OK);
+        try {
+            MarketSchedule marketSchedule = marketService.checkAttend(marketId, retailerId);
+            return new ResponseEntity<>(marketMapper.toScheduleResponse(marketSchedule), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "checkAttend");
+        }
+
+
     }
 
     //==장주 관련==//
     @Override
     public ResponseEntity<MarketAgentResponseDto> registerMarketAgent(Long marketId, Long marketAgentId) {
-        Market market = marketService.getMarket(marketId);
-        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
-        market.setMarketAgent(marketAgent);
-        marketService.updateMarket(market);
-        return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
+        try {
+            MarketAgent marketAgent = marketService.registerMarketAgent(marketId, marketAgentId);
+            return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "registerMarketAgent");
+        }
     }
 
     @Override
-    public List<ResponseEntity<MarketResponseDto>> getMarketsOfMarketAgent(Long marketAgentId) {
-        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
-        List<Market> marketList = marketAgent.getMarketList();
-        List<ResponseEntity<MarketResponseDto>> responseEntities = marketList.stream()
-                .map(market -> new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK))
-                .collect(Collectors.toList());
-        return responseEntities;
+    public ResponseEntity<List<MarketResponseDto>> getMarketsOfMarketAgent(Long marketAgentId) {
+
+        try {
+            List<Market> marketList = marketService.getMarketsOfMarketAgent(marketAgentId);
+            List<MarketResponseDto> marketResponseDtoList = marketList.stream()
+                    .map(marketMapper::toMarketResponse)
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(marketResponseDtoList, HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "getMarketsOfMarketAgent");
+        }
     }
 
     //==장원 관련==//
     @Override
     public ResponseEntity<RetailerResponseDto> registerRetailer(Long marketId, Long retailerId) {
-        Market market = marketService.getMarket(marketId);
-        Retailer retailer = retailerService.getRetailer(retailerId);
-        marketService.addRetailer(marketId, retailerId);
-        marketService.updateMarket(market);
-        return new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK);
-    }
 
-    @Override
-    public List<ResponseEntity<MarketResponseDto>> getMarketsOfRetailer(Long retailerId) {
-        List<MarketRetailer> marketRetailerList = retailerService.getMarketRetailersOfRetailer(retailerId);
-        List<ResponseEntity<MarketResponseDto>> responseEntities = marketRetailerList.stream()
-                .map(MarketRetailer::getMarket)
-                .map(market -> new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK))
-                .collect(Collectors.toList());
-        return responseEntities;
+        try {
+            Retailer retailer = marketService.registerRetailer(marketId, retailerId);
+            return new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "registerRetailer");
+        }
     }
 
     @Override
     public ResponseEntity<MarketResponseDto> dropRetailer(Long marketId, Long retailerId) {
-        marketService.dropRetailer(marketId, retailerId);
-        Market market = marketService.getMarket(marketId);
-        return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
+
+        try {
+            marketService.dropRetailer(marketId, retailerId);
+            Market market = marketService.getMarket(marketId);
+            return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "dropRetailer");
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<MarketResponseDto>> getMarketsOfRetailer(Long retailerId) {
+
+        try {
+            List<MarketRetailer> marketRetailerList = marketService.getMarketsOfRetailer(retailerId);
+            List<MarketResponseDto> marketResponseDtoList = marketRetailerList.stream()
+                    .map(marketRetailer -> marketMapper.toMarketResponse(marketRetailer.getMarket()))
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(marketResponseDtoList, HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "getMarketsOfRetailer");
+        }
     }
 }

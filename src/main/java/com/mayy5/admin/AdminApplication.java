@@ -74,29 +74,6 @@ public class AdminApplication {
 											   RetailerService retailerService
 											   ) {
 		return args -> {
-			User adminUser = userService.getUser(AuthConstant.ADMIN_USER);
-
-			Address address = new Address("street1", "room1", "123");
-
-			Market market = marketRepository.save(Market.builder()
-												.address(address)
-												.startDate(LocalDate.now())
-												.endDate(LocalDate.now())
-												.marketDay(DayOfWeek.FRIDAY)
-												.marketRetailerList(new ArrayList<>())
-												.build());
-
-			Map<MarketAgentMetaType, String> marketAgentMeta = new HashMap<>();
-			marketAgentMeta.put(MarketAgentMetaType.CORPORATE_NAME, "NATURE");
-			MarketAgent marketAgent = marketAgentService.createMarketAgent(MarketAgent.createMarketAgent(adminUser, marketAgentMeta));
-			market.setMarketAgent(marketAgent);
-
-			Map<RetailerMetaType, String> retailerMeta = new HashMap<>();
-			retailerMeta.put(RetailerMetaType.BUSINESS_TYPE, "HOT_DOG");
-			Retailer retailer = retailerService.createRetailer(Retailer.createRetailer(adminUser, retailerMeta));
-			marketService.addRetailer(market.getId(), retailer.getId());
-
-			marketService.updateMarket(market);
 		};
 	}
 

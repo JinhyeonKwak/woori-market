@@ -60,9 +60,4 @@ public class MarketAgent {
 
         return marketAgent;
     }
-
-    //==연관관계 메서드==//
-    public void addMarketAgent(User user) {
-
-    }
 }

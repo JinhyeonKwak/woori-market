@@ -34,11 +34,8 @@ public class MarketCreateRequestDto {
     @ApiModelProperty(value = "Market Day")
     private DayOfWeek marketDay;
 
-    @ApiModelProperty(
-            value = "A MarketAgentPropType map of key/value pairs",
-            example = "{'CORPORATE_NAME' : 'NATURE'}",
-            dataType = "Map[String,String]")
-    private Map<MarketAgentMetaType, String> marketAgentMeta;
+    @ApiModelProperty(value = "MarketAgentRequestDto")
+    private MarketAgentRequestDto marketAgentRequestDto;
 
     @ApiModelProperty(value = "RetailerRequestList")
     private List<RetailerRequestDto> retailerRequestDtoList = new ArrayList<>();
