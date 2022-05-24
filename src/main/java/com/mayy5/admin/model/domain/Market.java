@@ -43,7 +43,7 @@ public class Market {
 
 
     //==생성 메서드==//
-    public static Market createMarket(Market input) {
+    public static Market createMarket(MarketAgent marketAgent, Market input) {
         Market market = Market.builder()
                 .address(input.getAddress())
                 .startDate(input.getStartDate())
@@ -51,6 +51,7 @@ public class Market {
                 .marketDay(input.getMarketDay())
                 .marketRetailerList(new ArrayList<>())
                 .build();
+        market.setMarketAgent(marketAgent);
         return market;
     }
 

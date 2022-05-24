@@ -27,8 +27,7 @@ public class RetailerService {
     private final UserService userService;
 
     @Transactional
-    public Retailer createRetailer(Retailer input) {
-        String userId = input.getUser().getId();
+    public Retailer createRetailer(String userId, Retailer input) {
         User user = userService.getUser(userId);
         Map<RetailerMetaType, String> meta = input.getMeta();
         Retailer retailer = Retailer.createRetailer(user, meta);

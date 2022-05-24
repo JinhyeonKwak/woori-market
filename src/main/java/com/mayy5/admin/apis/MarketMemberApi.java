@@ -38,7 +38,7 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @GetMapping(path = "/v1/market-agent")
-    List<ResponseEntity<MarketAgentResponseDto>> getMarketAgents();
+    ResponseEntity<List<MarketAgentResponseDto>> getMarketAgents();
 
 
     @ApiOperation(value = "장주 조회 API")
@@ -60,15 +60,6 @@ public interface MarketMemberApi {
     ResponseEntity<MarketAgentResponseDto> updateMarketAgent(@RequestBody @Valid MarketAgentRequestDto marketAgentRequestDto,
                                                              @PathVariable Long marketAgentId);
 
-    @ApiOperation(value = "등록 장주 삭제 API")
-    @ApiResponses(value = {
-            @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = UserResponseDto.class),
-            @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
-            @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
-    })
-    @DeleteMapping(path = "/v1/market-agent/{marketAgentId}")
-    ResponseEntity<UserResponseDto> deleteMarketAgent(@PathVariable Long marketAgentId);
-
     //==장원 CRUD==//
     @ApiOperation(value = "장원 생성 API")
     @ApiResponses(value = {
@@ -86,7 +77,7 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @GetMapping(path = "/v1/retailers")
-    List<ResponseEntity<RetailerResponseDto>> getRetailers();
+    ResponseEntity<List<RetailerResponseDto>> getRetailers();
 
     @ApiOperation(value = "장원 정보 조회 API")
     @ApiResponses(value = {

@@ -2,7 +2,7 @@ package com.mayy5.admin.service;
 
 import com.mayy5.admin.model.domain.*;
 import com.mayy5.admin.repository.MarketRetailerRepository;
-import com.mayy5.admin.repository.ScheduleRepository;
+import com.mayy5.admin.repository.MarketScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,9 +16,9 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ScheduleService {
+public class MarketScheduleService {
 
-    private final ScheduleRepository scheduleRepository;
+    private final MarketScheduleRepository marketScheduleRepository;
     private final MarketRetailerRepository marketRetailerRepository;
 
 //    @Scheduled(initialDelay = 60000, fixedDelay = 1000 * 3600 * 24)
@@ -27,29 +27,29 @@ public class ScheduleService {
     public void createSchedule() {
         List<MarketRetailer> marketRetailers = marketRetailerRepository.getMarketRetailersOfToday(DayOfWeek.from(LocalDate.now()));
         marketRetailers.stream()
-                .map(Schedule::createSchedule)
-                .forEach(scheduleRepository::save);
+                .map(MarketSchedule::createSchedule)
+                .forEach(marketScheduleRepository::save);
     }
 
     @Transactional(readOnly = true)
-    public Schedule getSchedule(Long marketId, Long retailerId) {
+    public MarketSchedule getSchedule(Long marketId, Long retailerId) {
         MarketRetailer marketRetailer = marketRetailerRepository.getMarketRetailer(marketId, retailerId);
-        Schedule schedule = scheduleRepository.getSchedule(marketRetailer, LocalDate.now());
+        MarketSchedule marketSchedule = marketScheduleRepository.getSchedule(marketRetailer, LocalDate.now());
 
-        return schedule;
+        return marketSchedule;
     }
 
     // 해당 Market의 모든 스케줄 조회
     @Transactional(readOnly = true)
-    public List<Schedule> getScheduleOfMarket(Long marketId) {
-        return scheduleRepository.getScheduleOfMarket(marketId);
+    public List<MarketSchedule> getScheduleOfMarket(Long marketId) {
+        return marketScheduleRepository.getScheduleOfMarket(marketId);
     }
 
     @Transactional
-    public Schedule checkAttend(Long marketId, Long retailerId) {
+    public MarketSchedule checkAttend(Long marketId, Long retailerId) {
         MarketRetailer marketRetailer = marketRetailerRepository.getMarketRetailer(marketId, retailerId);
-        Schedule schedule = scheduleRepository.getSchedule(marketRetailer, LocalDate.now());
-        schedule.setCheckAttend(true); // 출석
-        return scheduleRepository.save(schedule);
+        MarketSchedule marketSchedule = marketScheduleRepository.getSchedule(marketRetailer, LocalDate.now());
+        marketSchedule.setCheckAttend(true); // 출석
+        return marketScheduleRepository.save(marketSchedule);
     }
 }

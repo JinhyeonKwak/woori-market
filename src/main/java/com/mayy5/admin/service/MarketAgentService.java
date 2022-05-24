@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,12 +20,10 @@ import java.util.Optional;
 public class MarketAgentService {
 
     private final MarketAgentRepository marketAgentRepository;
-
     private final UserService userService;
 
     @Transactional
-    public MarketAgent createMarketAgent(MarketAgent input) {
-        String userId = input.getUser().getId();
+    public MarketAgent createMarketAgent(String userId, MarketAgent input) {
         User user = userService.getUser(userId);
         Map<MarketAgentMetaType, String> meta = input.getMeta();
         MarketAgent marketAgent = MarketAgent.createMarketAgent(user, meta);
@@ -44,21 +41,6 @@ public class MarketAgentService {
         marketAgentRepository.findById(marketAgent.getId())
                 .orElseThrow(() -> new CommonException(BError.NOT_EXIST, "MarketAgent"));
         return marketAgentRepository.save(marketAgent);
-    }
-
-    @Transactional
-    public void deleteMarketAgent(Long marketAgentId) throws CommonException {
-        try {
-            Optional<MarketAgent> marketAgent = marketAgentRepository.findById(marketAgentId);
-            marketAgent.ifPresent(resourceExist -> {
-                marketAgentRepository.deleteById(marketAgentId);
-            });
-            return;
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            log.debug(e.getMessage(), e);
-            throw new CommonException(BError.FAIL, "MarketAgent Delete");
-        }
     }
 
     @Transactional(readOnly = true)

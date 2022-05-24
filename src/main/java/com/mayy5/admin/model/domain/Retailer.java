@@ -57,6 +57,7 @@ public class Retailer {
                 .marketRetailerList(new ArrayList<>())
                 .user(user)
                 .build();
+        retailer.setUser(user);
         return retailer;
     }
 }

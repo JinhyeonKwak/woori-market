@@ -3,7 +3,6 @@ package com.mayy5.admin.service;
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.*;
-import com.mayy5.admin.model.dto.MarketDTO;
 import com.mayy5.admin.repository.MarketRepository;
 import com.mayy5.admin.repository.MarketRetailerRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,26 +11,42 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MarketService {
 
+    private final MarketAgentService marketAgentService;
+    private final RetailerService retailerService;
+    private final MarketScheduleService marketScheduleService;
+    private final EntityManager em;
+
     private final MarketRepository marketRepository;
     private final MarketRetailerRepository marketRetailerRepository;
 
-    private final RetailerService retailerService;
-    private final EntityManager em;
 
 
     @Transactional
-    public Market createMarket(Market input ) {
+    public Market createMarket(String loginUserId,
+                               MarketAgent inputMarketAgent,
+                               List<Retailer> inputRetailerList,
+                               Market input) {
 
-        // 장 생성
-        Market market = Market.createMarket(input);
-        return marketRepository.save(market);
+        MarketAgent marketAgent = marketAgentService.createMarketAgent(loginUserId, inputMarketAgent);
+        List<Retailer> retailerList = inputRetailerList.stream()
+                .map(retailer -> retailerService.createRetailer(loginUserId, retailer))
+                .collect(Collectors.toList());
+
+        Market market = marketRepository.save(Market.createMarket(marketAgent, input));
+
+        this.addRetailers(market, retailerList);
+        this.updateMarket(market);
+
+        return market;
     }
 
     @Transactional(readOnly = true)
@@ -41,21 +56,19 @@ public class MarketService {
     }
 
     @Transactional
-    public void addRetailer(Long marketId, Long retailerId) {
-        // 장 조회
-        Market market = this.getMarket(marketId);
-
-        // 장원 조회
-        Retailer retailer = retailerService.getRetailer(retailerId);
+    public void addRetailer(Market market, Retailer retailer) {;
 
         // 장-장원 관계 엔티티 생성 & 영속화
         MarketRetailer marketRetailer = MarketRetailer.createMarketRetailer(market, retailer);
         em.persist(marketRetailer);
 
-        // 연관 관계
-        market.getMarketRetailerList().add(marketRetailer);
-        retailer.getMarketRetailerList().add(marketRetailer);
+    }
 
+    @Transactional
+    public void addRetailers(Market market, List<Retailer> retailerList) {
+        retailerList.stream()
+                .map(retailer -> MarketRetailer.createMarketRetailer(market, retailer))
+                .forEach(em::persist);
     }
 
     @Transactional
@@ -84,5 +97,39 @@ public class MarketService {
     public void dropRetailer(Long marketId, Long retailerId) {
         MarketRetailer marketRetailer = marketRetailerRepository.getMarketRetailer(marketId, retailerId);
         marketRetailerRepository.deleteById(marketRetailer.getId());
+    }
+
+    @Transactional
+    public MarketSchedule checkAttend(Long marketId, Long retailerId) {
+        return marketScheduleService.checkAttend(marketId, retailerId);
+    }
+
+    @Transactional
+    public MarketAgent registerMarketAgent(Long marketId, Long marketAgentId) {
+        Market market = this.getMarket(marketId);
+        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
+        market.setMarketAgent(marketAgent);
+        this.updateMarket(market);
+        return marketAgent;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Market> getMarketsOfMarketAgent(Long marketAgentId) {
+        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
+        return marketAgent.getMarketList();
+    }
+
+    @Transactional
+    public Retailer registerRetailer(Long marketId, Long retailerId) {
+        Market market = this.getMarket(marketId);
+        Retailer retailer = retailerService.getRetailer(retailerId);
+        this.addRetailer(market, retailer);
+        this.updateMarket(market);
+        return retailer;
+    }
+
+    @Transactional(readOnly = true)
+    public List<MarketRetailer> getMarketsOfRetailer(Long retailerId) {
+        return retailerService.getMarketRetailersOfRetailer(retailerId);
     }
 }
