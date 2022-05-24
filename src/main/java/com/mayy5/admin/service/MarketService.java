@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,11 +42,11 @@ public class MarketService {
         List<Retailer> retailerList = inputRetailerList.stream()
                 .map(retailer -> retailerService.createRetailer(loginUserId, retailer))
                 .collect(Collectors.toList());
-
         Market market = marketRepository.save(Market.createMarket(marketAgent, input));
 
-        this.addRetailers(market, retailerList);
+        List<MarketRetailer> marketRetailers = this.addRetailers(market, retailerList);
         this.updateMarket(market);
+        marketScheduleService.createSchedule(marketRetailers);
 
         return market;
     }
@@ -65,10 +67,15 @@ public class MarketService {
     }
 
     @Transactional
-    public void addRetailers(Market market, List<Retailer> retailerList) {
+    public List<MarketRetailer> addRetailers(Market market, List<Retailer> retailerList) {
+        List<MarketRetailer> marketRetailers = new ArrayList<>();
         retailerList.stream()
                 .map(retailer -> MarketRetailer.createMarketRetailer(market, retailer))
-                .forEach(em::persist);
+                .forEach(marketRetailer -> {
+            em.persist(marketRetailer);
+            marketRetailers.add(marketRetailer);
+        });
+        return marketRetailers;
     }
 
     @Transactional
@@ -100,8 +107,8 @@ public class MarketService {
     }
 
     @Transactional
-    public MarketSchedule checkAttend(Long marketId, Long retailerId) {
-        return marketScheduleService.checkAttend(marketId, retailerId);
+    public MarketSchedule checkAttend(Long marketId, Long retailerId, LocalDate checkDate) {
+        return marketScheduleService.checkAttend(marketId, retailerId, checkDate);
     }
 
     @Transactional

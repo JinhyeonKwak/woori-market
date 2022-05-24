@@ -1,16 +1,18 @@
 package com.mayy5.admin.service;
 
+import com.mayy5.admin.common.BError;
+import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.*;
 import com.mayy5.admin.repository.MarketRetailerRepository;
 import com.mayy5.admin.repository.MarketScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -21,14 +23,26 @@ public class MarketScheduleService {
     private final MarketScheduleRepository marketScheduleRepository;
     private final MarketRetailerRepository marketRetailerRepository;
 
-//    @Scheduled(initialDelay = 60000, fixedDelay = 1000 * 3600 * 24)
-    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 해당 요일에 열리는 장 스케줄 생성
     @Transactional
-    public void createSchedule() {
-        List<MarketRetailer> marketRetailers = marketRetailerRepository.getMarketRetailersOfToday(DayOfWeek.from(LocalDate.now()));
-        marketRetailers.stream()
-                .map(MarketSchedule::createSchedule)
-                .forEach(marketScheduleRepository::save);
+    public void createSchedule(List<MarketRetailer> marketRetailers) {
+        Market market = marketRetailers.get(0).getMarket();
+        LocalDate startDate = market.getStartDate();
+        LocalDate endDate = market.getEndDate();
+        int diff = market.getMarketDay().getValue() - DayOfWeek.from(startDate).getValue();
+        if (diff < 0) diff += 7;
+        LocalDate start = startDate.plusDays(diff);
+
+        List<LocalDate> dateList = new ArrayList<>();
+        dateList.add(start);
+        int daysToAdd = 7;
+        for (int i = 0; dateList.get(i).isBefore(endDate); i++) {
+            dateList.add(LocalDate.from(start.plusDays(daysToAdd)));
+            LocalDate date = dateList.get(i);
+            marketRetailers.stream()
+                    .map(marketRetailer -> MarketSchedule.createSchedule(marketRetailer, date))
+                    .forEach(marketScheduleRepository::save);
+            daysToAdd += 7;
+        }
     }
 
     @Transactional(readOnly = true)
@@ -46,10 +60,13 @@ public class MarketScheduleService {
     }
 
     @Transactional
-    public MarketSchedule checkAttend(Long marketId, Long retailerId) {
+    public MarketSchedule checkAttend(Long marketId, Long retailerId, LocalDate checkDate) {
         MarketRetailer marketRetailer = marketRetailerRepository.getMarketRetailer(marketId, retailerId);
-        MarketSchedule marketSchedule = marketScheduleRepository.getSchedule(marketRetailer, LocalDate.now());
-        marketSchedule.setCheckAttend(true); // 출석
+        MarketSchedule marketSchedule = marketScheduleRepository.getSchedule(marketRetailer, checkDate);
+        if (marketSchedule == null) {
+            throw new CommonException(BError.NOT_EXIST, "MarketSchedule");
+        }
+        marketSchedule.setCheckAttend(true);
         return marketScheduleRepository.save(marketSchedule);
     }
 }
