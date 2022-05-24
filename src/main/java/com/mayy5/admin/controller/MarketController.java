@@ -7,6 +7,7 @@ import com.mayy5.admin.model.domain.*;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.MarketMapper;
 import com.mayy5.admin.model.mapper.RetailerMapper;
+import com.mayy5.admin.model.req.CheckAttendDTO;
 import com.mayy5.admin.model.req.MarketCreateRequestDto;
 import com.mayy5.admin.model.req.MarketUpdateRequestDto;
 import com.mayy5.admin.model.req.RetailerRequestDto;
@@ -107,9 +108,11 @@ public class MarketController implements MarketApi {
     }
 
     @Override
-    public ResponseEntity<ScheduleResponseDto> checkAttend(Long marketId, Long retailerId) {
+    public ResponseEntity<ScheduleResponseDto> checkAttend(CheckAttendDTO checkAttendDTO) {
         try {
-            MarketSchedule marketSchedule = marketService.checkAttend(marketId, retailerId);
+            MarketSchedule marketSchedule = marketService.checkAttend(checkAttendDTO.getMarketId(),
+                                                                    checkAttendDTO.getRetailerId(),
+                                                                    checkAttendDTO.getCheckDate());
             return new ResponseEntity<>(marketMapper.toScheduleResponse(marketSchedule), HttpStatus.OK);
         } catch (CommonException e) {
             throw e;

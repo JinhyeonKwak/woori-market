@@ -28,10 +28,10 @@ public class MarketSchedule {
 
 
     //==생성 메서드==//
-    public static MarketSchedule createSchedule(MarketRetailer marketRetailer) {
+    public static MarketSchedule createSchedule(MarketRetailer marketRetailer, LocalDate marketDate) {
         MarketSchedule marketSchedule = MarketSchedule.builder()
                         .checkAttend(false) // default : 결석
-                        .marketDate(LocalDate.now())
+                        .marketDate(marketDate)
                         .build();
         marketSchedule.setMarketRetailer(marketRetailer);
         return marketSchedule;
