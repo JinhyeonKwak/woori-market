@@ -190,10 +190,9 @@ public class MarketController implements MarketApi {
 
         try {
             List<MarketRetailer> marketRetailerList = marketService.getMarketsOfRetailer(retailerId);
-            List<MarketResponseDto> marketResponseDtoList = marketRetailerList.stream()
+            return new ResponseEntity<>(marketRetailerList.stream()
                     .map(marketRetailer -> marketMapper.toMarketResponse(marketRetailer.getMarket()))
-                    .collect(Collectors.toList());
-            return new ResponseEntity<>(marketResponseDtoList, HttpStatus.OK);
+                    .collect(Collectors.toList()), HttpStatus.OK);
         } catch (CommonException e) {
             throw e;
         } catch (Exception e) {
