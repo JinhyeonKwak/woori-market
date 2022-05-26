@@ -120,8 +120,6 @@ public class MarketController implements MarketApi {
             log.error(e.getMessage(), e);
             throw new CommonException(BError.FAIL, "checkAttend");
         }
-
-
     }
 
     //==장주 관련==//

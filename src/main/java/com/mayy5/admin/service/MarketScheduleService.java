@@ -66,7 +66,7 @@ public class MarketScheduleService {
         if (marketSchedule == null) {
             throw new CommonException(BError.NOT_EXIST, "MarketSchedule");
         }
-        marketSchedule.setCheckAttend(true);
+        marketSchedule.setCheckAttend(marketSchedule.getCheckAttend() == false);
         return marketScheduleRepository.save(marketSchedule);
     }
 }
