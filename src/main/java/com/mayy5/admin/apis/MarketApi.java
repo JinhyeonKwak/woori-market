@@ -59,7 +59,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @PatchMapping(path = "/v1/market/{marketId}/schedule/{retailerId}")
-    ResponseEntity<ScheduleResponseDto> checkAttend(@PathVariable Long marketId, @PathVariable Long retailerId);
+    ResponseEntity<ScheduleResponseDto> checkAttend(@RequestBody @Valid CheckAttendDTO checkAttendDTO);
 
     //==장주 관련==//
     @ApiOperation(value = "특정 장에 대한 장주 등록/변경 API")
@@ -78,7 +78,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @GetMapping(path = "/v1/markets/agent/{marketAgentId}")
-    List<ResponseEntity<MarketResponseDto>> getMarketsOfMarketAgent(@PathVariable Long marketAgentId);
+    ResponseEntity<List<MarketResponseDto>> getMarketsOfMarketAgent(@PathVariable Long marketAgentId);
 
     //==장원 관련==//
     @ApiOperation(value = "특정 장에 대한 장원 등록 API")
@@ -106,7 +106,7 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @GetMapping(path = "/v1/markets/retailer/{retailerId}")
-    List<ResponseEntity<MarketResponseDto>> getMarketsOfRetailer(@PathVariable Long retailerId);
+    ResponseEntity<List<MarketResponseDto>> getMarketsOfRetailer(@PathVariable Long retailerId);
 
 
 

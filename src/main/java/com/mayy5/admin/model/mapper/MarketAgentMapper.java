@@ -8,6 +8,10 @@ import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Component
 @Mapper(componentModel = "spring",
@@ -17,14 +21,21 @@ public interface MarketAgentMapper {
 
     MarketAgentMapper marketAgentMapper = Mappers.getMapper(MarketAgentMapper.class);
 
-    @Mapping(source = "marketAgentMeta", target = "meta")
-    MarketAgent marketCreateDTOtoEntity(MarketCreateRequestDto dto);
+    @Mapping(source = "marketAgentRequestDto.meta", target = "meta")
+    MarketAgent toEntity(MarketCreateRequestDto dto);
 
     MarketAgent toEntity(MarketAgentRequestDto dto);
 
     void update(MarketAgentRequestDto marketAgentRequestDto, @MappingTarget MarketAgent marketAgent);
 
     MarketAgentResponseDto toDto(MarketAgent entity);
+
+    default List<MarketAgentResponseDto> toDtoList(List<MarketAgent> marketAgentList) {
+        List<MarketAgentResponseDto> marketAgentResponseDtoList = marketAgentList.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+        return marketAgentResponseDtoList;
+    }
 
 
 }

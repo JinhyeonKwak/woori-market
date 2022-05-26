@@ -1,6 +1,8 @@
 package com.mayy5.admin.controller;
 
 import com.mayy5.admin.apis.MarketMemberApi;
+import com.mayy5.admin.common.BError;
+import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.MarketAgent;
 import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.model.domain.User;
@@ -22,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -40,88 +41,142 @@ public class MarketMemberController implements MarketMemberApi {
 
     @Override
     public ResponseEntity<MarketAgentResponseDto> createMarketAgent(MarketAgentRequestDto marketAgentRequestDto) {
-        MarketAgent input = marketAgentMapper.toEntity(marketAgentRequestDto);
-        String loginUserId = userService.getLoginUserId();
-        User user = userService.getUser(loginUserId);
-        input.setUser(user);
-        MarketAgent marketAgent = marketAgentService.createMarketAgent(input);
-        return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
+
+        try {
+            MarketAgent input = marketAgentMapper.toEntity(marketAgentRequestDto);
+            String loginUserId = userService.getLoginUserId();
+            MarketAgent marketAgent = marketAgentService.createMarketAgent(loginUserId, input);
+            return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "createMarketAgent");
+        }
     }
 
     @Override
-    public List<ResponseEntity<MarketAgentResponseDto>> getMarketAgents() {
-        String loginUserId = userService.getLoginUserId();
-        List<MarketAgent> marketAgentList = marketAgentService.getMarketAgentsByUserId(loginUserId);
-        List<ResponseEntity<MarketAgentResponseDto>> responseEntities = marketAgentList.stream()
-                .map(marketAgent -> new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK))
-                .collect(Collectors.toList());
-        return responseEntities;
+    public ResponseEntity<List<MarketAgentResponseDto>> getMarketAgents() {
+
+        try {
+            String loginUserId = userService.getLoginUserId();
+            List<MarketAgent> marketAgentList = marketAgentService.getMarketAgentsByUserId(loginUserId);
+            List<MarketAgentResponseDto> marketAgentResponseDtoList = marketAgentMapper.toDtoList(marketAgentList);
+            return new ResponseEntity<>(marketAgentResponseDtoList, HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "getMarketAgents");
+        }
     }
 
     @Override
     public ResponseEntity<MarketAgentResponseDto> getMarketAgent(Long marketAgentId) {
-        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
-        return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
+
+        try {
+            MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
+            return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "getMarketAgent");
+        }
     }
 
     @Override
     public ResponseEntity<MarketAgentResponseDto> updateMarketAgent(MarketAgentRequestDto marketAgentRequestDto,
                                                                     Long marketAgentId) {
-        MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
-        marketAgentMapper.update(marketAgentRequestDto, marketAgent);
-        MarketAgent updateMarketAgent = marketAgentService.updateMarketAgent(marketAgent);
 
-        return new ResponseEntity<>(marketAgentMapper.toDto(updateMarketAgent), HttpStatus.OK);
+        try {
+            MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
+            marketAgentMapper.update(marketAgentRequestDto, marketAgent);
+            MarketAgent updateMarketAgent = marketAgentService.updateMarketAgent(marketAgent);
+
+            return new ResponseEntity<>(marketAgentMapper.toDto(updateMarketAgent), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "updateMarketAgent");
+        }
     }
-
-    @Override
-    public ResponseEntity<UserResponseDto> deleteMarketAgent(Long marketAgentId) {
-        String loginUserId = userService.getLoginUserId();
-        User user = userService.getUser(loginUserId);
-        marketAgentService.deleteMarketAgent(marketAgentId);
-        return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
-    }
-
-
 
     @Override
     public ResponseEntity<RetailerResponseDto> createRetailer(RetailerRequestDto retailerRequest) {
-        Retailer input = retailerMapper.toEntity(retailerRequest);
-        String loginUserId = userService.getLoginUserId();
-        User user = userService.getUser(loginUserId);
-        input.setUser(user);
-        Retailer retailer = retailerService.createRetailer(input);
-        return new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK);
+
+        try {
+            Retailer input = retailerMapper.toEntity(retailerRequest);
+            String loginUserId = userService.getLoginUserId();
+            Retailer retailer = retailerService.createRetailer(loginUserId, input);
+            return new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "createRetailer");
+        }
     }
 
     @Override
-    public List<ResponseEntity<RetailerResponseDto>> getRetailers() {
-        String loginUserId = userService.getLoginUserId();
-        List<Retailer> retailerList = retailerService.getRetailersByUserId(loginUserId);
-        List<ResponseEntity<RetailerResponseDto>> responseEntities = retailerList.stream()
-                .map(retailer -> new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK))
-                .collect(Collectors.toList());
-        return responseEntities;
+    public ResponseEntity<List<RetailerResponseDto>> getRetailers() {
+
+        try {
+            String loginUserId = userService.getLoginUserId();
+            List<Retailer> retailerList = retailerService.getRetailersByUserId(loginUserId);
+            List<RetailerResponseDto> retailerResponseDtoList = retailerMapper.toDtoList(retailerList);
+            return new ResponseEntity<>(retailerResponseDtoList, HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "getRetailers");
+        }
     }
 
     @Override
     public ResponseEntity<RetailerResponseDto> getRetailer(Long retailerId) {
-        Retailer retailer = retailerService.getRetailer(retailerId);
-        return new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK);
+
+        try {
+            Retailer retailer = retailerService.getRetailer(retailerId);
+            return new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "getRetailer");
+        }
     }
 
     @Override
     public ResponseEntity<RetailerResponseDto> updateRetailer(Long retailerId, RetailerRequestDto retailerRequest) {
-        Retailer retailer = retailerService.getRetailer(retailerId);
-        retailerMapper.update(retailerRequest, retailer);
-        Retailer updateRetailer = retailerService.updateRetailer(retailer);
-        return new ResponseEntity<>(retailerMapper.toDto(updateRetailer), HttpStatus.OK);
+
+        try {
+            Retailer retailer = retailerService.getRetailer(retailerId);
+            retailerMapper.update(retailerRequest, retailer);
+            Retailer updateRetailer = retailerService.updateRetailer(retailer);
+            return new ResponseEntity<>(retailerMapper.toDto(updateRetailer), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "updateRetailer");
+        }
     }
 
     @Override
     public ResponseEntity<UserResponseDto> deleteRetailer(Long retailerId) {
-        User user = retailerService.getRetailer(retailerId).getUser();
-        retailerService.deleteRetailer(retailerId);
-        return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
+
+        try {
+            User user = retailerService.getRetailer(retailerId).getUser();
+            retailerService.deleteRetailer(retailerId);
+            return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "deleteRetailer");
+        }
     }
 }

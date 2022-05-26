@@ -1,13 +1,9 @@
 package com.mayy5.admin.model.domain;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Data
 @ToString
@@ -15,7 +11,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Schedule {
+public class MarketSchedule {
 
     @Id
     @GeneratedValue
@@ -32,19 +28,19 @@ public class Schedule {
 
 
     //==생성 메서드==//
-    public static Schedule createSchedule(MarketRetailer marketRetailer) {
-        Schedule schedule = Schedule.builder()
+    public static MarketSchedule createSchedule(MarketRetailer marketRetailer, LocalDate marketDate) {
+        MarketSchedule marketSchedule = MarketSchedule.builder()
                         .checkAttend(false) // default : 결석
-                        .marketDate(LocalDate.now())
+                        .marketDate(marketDate)
                         .build();
-        schedule.setMarketRetailer(marketRetailer);
-        return schedule;
+        marketSchedule.setMarketRetailer(marketRetailer);
+        return marketSchedule;
     }
 
     //==연관 관계 메서드==//
     public void setMarketRetailer(MarketRetailer marketRetailer) {
         this.marketRetailer = marketRetailer;
-        marketRetailer.getScheduleList().add(this);
+        marketRetailer.getMarketScheduleList().add(this);
     }
 
 

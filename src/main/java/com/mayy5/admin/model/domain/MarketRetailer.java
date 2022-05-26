@@ -28,13 +28,18 @@ public class MarketRetailer {
     private Retailer retailer;
 
     @OneToMany(mappedBy = "marketRetailer")
-    private List<Schedule> scheduleList = new ArrayList<>();
+    private List<MarketSchedule> marketScheduleList = new ArrayList<>();
 
     public static MarketRetailer createMarketRetailer(Market market, Retailer retailer) {
         MarketRetailer marketRetailer = MarketRetailer.builder()
-                .market(market)
-                .retailer(retailer)
-                .build();
+                                                .market(market)
+                                                .retailer(retailer)
+                                                .marketScheduleList(new ArrayList<>())
+                                                .build();
+
+        // 연관 관계
+        market.getMarketRetailerList().add(marketRetailer);
+        retailer.getMarketRetailerList().add(marketRetailer);
         return marketRetailer;
     }
 

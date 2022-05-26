@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -67,36 +68,30 @@ public class AdminApplication {
 
 	@Order(value = 2)
 	@Bean
-	public ApplicationRunner applicationRunner(UserService userService,
-											   MarketService marketService,
-											   MarketRepository marketRepository,
-											   MarketAgentService marketAgentService,
-											   RetailerService retailerService
-											   ) {
+	public CommandLineRunner mockUpMarket(MarketService marketService) {
 		return args -> {
-			User adminUser = userService.getUser(AuthConstant.ADMIN_USER);
 
-			Address address = new Address("street1", "room1", "123");
+			IntStream.rangeClosed(1, 10).forEach(i -> {
+				MarketAgent marketAgent = new MarketAgent();
+				marketAgent.getMeta().put(MarketAgentMetaType.CORPORATE_NAME, "CORP" + i);
 
-			Market market = marketRepository.save(Market.builder()
-												.address(address)
-												.startDate(LocalDate.now())
-												.endDate(LocalDate.now())
-												.marketDay(DayOfWeek.FRIDAY)
-												.marketRetailerList(new ArrayList<>())
-												.build());
+				List<Retailer> retailerList = new ArrayList<>();
+				IntStream.rangeClosed(1, 20).forEach(j -> {
+					Retailer retailer = new Retailer();
+					retailer.getMeta().put(RetailerMetaType.BUSINESS_TYPE, "BUSINESS" + j);
+					retailerList.add(retailer);
+				});
 
-			Map<MarketAgentMetaType, String> marketAgentMeta = new HashMap<>();
-			marketAgentMeta.put(MarketAgentMetaType.CORPORATE_NAME, "NATURE");
-			MarketAgent marketAgent = marketAgentService.createMarketAgent(MarketAgent.createMarketAgent(adminUser, marketAgentMeta));
-			market.setMarketAgent(marketAgent);
-
-			Map<RetailerMetaType, String> retailerMeta = new HashMap<>();
-			retailerMeta.put(RetailerMetaType.BUSINESS_TYPE, "HOT_DOG");
-			Retailer retailer = retailerService.createRetailer(Retailer.createRetailer(adminUser, retailerMeta));
-			marketService.addRetailer(market.getId(), retailer.getId());
-
-			marketService.updateMarket(market);
+				double random = Math.random();
+				int value = (int) (random * 7 + 1);
+				Market market = Market.builder()
+						.address(new Address("street" + i, "detail" + i, "code" + i))
+						.startDate(LocalDate.now().plusWeeks(value))
+						.endDate(LocalDate.now().plusWeeks(value).plusYears(1))
+						.marketDay(DayOfWeek.of(value))
+						.build();
+				marketService.createMarket("admin", marketAgent, retailerList, market);
+			});
 		};
 	}
 
