@@ -12,6 +12,10 @@
 - jdbc:h2:mem:mydb
 - http://localhost:8080/h2-console/
 
+## Profile 적용
+- JVM에 다음과 같은 설정 반영 필요 -Dspring.profiles.active=dev
+- java -jar -Dspring.profiles.active=prod *.jar
+
 ## 빌드
 - ./gradlew -x test build
 - admin/build/libs/admin-0.0.1-SNAPSHOT.jar를 수행 java -jar admin-0.0.1-SNAPSHOT.jar
