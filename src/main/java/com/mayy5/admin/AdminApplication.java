@@ -6,27 +6,32 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.IntStream;
 
-import com.mayy5.admin.model.domain.*;
-import com.mayy5.admin.repository.MarketRepository;
-import com.mayy5.admin.repository.PostRepository;
-import com.mayy5.admin.service.MarketAgentService;
-import com.mayy5.admin.service.MarketService;
-import com.mayy5.admin.service.RetailerService;
-import com.mayy5.admin.type.*;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.mayy5.admin.model.domain.Address;
+import com.mayy5.admin.model.domain.Market;
+import com.mayy5.admin.model.domain.MarketAgent;
+import com.mayy5.admin.model.domain.Post;
+import com.mayy5.admin.model.domain.Retailer;
+import com.mayy5.admin.model.domain.User;
+import com.mayy5.admin.repository.PostRepository;
 import com.mayy5.admin.security.AuthConstant;
+import com.mayy5.admin.service.MarketService;
 import com.mayy5.admin.service.UserService;
+import com.mayy5.admin.type.MarketAgentMetaType;
+import com.mayy5.admin.type.PostType;
+import com.mayy5.admin.type.RetailerMetaType;
+import com.mayy5.admin.type.UserMetaType;
+import com.mayy5.admin.type.UserRoleType;
 
 @EnableScheduling
 @SpringBootApplication
@@ -38,7 +43,7 @@ public class AdminApplication {
 
 	@Order(value = 1)
 	@Bean
-	public CommandLineRunner adminUser(UserService userService, PasswordEncoder passwordEncoder, PostRepository postRepository) {
+	public CommandLineRunner adminUser(UserService userService, PasswordEncoder passwordEncoder) {
 		return args -> {
 			User user = User.builder()
 				.id(AuthConstant.ADMIN_USER)
@@ -50,8 +55,17 @@ public class AdminApplication {
 				.build();
 			user.getMeta().put(UserMetaType.ROLE, UserRoleType.ROLE_ADMIN.name());
 			userService.createUser(user);
+		};
+	}
 
-			IntStream.rangeClosed(1,200).forEach(index -> {
+	@Profile({"dev", "local"})
+	@Order(value = 2)
+	@Bean
+	public CommandLineRunner mockUpMarket(UserService userService, PostRepository postRepository) {
+		return args -> {
+
+			User user = userService.getUser(AuthConstant.ADMIN_USER);
+			IntStream.rangeClosed(1, 200).forEach(index -> {
 				postRepository.save(Post.builder()
 					.title("게시글" + index)
 					.subTitle("순서" + index)
@@ -62,11 +76,11 @@ public class AdminApplication {
 					.user(user)
 					.build());
 			});
-
 		};
 	}
 
-	@Order(value = 2)
+	@Profile({"dev", "local"})
+	@Order(value = 3)
 	@Bean
 	public CommandLineRunner mockUpMarket(MarketService marketService) {
 		return args -> {
@@ -83,18 +97,16 @@ public class AdminApplication {
 				});
 
 				double random = Math.random();
-				int value = (int) (random * 7 + 1);
+				int value = (int)(random * 7 + 1);
 				Market market = Market.builder()
-						.address(new Address("street" + i, "detail" + i, "code" + i))
-						.startDate(LocalDate.now().plusWeeks(value))
-						.endDate(LocalDate.now().plusWeeks(value).plusYears(1))
-						.marketDay(DayOfWeek.of(value))
-						.build();
-				marketService.createMarket("admin", marketAgent, retailerList, market);
+					.address(new Address("street" + i, "detail" + i, "code" + i))
+					.startDate(LocalDate.now().plusWeeks(value))
+					.endDate(LocalDate.now().plusWeeks(value).plusYears(1))
+					.marketDay(DayOfWeek.of(value))
+					.build();
+				marketService.createMarket(AuthConstant.ADMIN_USER, marketAgent, retailerList, market);
 			});
 		};
 	}
-
-
 
 }
