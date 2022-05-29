@@ -29,7 +29,7 @@ public class SignUpRequestDto {
 
 	@ApiModelProperty(value = "password", required = true, example = "admin", position = 3)
 	@NotBlank
-	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[@#!$%^&+=])(?=\\S+$).{6,16}$",message = "비밀번호 규칙과 동일하지 않습니다.")
+	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[@#!$%^&+=])(?=\\S+$).{6,16}$", message = "비밀번호 규칙과 동일하지 않습니다.")
 	private String password;
 
 	@ApiModelProperty(value = "name", required = true, example = "mayy5", position = 4)

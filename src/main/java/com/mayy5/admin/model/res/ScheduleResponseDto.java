@@ -12,10 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ScheduleResponseDto {
 
-    @ApiModelProperty(value = "Retailer ID")
-    private Long retailerId;
+	@ApiModelProperty(value = "Retailer ID")
+	private Long retailerId;
 
-    @ApiModelProperty(value = "Attendance")
-    private Boolean checkAttend;
+	@ApiModelProperty(value = "Attendance")
+	private Boolean checkAttend;
 
 }

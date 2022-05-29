@@ -45,7 +45,7 @@ public class PostService {
 			new CommonException(BError.NOT_EXIST, "Comment"));
 
 		if (userService.isValidUser(user, comment.getUser())) {
-			return commentRepository.save(EntityUtil.setValueExceptNull(comment,input));
+			return commentRepository.save(EntityUtil.setValueExceptNull(comment, input));
 		} else {
 			throw new CommonException(BError.NOT_MATCH, "User");
 		}
@@ -84,7 +84,6 @@ public class PostService {
 		input.setUser(user);
 		return postRepository.save(input);
 	}
-
 
 	@Transactional
 	public void deletePost(String userId, Long postId) throws CommonException {

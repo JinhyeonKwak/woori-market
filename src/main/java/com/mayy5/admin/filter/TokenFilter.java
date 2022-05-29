@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TokenFilter extends OncePerRequestFilter {
 
-
 	private TokenService tokenService;
 
 	@Override

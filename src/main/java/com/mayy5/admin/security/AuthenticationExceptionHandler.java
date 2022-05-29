@@ -11,9 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthenticationExceptionHandler implements AuthenticationEntryPoint {
-    @Override
-    public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
-        httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-//        httpServletResponse.sendRedirect("/exception/jwt");
-    }
+	@Override
+	public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+		AuthenticationException e) throws IOException {
+		httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		//        httpServletResponse.sendRedirect("/exception/jwt");
+	}
 }
