@@ -19,7 +19,7 @@ repositories {
 }
 
 bootJar {
-	archiveFileName = "${archiveBaseName.get()}-dev.${archiveExtension.get()}"
+	archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
 }
 
 dependencies {
