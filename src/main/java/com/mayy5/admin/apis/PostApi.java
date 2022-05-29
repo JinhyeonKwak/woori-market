@@ -50,7 +50,8 @@ public interface PostApi {
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
 	})
 	@PatchMapping(path = "/v1/posts/{id}", consumes = "application/json")
-	ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @Valid @RequestBody PostRequestDto postRequestDto);
+	ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id,
+		@Valid @RequestBody PostRequestDto postRequestDto);
 
 	@ApiOperation(value = "Post 조회 API",
 		notes = "Post id를 기반으로 내용 조회")
@@ -61,7 +62,6 @@ public interface PostApi {
 	})
 	@GetMapping("/v1/posts/{id}")
 	ResponseEntity<PostResponseDto> getPost(@Valid @PathVariable(value = "id") Long id);
-
 
 	@ApiOperation(value = "Post 삭제 API",
 		notes = "특정 Post 삭제")
