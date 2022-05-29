@@ -1,4 +1,5 @@
 server:
+  ip: dev-market-api.kooru.be
   port: 3002
 spring:
   h2:
