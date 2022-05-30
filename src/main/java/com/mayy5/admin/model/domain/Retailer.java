@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,6 +27,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.mayy5.admin.type.RetailerMetaType;
+import com.mayy5.admin.type.RetailerType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,6 +47,13 @@ public class Retailer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "RETAILER_ID")
 	private Long id;
+
+	@Column(name = "RETAIER_NAME")
+	private String name;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "RETAIER_TYPE")
+	private RetailerType type;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@MapKeyEnumerated(EnumType.STRING)
@@ -72,8 +81,11 @@ public class Retailer {
 	private LocalDateTime updateAt;
 
 	//==생성 메서드==//
-	public static Retailer createRetailer(User user, Map<RetailerMetaType, String> meta) {
+	public static Retailer createRetailer(User user, String name, RetailerType type,
+		Map<RetailerMetaType, String> meta) {
 		Retailer retailer = Retailer.builder()
+			.name(name)
+			.type(type)
 			.meta(meta)
 			.marketRetailerList(new ArrayList<>())
 			.user(user)

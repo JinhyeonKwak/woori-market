@@ -31,9 +31,9 @@ public class MarketCreateRequestDto {
 	@ApiModelProperty(value = "Market Day")
 	private DayOfWeek marketDay;
 
-	@ApiModelProperty(value = "MarketAgentRequestDto")
-	private MarketAgentRequestDto marketAgentRequestDto;
+	@ApiModelProperty(value = "MarketAgent")
+	private MarketAgentRequestDto marketAgent;
 
-	@ApiModelProperty(value = "RetailerRequestList")
-	private List<RetailerRequestDto> retailerRequestDtoList = new ArrayList<>();
+	@ApiModelProperty(value = "RetailerList")
+	private List<RetailerRequestDto> retailers = new ArrayList<>();
 }

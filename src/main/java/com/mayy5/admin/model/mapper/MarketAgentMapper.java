@@ -23,7 +23,7 @@ public interface MarketAgentMapper {
 
 	MarketAgentMapper marketAgentMapper = Mappers.getMapper(MarketAgentMapper.class);
 
-	@Mapping(source = "marketAgentRequestDto.meta", target = "meta")
+	@Mapping(source = "marketAgent.meta", target = "meta")
 	MarketAgent toEntity(MarketCreateRequestDto dto);
 
 	MarketAgent toEntity(MarketAgentRequestDto dto);

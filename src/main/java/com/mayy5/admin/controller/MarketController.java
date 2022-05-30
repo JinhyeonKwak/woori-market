@@ -53,7 +53,7 @@ public class MarketController implements MarketApi {
 			String loginUserId = userService.getLoginUserId();
 
 			MarketAgent inputMarketAgent = marketAgentMapper.toEntity(marketCreateRequestDto);
-			List<RetailerRequestDto> retailerRequestList = marketCreateRequestDto.getRetailerRequestDtoList();
+			List<RetailerRequestDto> retailerRequestList = marketCreateRequestDto.getRetailers();
 			List<Retailer> retailerList = retailerMapper.toEntities(retailerRequestList);
 			Market inputMarket = marketMapper.toEntity(marketCreateRequestDto);
 
