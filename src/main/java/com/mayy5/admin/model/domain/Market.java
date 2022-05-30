@@ -1,6 +1,5 @@
 package com.mayy5.admin.model.domain;
 
-import com.mayy5.admin.model.dto.MarketDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,8 +21,9 @@ public class Market {
     @Column(name = "MARKET_ID")
     private Long id;
 
-    @Embedded
-    private Address address;
+    private String areaCode;
+    private String latitude;
+    private String longitude;
 
     @Column(name = "START_AT")
     private LocalDate startDate;
@@ -45,12 +45,15 @@ public class Market {
     //==생성 메서드==//
     public static Market createMarket(MarketAgent marketAgent, Market input) {
         Market market = Market.builder()
-                .address(input.getAddress())
+                .areaCode(input.getAreaCode())
+                .latitude(input.getLatitude())
+                .longitude(input.getLongitude())
                 .startDate(input.getStartDate())
                 .endDate(input.getEndDate())
                 .marketDay(input.getMarketDay())
                 .marketRetailerList(new ArrayList<>())
                 .build();
+
         market.setMarketAgent(marketAgent);
         return market;
     }
