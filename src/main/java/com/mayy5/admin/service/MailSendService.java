@@ -20,7 +20,7 @@ public class MailSendService {
 
 	@Value("${server.ip:localhost}")
 	private String ip;
-	@Value("${server.port}")
+	@Value("${server.port:8080}")
 	private int port;
 
 	private final JavaMailSender mailSender;
