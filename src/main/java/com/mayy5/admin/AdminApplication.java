@@ -65,14 +65,19 @@ public class AdminApplication {
 	public CommandLineRunner mockUpMarket(MarketService marketService) {
 		return args -> {
 
+
 			IntStream.rangeClosed(1, 10).forEach(i -> {
-				MarketAgent marketAgent = new MarketAgent();
-				marketAgent.getMeta().put(MarketAgentMetaType.CORPORATE_NAME, "CORP" + i);
+				MarketAgent marketAgent = MarketAgent.builder()
+						.agentName("NAME" + i)
+						.corporateName("CORP" + i)
+						.build();
 
 				List<Retailer> retailerList = new ArrayList<>();
 				IntStream.rangeClosed(1, 20).forEach(j -> {
-					Retailer retailer = new Retailer();
-					retailer.getMeta().put(RetailerMetaType.BUSINESS_TYPE, "BUSINESS" + j);
+					Retailer retailer = Retailer.builder()
+							.retailerName("NAME" + j)
+							.retailType("TYPE" + j)
+							.build();
 					retailerList.add(retailer);
 				});
 

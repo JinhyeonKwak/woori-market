@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -20,8 +18,13 @@ import java.util.Map;
 public class RetailerResponseDto {
 
 
+    @ApiModelProperty(value = "Retailer Name")
+    private String retailerName;
+
+    @ApiModelProperty(value = "Retail Type")
+    private String retailType;
+
     @ApiModelProperty(value = "A RetailerPropType map of key/value pairs",
-            example = "{'BUSINESS_TYPE' : 'FOOD'}",
             dataType = "Map[String,String]")
     private Map<RetailerMetaType, String> meta = new HashMap<>();
 

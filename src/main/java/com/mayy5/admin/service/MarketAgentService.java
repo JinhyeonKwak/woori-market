@@ -25,8 +25,7 @@ public class MarketAgentService {
     @Transactional
     public MarketAgent createMarketAgent(String userId, MarketAgent input) {
         User user = userService.getUser(userId);
-        Map<MarketAgentMetaType, String> meta = input.getMeta();
-        MarketAgent marketAgent = MarketAgent.createMarketAgent(user, meta);
+        MarketAgent marketAgent = MarketAgent.createMarketAgent(user, input);
         return marketAgentRepository.save(marketAgent);
     }
 

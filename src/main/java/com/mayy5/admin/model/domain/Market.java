@@ -1,12 +1,15 @@
 package com.mayy5.admin.model.domain;
 
+import com.mayy5.admin.type.MarketMetaType;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -21,6 +24,7 @@ public class Market {
     @Column(name = "MARKET_ID")
     private Long id;
 
+    private String address;
     private String areaCode;
     private String latitude;
     private String longitude;
@@ -31,7 +35,6 @@ public class Market {
     @Column(name = "END_AT")
     private LocalDate endDate;
 
-
     private DayOfWeek marketDay;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,10 +44,21 @@ public class Market {
     @OneToMany(mappedBy = "market", orphanRemoval = true)
     private List<MarketRetailer> marketRetailerList = new ArrayList<>();
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @MapKeyEnumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "MARKET_META",
+            joinColumns = @JoinColumn(name = "MARKET_ID")
+    )
+    @MapKeyColumn(name = "META_TYPE")
+    @Column(name = "META_VALUE")
+    private Map<MarketMetaType, String> meta = new HashMap<>();
+
 
     //==생성 메서드==//
     public static Market createMarket(MarketAgent marketAgent, Market input) {
         Market market = Market.builder()
+                .address(input.getAddress())
                 .areaCode(input.getAreaCode())
                 .latitude(input.getLatitude())
                 .longitude(input.getLongitude())
@@ -52,6 +66,7 @@ public class Market {
                 .endDate(input.getEndDate())
                 .marketDay(input.getMarketDay())
                 .marketRetailerList(new ArrayList<>())
+                .meta(input.getMeta())
                 .build();
 
         market.setMarketAgent(marketAgent);

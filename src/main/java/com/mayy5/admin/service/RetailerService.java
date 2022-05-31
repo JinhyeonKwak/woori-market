@@ -29,8 +29,7 @@ public class RetailerService {
     @Transactional
     public Retailer createRetailer(String userId, Retailer input) {
         User user = userService.getUser(userId);
-        Map<RetailerMetaType, String> meta = input.getMeta();
-        Retailer retailer = Retailer.createRetailer(user, meta);
+        Retailer retailer = Retailer.createRetailer(user, input);
         return retailerRepository.save(retailer);
     }
 

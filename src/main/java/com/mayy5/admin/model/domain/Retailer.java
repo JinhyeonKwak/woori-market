@@ -25,15 +25,9 @@ public class Retailer {
     @Column(name = "RETAILER_ID")
     private Long id;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @MapKeyEnumerated(EnumType.STRING)
-    @CollectionTable(
-            name = "RETAILER_META",
-            joinColumns = @JoinColumn(name = "RETAILER_ID")
-    )
-    @MapKeyColumn(name = "META_TYPE")
-    @Column(name = "META_VALUE")
-    private Map<RetailerMetaType, String> meta = new HashMap<>();
+    private String retailerName;
+
+    private String retailType;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "USER_ID")
@@ -50,12 +44,25 @@ public class Retailer {
     @UpdateTimestamp
     private LocalDateTime updateAt;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @MapKeyEnumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "RETAILER_META",
+            joinColumns = @JoinColumn(name = "RETAILER_ID")
+    )
+    @MapKeyColumn(name = "META_TYPE")
+    @Column(name = "META_VALUE")
+    private Map<RetailerMetaType, String> meta = new HashMap<>();
+
     //==생성 메서드==//
-    public static Retailer createRetailer(User user, Map<RetailerMetaType, String> meta) {
+
+    public static Retailer createRetailer(User user, Retailer input) {
         Retailer retailer = Retailer.builder()
-                .meta(meta)
-                .marketRetailerList(new ArrayList<>())
                 .user(user)
+                .retailerName(input.getRetailerName())
+                .retailType(input.getRetailType())
+                .marketRetailerList(new ArrayList<>())
+                .meta(input.getMeta())
                 .build();
         retailer.setUser(user);
         return retailer;

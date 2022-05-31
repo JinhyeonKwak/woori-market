@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,9 +17,14 @@ import java.util.Map;
 public class RetailerRequestDto {
 
 
+    @ApiModelProperty(value = "Retailer Name", example = "KIM")
+    private String retailerName;
+
+    @ApiModelProperty(value = "Retail Type", example = "COFFEE")
+    private String retailType;
+
     @ApiModelProperty(
             value = "A RetailerPropType map of key/value pairs",
-            example = "{'BUSINESS_TYPE' : 'FOOD'}",
             dataType = "Map[String,String]")
     private Map<RetailerMetaType, String> meta = new HashMap<>();
 
