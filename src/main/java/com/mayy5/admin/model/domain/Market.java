@@ -6,10 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Setter
@@ -24,8 +21,9 @@ public class Market {
     @Column(name = "MARKET_ID")
     private Long id;
 
-    private String address;
-    private String areaCode;
+    private String locationAddress;
+    private String detailAddress;
+    private String regionCode;
     private String latitude;
     private String longitude;
 
@@ -58,8 +56,9 @@ public class Market {
     //==생성 메서드==//
     public static Market createMarket(MarketAgent marketAgent, Market input) {
         Market market = Market.builder()
-                .address(input.getAddress())
-                .areaCode(input.getAreaCode())
+                .locationAddress(input.getLocationAddress())
+                .detailAddress(input.getDetailAddress())
+                .regionCode(input.getRegionCode())
                 .latitude(input.getLatitude())
                 .longitude(input.getLongitude())
                 .startDate(input.getStartDate())

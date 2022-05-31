@@ -2,10 +2,7 @@ package com.mayy5.admin.model.req;
 
 import com.mayy5.admin.type.MarketMetaType;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -16,12 +13,16 @@ import java.util.Map;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class MarketCreateRequestDto {
 
-    @ApiModelProperty(value = "Market Location", example = "서울특별시 종로구 혜화동")
-    private String address;
+    @ApiModelProperty(value = "Market Location Address", example = "서울특별시 종로구 혜화동 20-12")
+    private String locationAddress;
+
+    @ApiModelProperty(value = "Market Detail Address", example = "혜화훼미리 아파트 1동 401호")
+    private String detailAddress;
 
     @ApiModelProperty(value = "Start Date")
     private LocalDate startDate;

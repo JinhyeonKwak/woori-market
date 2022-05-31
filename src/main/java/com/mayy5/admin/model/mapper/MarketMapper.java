@@ -23,8 +23,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Mapper(componentModel = "spring",
@@ -36,16 +38,16 @@ public interface MarketMapper {
 
     default Market toEntity(MarketCreateRequestDto dto) throws IOException, ParseException {
 
-        String location = URLEncoder.encode(dto.getAddress(), "UTF-8");
-        String areaCode = getAreaCode(location);
-        Map<String, String> latLng = getLatLng(location);
+        String regionCode = getRegionCode(dto.getLocationAddress());
+        Map<String, String> latLng = getLatLng(dto.getLocationAddress());
 
         Market market = Market.builder()
-                .address(dto.getAddress())
+                .locationAddress(dto.getLocationAddress())
+                .detailAddress(dto.getDetailAddress())
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
                 .marketDay(dto.getMarketDay())
-                .areaCode(areaCode)
+                .regionCode(regionCode)
                 .latitude(latLng.get("latitude"))
                 .longitude(latLng.get("longitude"))
                 .build();
@@ -64,13 +66,15 @@ public interface MarketMapper {
 
 
     private Map<String, String> getLatLng(String location) throws IOException, ParseException {
-        URL url = new URL("https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode" + "?query=" + location);
+        String geocoderApiUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
+        URL url = new URL( geocoderApiUrl + "?query=" + URLEncoder.encode(location, "UTF-8"));
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("X-NCP-APIGW-API-KEY-ID", "n8buzwmo5q");
         conn.setRequestProperty("X-NCP-APIGW-API-KEY", "uoSPNzUnT64eTcbSZT65yWDVWt5sNpLAE5agij2A");
         conn.connect();
+
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
         String result = br.readLine();
         br.close();
@@ -88,11 +92,21 @@ public interface MarketMapper {
         return latLng;
     }
 
-    private String getAreaCode(String location) throws IOException, ParseException {
-        URL url = new URL("http://apis.data.go.kr/1741000/StanReginCd/getStanReginCdList?ServiceKey=eRcBsQ1bX6mccg1jgFvvIl1dS4uvs455RS2zMyRdmmrsE%2FmcLfYdQVR5zih6A%2FGbf08iMsz8cODLVGy6HwscLg%3D%3D&type=json&pageNo=1&numOfRows=3&flag=Y&locatadd_nm=" + location);
+    private String getRegionCode(String location) throws IOException, ParseException {
+
+        String[] locationArr = location.split("\\s");
+        String[] tmp = Arrays.copyOfRange(locationArr, 0, locationArr.length - 1);
+        String sb = Arrays.stream(tmp)
+                .map(s -> s + " ")
+                .collect(Collectors.joining());
+        String region = sb;
+
+        String openApiUrl = "http://apis.data.go.kr/1741000/StanReginCd/getStanReginCdList?ServiceKey=eRcBsQ1bX6mccg1jgFvvIl1dS4uvs455RS2zMyRdmmrsE%2FmcLfYdQVR5zih6A%2FGbf08iMsz8cODLVGy6HwscLg%3D%3D&type=json&pageNo=1&numOfRows=3&flag=Y&locatadd_nm=";
+        URL url = new URL(openApiUrl + URLEncoder.encode(region, "UTF-8"));
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.connect();
+
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
         String result = br.readLine();
         br.close();
@@ -103,7 +117,7 @@ public interface MarketMapper {
         JSONObject row = (JSONObject) stanReginCd.get(1);
         JSONArray rowArr = (JSONArray) row.get("row");
         JSONObject body = (JSONObject) rowArr.get(0);
-        String areaCode = (String) body.get("region_cd");
-        return areaCode;
+        String regionCode = (String) body.get("region_cd");
+        return regionCode;
     }
 }

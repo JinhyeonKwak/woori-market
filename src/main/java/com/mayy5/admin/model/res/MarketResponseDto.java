@@ -20,11 +20,14 @@ public class MarketResponseDto {
     @ApiModelProperty(value = "Market ID")
     private Long marketId;
 
-    @ApiModelProperty(value = "Market Location")
-    private String address;
+    @ApiModelProperty(value = "Market Location Address")
+    private String locationAddress;
 
-    @ApiModelProperty(value = "Market Location AreaCode")
-    private String areaCode;
+    @ApiModelProperty(value = "Market Detail Address")
+    private String detailAddress;
+
+    @ApiModelProperty(value = "Market Location RegionCode")
+    private String regionCode;
 
     @ApiModelProperty(value = "Market Location Latitude")
     private String latitude;
