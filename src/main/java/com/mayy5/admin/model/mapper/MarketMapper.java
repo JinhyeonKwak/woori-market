@@ -36,19 +36,19 @@ public interface MarketMapper {
 
     default Market toEntity(MarketCreateRequestDto dto) throws IOException, ParseException {
 
-        Market market = Market.builder()
-                .startDate(dto.getStartDate())
-                .endDate(dto.getEndDate())
-                .marketDay(dto.getMarketDay())
-                .build();
-
-        String location = URLEncoder.encode("서울특별시 종로구 혜화동", "UTF-8");
+        String location = URLEncoder.encode(dto.getAddress(), "UTF-8");
         String areaCode = getAreaCode(location);
         Map<String, String> latLng = getLatLng(location);
 
-        market.setAreaCode(areaCode);
-        market.setLatitude(latLng.get("latitude"));
-        market.setLongitude(latLng.get("longitude"));
+        Market market = Market.builder()
+                .address(dto.getAddress())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .marketDay(dto.getMarketDay())
+                .areaCode(areaCode)
+                .latitude(latLng.get("latitude"))
+                .longitude(latLng.get("longitude"))
+                .build();
 
         return market;
     }
@@ -59,6 +59,7 @@ public interface MarketMapper {
     void update(MarketUpdateRequestDto marketRequest, @MappingTarget Market market);
 
     @Mapping(source = "marketRetailer.retailer.id", target = "retailerId")
+    @Mapping(source = "marketRetailer.market.id", target = "marketId")
     ScheduleResponseDto toScheduleResponse(MarketSchedule marketSchedule);
 
 

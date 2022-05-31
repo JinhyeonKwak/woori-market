@@ -25,15 +25,9 @@ public class MarketAgent {
     @Column(name = "MARKET_AGENT_ID")
     private Long id;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @MapKeyEnumerated(EnumType.STRING)
-    @CollectionTable(
-            name = "MARKET_AGENT_META",
-            joinColumns = @JoinColumn(name = "MARKET_AGENT_ID")
-    )
-    @MapKeyColumn(name = "META_TYPE")
-    @Column(name = "META_VALUE")
-    private Map<MarketAgentMetaType, String> meta = new HashMap<>();
+    private String agentName;
+
+    private String corporateName;
 
     @OneToMany(mappedBy = "marketAgent", cascade = CascadeType.ALL)
     private List<Market> marketList = new ArrayList<>();
@@ -50,12 +44,25 @@ public class MarketAgent {
     @UpdateTimestamp
     private LocalDateTime updateAt;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @MapKeyEnumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "MARKET_AGENT_META",
+            joinColumns = @JoinColumn(name = "MARKET_AGENT_ID")
+    )
+    @MapKeyColumn(name = "META_TYPE")
+    @Column(name = "META_VALUE")
+    private Map<MarketAgentMetaType, String> meta = new HashMap<>();
+
     //==생성 메서드==//
-    public static MarketAgent createMarketAgent(User user, Map<MarketAgentMetaType, String> meta) {
+
+    public static MarketAgent createMarketAgent(User user, MarketAgent input) {
         MarketAgent marketAgent = MarketAgent.builder()
-                .meta(meta)
-                .marketList(new ArrayList<>())
                 .user(user)
+                .agentName(input.getAgentName())
+                .corporateName(input.getCorporateName())
+                .marketList(new ArrayList<>())
+                .meta(input.getMeta())
                 .build();
 
         return marketAgent;

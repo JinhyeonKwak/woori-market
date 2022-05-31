@@ -28,7 +28,7 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @PostMapping(path = "/v1/market-agent", consumes = "application/json")
+    @PostMapping(path = "/v1/market-agents", consumes = "application/json")
     ResponseEntity<MarketAgentResponseDto> createMarketAgent(@RequestBody @Valid MarketAgentRequestDto marketAgentRequestDto);
 
     @ApiOperation(value = "특정 유저의 장주 리스트 조회 API")
@@ -37,7 +37,7 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @GetMapping(path = "/v1/market-agent")
+    @GetMapping(path = "/v1/market-agents")
     ResponseEntity<List<MarketAgentResponseDto>> getMarketAgents();
 
 
@@ -47,7 +47,7 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @GetMapping(path = "/v1/market-agent/{marketAgentId}")
+    @GetMapping(path = "/v1/market-agents/{marketAgentId}")
     ResponseEntity<MarketAgentResponseDto> getMarketAgent(@PathVariable Long marketAgentId);
 
     @ApiOperation(value = "장주 정보 수정 API")
@@ -56,7 +56,7 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @PatchMapping(path = "/v1/market-agent/{marketAgentId}", consumes = "application/json")
+    @PatchMapping(path = "/v1/market-agents/{marketAgentId}", consumes = "application/json")
     ResponseEntity<MarketAgentResponseDto> updateMarketAgent(@RequestBody @Valid MarketAgentRequestDto marketAgentRequestDto,
                                                              @PathVariable Long marketAgentId);
 
@@ -67,7 +67,7 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @PostMapping(path = "/v1/retailer", consumes = "application/json")
+    @PostMapping(path = "/v1/retailers", consumes = "application/json")
     ResponseEntity<RetailerResponseDto> createRetailer(@RequestBody @Valid RetailerRequestDto retailerRequest);
 
     @ApiOperation(value = "특정 유저의 장원 리스트 조회 API")
@@ -85,7 +85,7 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @GetMapping(path = "/v1/retailer/{retailerId}")
+    @GetMapping(path = "/v1/retailers/{retailerId}")
     ResponseEntity<RetailerResponseDto> getRetailer(@PathVariable Long retailerId);
 
     @ApiOperation(value = "장원 정보 수정 API")
@@ -94,7 +94,7 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @PatchMapping(path = "/v1/retailer/{retailerId}", consumes = "application/json")
+    @PatchMapping(path = "/v1/retailers/{retailerId}", consumes = "application/json")
     ResponseEntity<RetailerResponseDto> updateRetailer(@PathVariable Long retailerId,
                                                        @RequestBody @Valid RetailerRequestDto retailerRequest);
 
@@ -104,6 +104,6 @@ public interface MarketMemberApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
-    @DeleteMapping(path = "/v1/retailer/{retailerId}")
+    @DeleteMapping(path = "/v1/retailers/{retailerId}")
     ResponseEntity<UserResponseDto> deleteRetailer(@PathVariable Long retailerId);
 }

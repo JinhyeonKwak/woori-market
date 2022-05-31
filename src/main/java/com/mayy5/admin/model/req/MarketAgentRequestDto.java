@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -17,10 +17,15 @@ import java.util.Map;
 public class MarketAgentRequestDto {
 
 
+    @ApiModelProperty(value = "MarketAgent Name", example = "KIM")
+    private String agentName;
+
+    @ApiModelProperty(value = "Corporate Name", example = "NATURE")
+    private String corporateName;
+
     @ApiModelProperty(
             value = "A MarketAgentPropType map of key/value pairs",
-            example = "{'CORPORATE_NAME' : 'NATURE'}",
             dataType = "Map[String,String]")
-    private Map<MarketAgentMetaType, String> meta;
+    private Map<MarketAgentMetaType, String> meta = new HashMap<>();
 
 }

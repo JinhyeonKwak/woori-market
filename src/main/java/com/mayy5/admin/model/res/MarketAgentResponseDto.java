@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -17,10 +16,14 @@ import java.util.Map;
 @NoArgsConstructor
 public class MarketAgentResponseDto {
 
+    @ApiModelProperty(value = "MarketAgent Name")
+    private String agentName;
+
+    @ApiModelProperty(value = "Corporate Name")
+    private String corporateName;
 
     @ApiModelProperty(
             value = "A MarketAgentPropType map of key/value pairs",
-            example = "",
             dataType = "Map[String,String]")
     private Map<MarketAgentMetaType, String> meta;
 

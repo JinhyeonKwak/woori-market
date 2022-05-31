@@ -1,5 +1,6 @@
 package com.mayy5.admin.model.req;
 
+import com.mayy5.admin.type.MarketMetaType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +10,9 @@ import lombok.Setter;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -17,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MarketCreateRequestDto {
 
-    @ApiModelProperty(value = "Market Location")
+    @ApiModelProperty(value = "Market Location", example = "서울특별시 종로구 혜화동")
     private String address;
 
     @ApiModelProperty(value = "Start Date")
@@ -30,8 +33,13 @@ public class MarketCreateRequestDto {
     private DayOfWeek marketDay;
 
     @ApiModelProperty(value = "MarketAgentRequestDto")
-    private MarketAgentRequestDto marketAgentRequestDto;
+    private MarketAgentRequestDto marketAgent;
 
     @ApiModelProperty(value = "RetailerRequestList")
-    private List<RetailerRequestDto> retailerRequestDtoList = new ArrayList<>();
+    private List<RetailerRequestDto> retailers = new ArrayList<>();
+
+    @ApiModelProperty(
+            value = "A MarketPropType map of key/value pairs",
+            dataType = "Map[String,String]")
+    private Map<MarketMetaType, String> meta = new HashMap<>();
 }
