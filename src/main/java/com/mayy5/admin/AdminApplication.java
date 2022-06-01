@@ -16,6 +16,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +38,7 @@ public class AdminApplication {
 		SpringApplication.run(AdminApplication.class, args);
 	}
 
+	@Profile({"dev","local","prod"})
 	@Order(value = 1)
 	@Bean
 	public CommandLineRunner adminUser(UserService userService, PasswordEncoder passwordEncoder, PostRepository postRepository) {
@@ -67,6 +69,7 @@ public class AdminApplication {
 		};
 	}
 
+	@Profile({"dev","local"})
 	@Order(value = 2)
 	@Bean
 	public CommandLineRunner mockUpMarket(MarketService marketService, MarketMapper marketMapper) {
