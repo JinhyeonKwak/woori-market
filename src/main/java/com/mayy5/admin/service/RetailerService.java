@@ -1,7 +1,6 @@
 package com.mayy5.admin.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.repository.MarketRetailerRepository;
 import com.mayy5.admin.repository.RetailerRepository;
-import com.mayy5.admin.type.RetailerMetaType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +29,7 @@ public class RetailerService {
 	@Transactional
 	public Retailer createRetailer(String userId, Retailer input) {
 		User user = userService.getUser(userId);
-		Retailer retailer = Retailer.createRetailer(user,
-			input.getName(),
-			input.getType(),
-			input.getMeta());
+		Retailer retailer = Retailer.createRetailer(user, input.getName(), input.getType(), input.getMeta());
 		return retailerRepository.save(retailer);
 	}
 
