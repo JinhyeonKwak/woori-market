@@ -1,26 +1,14 @@
 package com.mayy5.admin.model.domain;
 
+import com.mayy5.admin.type.MarketMetaType;
+import lombok.*;
+
+import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.util.Pair;
 
 @Getter
 @Setter
@@ -30,45 +18,66 @@ import lombok.Setter;
 @Entity
 public class Market {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "MARKET_ID")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MARKET_ID")
+    private Long id;
 
-	@Embedded
-	private Address address;
+    private String locationAddress;
+    private String detailAddress;
+    private String regionCode;
+    //TODO Double?
+    private String latitude;
+    private String longitude;
 
-	@Column(name = "START_AT")
-	private LocalDate startDate;
+    @Column(name = "START_AT")
+    private LocalDate startDate;
 
-	@Column(name = "END_AT")
-	private LocalDate endDate;
+    @Column(name = "END_AT")
+    private LocalDate endDate;
 
-	private DayOfWeek marketDay;
+    private DayOfWeek marketDay;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MARKET_AGENT_ID")
-	private MarketAgent marketAgent;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MARKET_AGENT_ID")
+    private MarketAgent marketAgent;
 
-	@OneToMany(mappedBy = "market", orphanRemoval = true)
-	private List<MarketRetailer> marketRetailerList = new ArrayList<>();
+    @OneToMany(mappedBy = "market", orphanRemoval = true)
+    private List<MarketRetailer> marketRetailerList = new ArrayList<>();
 
-	//==생성 메서드==//
-	public static Market createMarket(MarketAgent marketAgent, Market input) {
-		Market market = Market.builder()
-			.address(input.getAddress())
-			.startDate(input.getStartDate())
-			.endDate(input.getEndDate())
-			.marketDay(input.getMarketDay())
-			.marketRetailerList(new ArrayList<>())
-			.build();
-		market.setMarketAgent(marketAgent);
-		return market;
-	}
+    @ElementCollection(fetch = FetchType.EAGER)
+    @MapKeyEnumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "MARKET_META",
+            joinColumns = @JoinColumn(name = "MARKET_ID")
+    )
+    @MapKeyColumn(name = "META_TYPE")
+    @Column(name = "META_VALUE")
+    private Map<MarketMetaType, String> meta = new HashMap<>();
 
-	//==연관 관계 메서드==//
-	public void setMarketAgent(MarketAgent marketAgent) {
-		this.marketAgent = marketAgent;
-		marketAgent.getMarketList().add(this);
-	}
+
+    //==생성 메서드==//
+    public static Market createMarket(MarketAgent marketAgent, Market input) {
+        Market market = Market.builder()
+                .locationAddress(input.getLocationAddress())
+                .detailAddress(input.getDetailAddress())
+                .regionCode(input.getRegionCode())
+                .latitude(input.getLatitude())
+                .longitude(input.getLongitude())
+                .startDate(input.getStartDate())
+                .endDate(input.getEndDate())
+                .marketDay(input.getMarketDay())
+                .marketRetailerList(new ArrayList<>())
+                .meta(input.getMeta())
+                .build();
+
+        market.setMarketAgent(marketAgent);
+        return market;
+    }
+
+    //==연관 관계 메서드==//
+    public void setMarketAgent(MarketAgent marketAgent) {
+        this.marketAgent = marketAgent;
+        marketAgent.getMarketList().add(this);
+    }
 }
