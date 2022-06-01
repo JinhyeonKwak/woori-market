@@ -108,7 +108,8 @@ public interface UserApi {
 		@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
 	})
 	@PutMapping("/v1/token")
-	ResponseEntity<UserTokenResponseDto> updateAccessToken(@Valid @RequestBody UserTokenUpdateRequestDto userTokenUpdateRequestDto);
+	ResponseEntity<UserTokenResponseDto> updateAccessToken(
+		@Valid @RequestBody UserTokenUpdateRequestDto userTokenUpdateRequestDto);
 
 	@ApiOperation(value = "USER Delete API", notes = "")
 	@ApiResponses(value = {

@@ -47,7 +47,7 @@ public class TokenService {
 			.builder()
 			.setSubject("가입 확인")
 			.setIssuer("mayy5_admin")
-			.claim("email",email)
+			.claim("email", email)
 			.setIssuedAt(new Date(System.currentTimeMillis()))
 			.setExpiration(new Date(System.currentTimeMillis() + JWTConstant.SIGNUP_TOKEN_EXPIRED))
 			.signWith(SignatureAlgorithm.HS512,

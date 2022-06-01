@@ -7,10 +7,11 @@ public enum PostType {
 
 	private String value;
 
-	PostType(String value){
+	PostType(String value) {
 		this.value = value;
 	}
-	public String getValue(){
+
+	public String getValue() {
 		return value;
 	}
 }

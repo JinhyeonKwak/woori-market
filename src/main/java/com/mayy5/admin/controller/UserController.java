@@ -46,7 +46,7 @@ public class UserController implements UserApi {
 
 		try {
 			User user = userService.getUser(loginDTO.getId());
-			if(!user.isValid()){
+			if (!user.isValid()) {
 				log.error("인증되지 않은 사용자 입니다. - {}", user.getId());
 				throw new CommonException(BError.NOT_SUPPORT, user.getId());
 			}

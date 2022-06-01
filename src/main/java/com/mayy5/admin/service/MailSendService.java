@@ -1,10 +1,10 @@
 package com.mayy5.admin.service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Random;
 
 import javax.mail.MessagingException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Service
 public class MailSendService {
+
+	@Value("${server.ip:localhost}")
+	private String ip;
+	@Value("${server.port:8080}")
+	private int port;
 
 	private final JavaMailSender mailSender;
 	private final TokenService tokenService;
@@ -31,7 +36,7 @@ public class MailSendService {
 			sendMail.setSubject("회원가입 이메일 인증");
 			sendMail.setText(new StringBuffer().append("<h1>[이메일 인증]</h1>")
 				.append("<p>아래 링크를 클릭하시면 이메일 인증이 완료됩니다.</p>")
-				.append("<a href='http://localhost:8080/v1/signUpConfirm?email=")
+				.append("<a href='http://" + ip + ":" + port + "/v1/signUpConfirm?email=")
 				.append(email)
 				.append("&authKey=")
 				.append(authKey)

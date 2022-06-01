@@ -1,16 +1,39 @@
 package com.mayy5.admin.model.domain;
 
-import com.mayy5.admin.type.RetailerMetaType;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyEnumerated;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.mayy5.admin.type.RetailerMetaType;
+import com.mayy5.admin.type.RetailerType;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -20,51 +43,54 @@ import java.util.Map;
 @Entity
 public class Retailer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RETAILER_ID")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "RETAILER_ID")
+	private Long id;
 
-    private String retailerName;
+	@Column(name = "RETAIER_NAME")
+	private String name;
 
-    private String retailType;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "RETAIER_TYPE")
+	private RetailerType type;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "USER_ID")
-    private User user;
+	@ElementCollection(fetch = FetchType.EAGER)
+	@MapKeyEnumerated(EnumType.STRING)
+	@CollectionTable(
+		name = "RETAILER_META",
+		joinColumns = @JoinColumn(name = "RETAILER_ID")
+	)
+	@MapKeyColumn(name = "META_TYPE")
+	@Column(name = "META_VALUE")
+	private Map<RetailerMetaType, String> meta = new HashMap<>();
 
-    @OneToMany(mappedBy = "retailer", orphanRemoval = true)
-    private List<MarketRetailer> marketRetailerList = new ArrayList<>();
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "USER_ID")
+	private User user;
 
-    @Column(name = "CREATE_AT", nullable = false, updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createAt;
+	@OneToMany(mappedBy = "retailer", orphanRemoval = true)
+	private List<MarketRetailer> marketRetailerList = new ArrayList<>();
 
-    @Column(name = "UPDATE_AT")
-    @UpdateTimestamp
-    private LocalDateTime updateAt;
+	@Column(name = "CREATE_AT", nullable = false, updatable = false)
+	@CreationTimestamp
+	private LocalDateTime createAt;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @MapKeyEnumerated(EnumType.STRING)
-    @CollectionTable(
-            name = "RETAILER_META",
-            joinColumns = @JoinColumn(name = "RETAILER_ID")
-    )
-    @MapKeyColumn(name = "META_TYPE")
-    @Column(name = "META_VALUE")
-    private Map<RetailerMetaType, String> meta = new HashMap<>();
+	@Column(name = "UPDATE_AT")
+	@UpdateTimestamp
+	private LocalDateTime updateAt;
 
-    //==생성 메서드==//
-
-    public static Retailer createRetailer(User user, Retailer input) {
-        Retailer retailer = Retailer.builder()
-                .user(user)
-                .retailerName(input.getRetailerName())
-                .retailType(input.getRetailType())
-                .marketRetailerList(new ArrayList<>())
-                .meta(input.getMeta())
-                .build();
-        retailer.setUser(user);
-        return retailer;
-    }
+	//==생성 메서드==//
+	public static Retailer createRetailer(User user, String name, RetailerType type,
+		Map<RetailerMetaType, String> meta) {
+		Retailer retailer = Retailer.builder()
+			.name(name)
+			.type(type)
+			.meta(meta)
+			.marketRetailerList(new ArrayList<>())
+			.user(user)
+			.build();
+		retailer.setUser(user);
+		return retailer;
+	}
 }

@@ -18,6 +18,15 @@ repositories {
 	mavenCentral()
 }
 
+bootJar {
+	def branch = ""
+	def proc = "git rev-parse --abbrev-ref HEAD".execute()
+	proc.in.eachLine { line -> branch = line }
+	proc.waitFor()
+	archiveFileName = "${archiveBaseName.get()}-${branch}.${archiveExtension.get()}"
+}
+
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
