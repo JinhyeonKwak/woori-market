@@ -8,6 +8,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 
+import org.springframework.data.util.Pair;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,6 +26,7 @@ public class Market {
     private String locationAddress;
     private String detailAddress;
     private String regionCode;
+    //TODO Double?
     private String latitude;
     private String longitude;
 

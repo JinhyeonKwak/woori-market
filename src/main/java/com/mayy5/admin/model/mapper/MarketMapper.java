@@ -65,6 +65,7 @@ public interface MarketMapper {
     ScheduleResponseDto toScheduleResponse(MarketSchedule marketSchedule);
 
 
+    //TODO 서비스 전환 지도서비스
     private Map<String, String> getLatLng(String location) throws IOException, ParseException {
         String geocoderApiUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
         URL url = new URL( geocoderApiUrl + "?query=" + URLEncoder.encode(location, "UTF-8"));

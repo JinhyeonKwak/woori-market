@@ -8,6 +8,7 @@ import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.service.MarketService;
 import com.mayy5.admin.service.UserService;
 import com.mayy5.admin.type.PostType;
+import com.mayy5.admin.type.RetailerType;
 import com.mayy5.admin.type.UserMetaType;
 import com.mayy5.admin.type.UserRoleType;
 import org.json.simple.parser.ParseException;
@@ -84,8 +85,8 @@ public class AdminApplication {
 				List<Retailer> retailerList = new ArrayList<>();
 				IntStream.rangeClosed(1, 20).forEach(j -> {
 					Retailer retailer = Retailer.builder()
-							.retailerName("NAME" + j)
-							.retailType("TYPE" + j)
+							.name("NAME" + j)
+							.type(RetailerType.JOGBAL)
 							.build();
 					retailerList.add(retailer);
 				});
