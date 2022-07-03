@@ -6,9 +6,10 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.*;
-
-import org.springframework.data.util.Pair;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -26,7 +27,6 @@ public class Market {
     private String locationAddress;
     private String detailAddress;
     private String regionCode;
-    //TODO Double?
     private String latitude;
     private String longitude;
 
