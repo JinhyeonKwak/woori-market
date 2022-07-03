@@ -1,28 +1,24 @@
 package com.mayy5.admin.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-
+import com.mayy5.admin.common.BError;
+import com.mayy5.admin.common.CommonException;
+import com.mayy5.admin.model.domain.*;
+import com.mayy5.admin.repository.MarketRepository;
+import com.mayy5.admin.repository.MarketRetailerRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mayy5.admin.common.BError;
-import com.mayy5.admin.common.CommonException;
-import com.mayy5.admin.model.domain.Market;
-import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.domain.MarketRetailer;
-import com.mayy5.admin.model.domain.MarketSchedule;
-import com.mayy5.admin.model.domain.Retailer;
-import com.mayy5.admin.repository.MarketRepository;
-import com.mayy5.admin.repository.MarketRetailerRepository;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,6 +28,7 @@ public class MarketService {
 	private final MarketAgentService marketAgentService;
 	private final RetailerService retailerService;
 	private final MarketScheduleService marketScheduleService;
+	private final MarketMapService marketMapService;
 	private final EntityManager em;
 
 	private final MarketRepository marketRepository;
@@ -39,18 +36,24 @@ public class MarketService {
 
 	@Transactional
 	public Market createMarket(String loginUserId,
-		MarketAgent inputMarketAgent,
-		List<Retailer> inputRetailerList,
-		Market input) {
+							   MarketAgent inputMarketAgent,
+							   List<Retailer> inputRetailerList,
+							   Market input) throws IOException, ParseException {
 
 		MarketAgent marketAgent = marketAgentService.createMarketAgent(loginUserId, inputMarketAgent);
 		List<Retailer> retailerList = inputRetailerList.stream()
 			.map(retailer -> retailerService.createRetailer(loginUserId, retailer))
 			.collect(Collectors.toList());
+
+		String regionCode = MarketMapService.getRegionCode(input.getLocationAddress());
+		Map<String, String> latLng = MarketMapService.getLatLng(input.getLocationAddress());
+		input.setRegionCode(regionCode);
+		input.setLatitude(latLng.get("latitude"));
+		input.setLongitude(latLng.get("longitude"));
+
 		Market market = marketRepository.save(Market.createMarket(marketAgent, input));
 
 		List<MarketRetailer> marketRetailers = this.addRetailers(market, retailerList);
-		this.updateMarket(market);
 		marketScheduleService.createSchedule(marketRetailers);
 
 		return market;

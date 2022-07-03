@@ -2,7 +2,6 @@ package com.mayy5.admin;
 
 import com.mayy5.admin.model.domain.*;
 import com.mayy5.admin.model.mapper.MarketMapper;
-import com.mayy5.admin.model.req.MarketCreateRequestDto;
 import com.mayy5.admin.repository.PostRepository;
 import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.service.MarketService;
@@ -96,7 +95,7 @@ public class AdminApplication {
 
 				double random = Math.random();
 				int value = (int) (random * 7 + 1);
-				MarketCreateRequestDto marketRequest = MarketCreateRequestDto.builder()
+				Market market = Market.builder()
 						.locationAddress(addresses[i-1])
 						.detailAddress("DETAIL ADDRESS" + i)
 						.startDate(LocalDate.now().plusWeeks(value))
@@ -104,16 +103,13 @@ public class AdminApplication {
 						.marketDay(DayOfWeek.of(value))
 						.build();
 
-				Market market = null;
 				try {
-					market = marketMapper.toEntity(marketRequest);
+					marketService.createMarket("admin", marketAgent, retailerList, market);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-
-				marketService.createMarket("admin", marketAgent, retailerList, market);
 			});
 		};
 	}
