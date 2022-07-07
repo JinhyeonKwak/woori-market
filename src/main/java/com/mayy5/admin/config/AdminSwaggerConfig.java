@@ -3,6 +3,7 @@ package com.mayy5.admin.config;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Pageable;
@@ -34,12 +35,15 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class AdminSwaggerConfig {
 
+	@Value("${server.ip:localhost}")
+	private String ip;
 	private final TypeResolver typeResolver;
 
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
 			.apiInfo(apiInfo())
+			.host(ip)
 			.alternateTypeRules(
 				AlternateTypeRules.newRule(typeResolver.resolve(Pageable.class), typeResolver.resolve(Page.class)))
 			.securityContexts(Arrays.asList(securityContext()))
