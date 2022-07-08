@@ -17,6 +17,15 @@ public class DemoController implements DemoApi {
 	@Override
 	public ResponseEntity<DemosResponseDto> getDemos(
 		@PathVariable String userId) {
+		Demo demo = Demo.builder().id(userId).content(userId).build();
+		DemoResponseDto demoResponseDto = DemoResponseDto.fromDemo(demo);
+		return ResponseEntity.ok(DemosResponseDto.builder()
+			.demos(Arrays.asList(demoResponseDto))
+			.build());
+	}
+
+	@Override
+	public ResponseEntity<DemosResponseDto> postDemos() {
 		Demo demo = Demo.builder().id("000").content("Temp").build();
 		DemoResponseDto demoResponseDto = DemoResponseDto.fromDemo(demo);
 		return ResponseEntity.ok(DemosResponseDto.builder()

@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiResponses;
 @Api(value = "Demo", tags = SwaggerApiTag.DEMO)
 @Validated
 public interface DemoApi {
-	@ApiOperation(value = "유저의 데모 조회 API", notes = "")
+	@ApiOperation(value = "데모 조회 API", notes = "")
 	@ApiResponses(value = {
 		@ApiResponse(code = HttpStatus.SC_OK, message = "성공", response = DemosResponseDto.class),
 		@ApiResponse(code = HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
@@ -32,5 +32,14 @@ public interface DemoApi {
 	@GetMapping(value = "/v1/users/{userId}/demo")
 	ResponseEntity<DemosResponseDto> getDemos(
 		@ApiParam(required = true) String userId);
+
+	@ApiOperation(value = "데모 생성 API", notes = "")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpStatus.SC_OK, message = "성공", response = DemosResponseDto.class),
+		@ApiResponse(code = HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
+		@ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
+	})
+	@GetMapping(value = "/v1/demo")
+	ResponseEntity<DemosResponseDto> postDemos();
 
 }

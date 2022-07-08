@@ -55,7 +55,7 @@ public class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
 			//                .and()
 			.headers().frameOptions().disable().and() // for H2 Console
 			.authorizeRequests()
-			.antMatchers("/**/token", "/**/login", "/**/signUp", "/**/signUpConfirm")
+			.antMatchers("/**/token", "/**/login", "/**/signUp", "/**/signUpConfirm","/**/demo")
 			.permitAll()
 			.antMatchers(AUTH_WHITELIST)
 			.permitAll()
