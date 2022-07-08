@@ -35,7 +35,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class AdminSwaggerConfig {
 
-	@Value("${server.ip:localhost}")
+	@Value("${server.ip:localhost:8080}")
 	private String ip;
 	private final TypeResolver typeResolver;
 
