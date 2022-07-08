@@ -4,6 +4,7 @@ import org.apache.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.mayy5.admin.apis.type.SwaggerApiTag;
 import com.mayy5.admin.model.res.DemosResponseDto;
@@ -39,7 +40,7 @@ public interface DemoApi {
 		@ApiResponse(code = HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
 		@ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
 	})
-	@GetMapping(value = "/v1/demo")
+	@PostMapping(value = "/v1/demo")
 	ResponseEntity<DemosResponseDto> postDemos();
 
 }
