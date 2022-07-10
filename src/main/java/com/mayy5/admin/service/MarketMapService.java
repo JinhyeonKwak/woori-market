@@ -24,10 +24,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MarketMapService {
 
-    public static String getRegionCode(String location) throws IOException, ParseException {
+    public static String getRegionCode(String roadAddress) throws IOException, ParseException {
 
-        String[] locationArr = location.split("\\s");
-        String[] tmp = Arrays.copyOfRange(locationArr, 0, locationArr.length - 1);
+        JSONArray addresses = geocode(roadAddress);
+        JSONObject address = (JSONObject) addresses.get(0);
+        String jibunAddress = (String) address.get("jibunAddress");
+
+        String[] locationArr = jibunAddress.split("\\s");
+        String[] tmp;
+        try {
+            tmp = Arrays.copyOfRange(locationArr, 0, 4);
+            int check = Integer.parseInt(String.valueOf(tmp[3].charAt(0)));
+            tmp = Arrays.copyOfRange(locationArr, 0, 3);
+        } catch (NumberFormatException e) {
+            tmp = Arrays.copyOfRange(locationArr, 0, 4);
+        }
+
         String sb = Arrays.stream(tmp)
                 .map(s -> s + " ")
                 .collect(Collectors.joining());
@@ -53,7 +65,26 @@ public class MarketMapService {
         return regionCode;
     }
 
-    public static Map<String, String> getLatLng(String location) throws IOException, ParseException {
+    public static Map<String, String> getLatLng(String roadAddress) throws IOException, ParseException {
+        JSONArray addresses = geocode(roadAddress);
+        JSONObject address = (JSONObject) addresses.get(0);
+        String lng = (String) address.get("x");
+        String lat = (String) address.get("y");
+
+        HashMap<String, String> latLng = new HashMap<>();
+        latLng.put("latitude", lat);
+        latLng.put("longitude", lng);
+        return latLng;
+    }
+
+    /**
+     * Naver geocode api
+     * @param location (도로명 주소)
+     * @return addresses [도로명 주소, 지번 주소, 영어 주소, 경도, 위도, 검색 중심 좌표로부터의 거리, 주소를 이루는 요소들]
+     * @throws IOException
+     * @throws ParseException
+     */
+    private static JSONArray geocode(String location) throws IOException, ParseException {
         String geocoderApiUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
         URL url = new URL( geocoderApiUrl + "?query=" + URLEncoder.encode(location, "UTF-8"));
 
@@ -70,13 +101,6 @@ public class MarketMapService {
         JSONParser parser = new JSONParser();
         JSONObject response = (JSONObject) parser.parse(result);
         JSONArray addresses = (JSONArray) response.get("addresses");
-        JSONObject address = (JSONObject) addresses.get(0);
-        String lng = (String) address.get("x");
-        String lat = (String) address.get("y");
-
-        HashMap<String, String> latLng = new HashMap<>();
-        latLng.put("latitude", lat);
-        latLng.put("longitude", lng);
-        return latLng;
+        return addresses;
     }
 }

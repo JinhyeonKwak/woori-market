@@ -24,7 +24,8 @@ public class Market {
     @Column(name = "MARKET_ID")
     private Long id;
 
-    private String locationAddress;
+    private String roadAddress;
+    private String jibunAddress;
     private String detailAddress;
     private String regionCode;
     private String latitude;
@@ -59,7 +60,8 @@ public class Market {
     //==생성 메서드==//
     public static Market createMarket(MarketAgent marketAgent, Market input) {
         Market market = Market.builder()
-                .locationAddress(input.getLocationAddress())
+                .roadAddress(input.getRoadAddress())
+                .jibunAddress(input.getJibunAddress())
                 .detailAddress(input.getDetailAddress())
                 .regionCode(input.getRegionCode())
                 .latitude(input.getLatitude())

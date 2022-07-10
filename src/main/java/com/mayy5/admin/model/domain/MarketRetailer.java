@@ -1,23 +1,10 @@
 package com.mayy5.admin.model.domain;
 
+import lombok.*;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @Setter
@@ -40,7 +27,7 @@ public class MarketRetailer {
 	@JoinColumn(name = "RETAILER_ID")
 	private Retailer retailer;
 
-	@OneToMany(mappedBy = "marketRetailer")
+	@OneToMany(mappedBy = "marketRetailer", orphanRemoval = true)
 	private List<MarketSchedule> marketScheduleList = new ArrayList<>();
 
 	public static MarketRetailer createMarketRetailer(Market market, Retailer retailer) {

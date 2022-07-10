@@ -28,7 +28,6 @@ public class MarketService {
 	private final MarketAgentService marketAgentService;
 	private final RetailerService retailerService;
 	private final MarketScheduleService marketScheduleService;
-	private final MarketMapService marketMapService;
 	private final EntityManager em;
 
 	private final MarketRepository marketRepository;
@@ -45,8 +44,8 @@ public class MarketService {
 			.map(retailer -> retailerService.createRetailer(loginUserId, retailer))
 			.collect(Collectors.toList());
 
-		String regionCode = MarketMapService.getRegionCode(input.getLocationAddress());
-		Map<String, String> latLng = MarketMapService.getLatLng(input.getLocationAddress());
+		String regionCode = MarketMapService.getRegionCode(input.getRoadAddress());
+		Map<String, String> latLng = MarketMapService.getLatLng(input.getRoadAddress());
 		input.setRegionCode(regionCode);
 		input.setLatitude(latLng.get("latitude"));
 		input.setLongitude(latLng.get("longitude"));
