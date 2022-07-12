@@ -1,18 +1,10 @@
 package com.mayy5.admin.controller;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.mayy5.admin.apis.MarketMemberApi;
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.MarketAgent;
 import com.mayy5.admin.model.domain.Retailer;
-import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.RetailerMapper;
 import com.mayy5.admin.model.mapper.UserMapper;
@@ -20,13 +12,17 @@ import com.mayy5.admin.model.req.MarketAgentRequestDto;
 import com.mayy5.admin.model.req.RetailerRequestDto;
 import com.mayy5.admin.model.res.MarketAgentResponseDto;
 import com.mayy5.admin.model.res.RetailerResponseDto;
-import com.mayy5.admin.model.res.UserResponseDto;
 import com.mayy5.admin.service.MarketAgentService;
 import com.mayy5.admin.service.RetailerService;
 import com.mayy5.admin.service.UserService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -111,8 +107,7 @@ public class MarketMemberController implements MarketMemberApi {
 
 		try {
 			Retailer input = retailerMapper.toEntity(retailerRequest);
-			String loginUserId = userService.getLoginUserId();
-			Retailer retailer = retailerService.createRetailer(loginUserId, input);
+			Retailer retailer = retailerService.createRetailer(input);
 			return new ResponseEntity<>(retailerMapper.toDto(retailer), HttpStatus.OK);
 		} catch (CommonException e) {
 			throw e;
@@ -122,21 +117,21 @@ public class MarketMemberController implements MarketMemberApi {
 		}
 	}
 
-	@Override
-	public ResponseEntity<List<RetailerResponseDto>> getRetailers() {
-
-		try {
-			String loginUserId = userService.getLoginUserId();
-			List<Retailer> retailerList = retailerService.getRetailersByUserId(loginUserId);
-			List<RetailerResponseDto> retailerResponseDtoList = retailerMapper.toDtoList(retailerList);
-			return new ResponseEntity<>(retailerResponseDtoList, HttpStatus.OK);
-		} catch (CommonException e) {
-			throw e;
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			throw new CommonException(BError.FAIL, "getRetailers");
-		}
-	}
+//	@Override
+//	public ResponseEntity<List<RetailerResponseDto>> getRetailers() {
+//
+//		try {
+//			String loginUserId = userService.getLoginUserId();
+//			List<Retailer> retailerList = retailerService.getRetailersByUserId(loginUserId);
+//			List<RetailerResponseDto> retailerResponseDtoList = retailerMapper.toDtoList(retailerList);
+//			return new ResponseEntity<>(retailerResponseDtoList, HttpStatus.OK);
+//		} catch (CommonException e) {
+//			throw e;
+//		} catch (Exception e) {
+//			log.error(e.getMessage(), e);
+//			throw new CommonException(BError.FAIL, "getRetailers");
+//		}
+//	}
 
 	@Override
 	public ResponseEntity<RetailerResponseDto> getRetailer(Long retailerId) {
@@ -165,21 +160,6 @@ public class MarketMemberController implements MarketMemberApi {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new CommonException(BError.FAIL, "updateRetailer");
-		}
-	}
-
-	@Override
-	public ResponseEntity<UserResponseDto> deleteRetailer(Long retailerId) {
-
-		try {
-			User user = retailerService.getRetailer(retailerId).getUser();
-			retailerService.deleteRetailer(retailerId);
-			return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
-		} catch (CommonException e) {
-			throw e;
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			throw new CommonException(BError.FAIL, "deleteRetailer");
 		}
 	}
 }

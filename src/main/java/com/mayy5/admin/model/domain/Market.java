@@ -43,8 +43,8 @@ public class Market {
     @JoinColumn(name = "MARKET_AGENT_ID")
     private MarketAgent marketAgent;
 
-    @OneToMany(mappedBy = "market", orphanRemoval = true)
-    private List<MarketRetailer> marketRetailerList = new ArrayList<>();
+    @OneToMany(mappedBy = "market")
+    private List<Retailer> retailerList = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @MapKeyEnumerated(EnumType.STRING)
@@ -58,28 +58,32 @@ public class Market {
 
 
     //==생성 메서드==//
-    public static Market createMarket(MarketAgent marketAgent, Market input) {
+    public static Market createMarket(MarketAgent marketAgent, Market inputMarket, List<Retailer> retailerList) {
         Market market = Market.builder()
-                .roadAddress(input.getRoadAddress())
-                .jibunAddress(input.getJibunAddress())
-                .detailAddress(input.getDetailAddress())
-                .regionCode(input.getRegionCode())
-                .latitude(input.getLatitude())
-                .longitude(input.getLongitude())
-                .startDate(input.getStartDate())
-                .endDate(input.getEndDate())
-                .marketDay(input.getMarketDay())
-                .marketRetailerList(new ArrayList<>())
-                .meta(input.getMeta())
+                .roadAddress(inputMarket.getRoadAddress())
+                .jibunAddress(inputMarket.getJibunAddress())
+                .detailAddress(inputMarket.getDetailAddress())
+                .regionCode(inputMarket.getRegionCode())
+                .latitude(inputMarket.getLatitude())
+                .longitude(inputMarket.getLongitude())
+                .startDate(inputMarket.getStartDate())
+                .endDate(inputMarket.getEndDate())
+                .marketDay(inputMarket.getMarketDay())
+                .meta(inputMarket.getMeta())
                 .build();
-
         market.setMarketAgent(marketAgent);
+        market.setRetailerList(retailerList);
         return market;
     }
 
     //==연관 관계 메서드==//
     public void setMarketAgent(MarketAgent marketAgent) {
-        this.marketAgent = marketAgent;
+        this.marketAgent= marketAgent;
         marketAgent.getMarketList().add(this);
+    }
+
+    public void setRetailerList(List<Retailer> retailerList) {
+        this.retailerList = retailerList;
+        retailerList.forEach(retailer -> retailer.setMarket(this));
     }
 }

@@ -1,39 +1,15 @@
 package com.mayy5.admin.model.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.MapKeyEnumerated;
-import javax.persistence.OneToMany;
-
+import com.mayy5.admin.type.RetailerMetaType;
+import com.mayy5.admin.type.RetailerType;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.mayy5.admin.type.RetailerMetaType;
-import com.mayy5.admin.type.RetailerType;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -53,7 +29,11 @@ public class Retailer {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "RETAIER_TYPE")
-	private RetailerType type;
+	private RetailerType retailerType;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MARKET_ID")
+	private Market market;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@MapKeyEnumerated(EnumType.STRING)
@@ -65,13 +45,6 @@ public class Retailer {
 	@Column(name = "META_VALUE")
 	private Map<RetailerMetaType, String> meta = new HashMap<>();
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "USER_ID")
-	private User user;
-
-	@OneToMany(mappedBy = "retailer", orphanRemoval = true)
-	private List<MarketRetailer> marketRetailerList = new ArrayList<>();
-
 	@Column(name = "CREATE_AT", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime createAt;
@@ -81,16 +54,12 @@ public class Retailer {
 	private LocalDateTime updateAt;
 
 	//==생성 메서드==//
-	public static Retailer createRetailer(User user, String name, RetailerType type,
-		Map<RetailerMetaType, String> meta) {
+	public static Retailer createRetailer(String name, RetailerType retailerType, Map<RetailerMetaType, String> meta) {
 		Retailer retailer = Retailer.builder()
-			.name(name)
-			.type(type)
-			.meta(meta)
-			.marketRetailerList(new ArrayList<>())
-			.user(user)
-			.build();
-		retailer.setUser(user);
+				.name(name)
+				.retailerType(retailerType)
+				.meta(meta)
+				.build();
 		return retailer;
 	}
 }

@@ -1,18 +1,17 @@
 package com.mayy5.admin.model.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.mayy5.admin.model.domain.Retailer;
+import com.mayy5.admin.model.req.RetailerRequestDto;
+import com.mayy5.admin.model.res.RetailerResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
-import com.mayy5.admin.model.domain.Retailer;
-import com.mayy5.admin.model.req.RetailerRequestDto;
-import com.mayy5.admin.model.res.RetailerResponseDto;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Mapper(componentModel = "spring",
@@ -26,12 +25,10 @@ public interface RetailerMapper {
 
 	default List<Retailer> toEntities(List<RetailerRequestDto> dtoList) {
 		List<Retailer> retailerList = dtoList.stream().
-			map(this::toEntity)
-			.collect(Collectors.toList());
+				map(this::toEntity)
+				.collect(Collectors.toList());
 		return retailerList;
 	}
-
-	;
 
 	void update(RetailerRequestDto retailerRequestDto, @MappingTarget Retailer retailer);
 

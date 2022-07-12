@@ -1,11 +1,9 @@
 package com.mayy5.admin.model.mapper;
 
 import com.mayy5.admin.model.domain.Market;
-import com.mayy5.admin.model.domain.MarketSchedule;
 import com.mayy5.admin.model.req.MarketCreateRequestDto;
 import com.mayy5.admin.model.req.MarketUpdateRequestDto;
 import com.mayy5.admin.model.res.MarketResponseDto;
-import com.mayy5.admin.model.res.ScheduleResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -28,8 +26,8 @@ public interface MarketMapper {
 
     void update(MarketUpdateRequestDto marketRequest, @MappingTarget Market market);
 
-    @Mapping(source = "marketRetailer.retailer.id", target = "retailerId")
-    @Mapping(source = "marketRetailer.market.id", target = "marketId")
-    ScheduleResponseDto toScheduleResponse(MarketSchedule marketSchedule);
+//    @Mapping(source = "marketRetailer.retailer.id", target = "retailerId")
+//    @Mapping(source = "marketRetailer.market.id", target = "marketId")
+//    ScheduleResponseDto toScheduleResponse(MarketSchedule marketSchedule);
 
 }

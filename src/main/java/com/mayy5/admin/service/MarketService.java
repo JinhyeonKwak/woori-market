@@ -2,9 +2,10 @@ package com.mayy5.admin.service;
 
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
-import com.mayy5.admin.model.domain.*;
+import com.mayy5.admin.model.domain.Market;
+import com.mayy5.admin.model.domain.MarketAgent;
+import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.repository.MarketRepository;
-import com.mayy5.admin.repository.MarketRetailerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
@@ -13,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,33 +26,31 @@ public class MarketService {
 
 	private final MarketAgentService marketAgentService;
 	private final RetailerService retailerService;
-	private final MarketScheduleService marketScheduleService;
+//	private final MarketScheduleService marketScheduleService;
 	private final EntityManager em;
 
 	private final MarketRepository marketRepository;
-	private final MarketRetailerRepository marketRetailerRepository;
 
 	@Transactional
 	public Market createMarket(String loginUserId,
 							   MarketAgent inputMarketAgent,
 							   List<Retailer> inputRetailerList,
-							   Market input) throws IOException, ParseException {
+							   Market inputMarket) throws IOException, ParseException {
 
 		MarketAgent marketAgent = marketAgentService.createMarketAgent(loginUserId, inputMarketAgent);
 		List<Retailer> retailerList = inputRetailerList.stream()
-			.map(retailer -> retailerService.createRetailer(loginUserId, retailer))
+			.map(retailer -> retailerService.createRetailer(retailer))
 			.collect(Collectors.toList());
 
-		String regionCode = MarketMapService.getRegionCode(input.getRoadAddress());
-		Map<String, String> latLng = MarketMapService.getLatLng(input.getRoadAddress());
-		input.setRegionCode(regionCode);
-		input.setLatitude(latLng.get("latitude"));
-		input.setLongitude(latLng.get("longitude"));
+		String regionCode = MarketMapService.getRegionCode(inputMarket.getRoadAddress());
+		Map<String, String> latLng = MarketMapService.getLatLng(inputMarket.getRoadAddress());
+		inputMarket.setRegionCode(regionCode);
+		inputMarket.setLatitude(latLng.get("latitude"));
+		inputMarket.setLongitude(latLng.get("longitude"));
 
-		Market market = marketRepository.save(Market.createMarket(marketAgent, input));
+		Market market = marketRepository.save(Market.createMarket(marketAgent, inputMarket, retailerList));
 
-		List<MarketRetailer> marketRetailers = this.addRetailers(market, retailerList);
-		marketScheduleService.createSchedule(marketRetailers);
+//		marketScheduleService.createSchedule(marketRetailers);
 
 		return market;
 	}
@@ -65,25 +62,21 @@ public class MarketService {
 	}
 
 	@Transactional
-	public void addRetailer(Market market, Retailer retailer) {
-		;
-
-		// 장-장원 관계 엔티티 생성 & 영속화
-		MarketRetailer marketRetailer = MarketRetailer.createMarketRetailer(market, retailer);
-		em.persist(marketRetailer);
-
+	public Market addRetailers(Long marketId, List<Retailer> retailerList) {
+		Market market = this.getMarket(marketId);
+		retailerList.stream()
+				.map(retailerService::createRetailer)
+				.forEach(retailer -> market.getRetailerList().add(retailer));
+		return market;
 	}
 
 	@Transactional
-	public List<MarketRetailer> addRetailers(Market market, List<Retailer> retailerList) {
-		List<MarketRetailer> marketRetailers = new ArrayList<>();
-		retailerList.stream()
-			.map(retailer -> MarketRetailer.createMarketRetailer(market, retailer))
-			.forEach(marketRetailer -> {
-				em.persist(marketRetailer);
-				marketRetailers.add(marketRetailer);
-			});
-		return marketRetailers;
+	public Market dropRetailers(Long marketId, List<Long> retailerIds) {
+		Market market = this.getMarket(marketId);
+		for (Long retailerId : retailerIds) {
+			retailerService.deleteRetailer(retailerId);
+		}
+		return market;
 	}
 
 	@Transactional
@@ -108,16 +101,10 @@ public class MarketService {
 		}
 	}
 
-	@Transactional
-	public void dropRetailer(Long marketId, Long retailerId) {
-		MarketRetailer marketRetailer = marketRetailerRepository.getMarketRetailer(marketId, retailerId);
-		marketRetailerRepository.deleteById(marketRetailer.getId());
-	}
-
-	@Transactional
-	public MarketSchedule checkAttend(Long marketId, Long retailerId, LocalDate checkDate) {
-		return marketScheduleService.checkAttend(marketId, retailerId, checkDate);
-	}
+//	@Transactional
+//	public MarketSchedule checkAttend(Long marketId, Long retailerId, LocalDate checkDate) {
+//		return marketScheduleService.checkAttend(marketId, retailerId, checkDate);
+//	}
 
 	@Transactional
 	public MarketAgent registerMarketAgent(Long marketId, Long marketAgentId) {
@@ -134,17 +121,4 @@ public class MarketService {
 		return marketAgent.getMarketList();
 	}
 
-	@Transactional
-	public Retailer registerRetailer(Long marketId, Long retailerId) {
-		Market market = this.getMarket(marketId);
-		Retailer retailer = retailerService.getRetailer(retailerId);
-		this.addRetailer(market, retailer);
-		this.updateMarket(market);
-		return retailer;
-	}
-
-	@Transactional(readOnly = true)
-	public List<MarketRetailer> getMarketsOfRetailer(Long retailerId) {
-		return retailerService.getMarketRetailersOfRetailer(retailerId);
-	}
 }

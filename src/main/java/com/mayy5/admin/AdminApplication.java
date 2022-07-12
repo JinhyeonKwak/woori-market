@@ -93,7 +93,7 @@ public class AdminApplication {
 				IntStream.rangeClosed(1, 20).forEach(j -> {
 					Retailer retailer = Retailer.builder()
 							.name("NAME" + j)
-							.type(RetailerType.JOGBAL)
+							.retailerType(RetailerType.JOGBAL)
 							.build();
 					retailerList.add(retailer);
 				});

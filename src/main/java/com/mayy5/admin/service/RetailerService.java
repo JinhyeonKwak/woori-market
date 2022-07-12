@@ -1,21 +1,16 @@
 package com.mayy5.admin.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.mayy5.admin.common.BError;
+import com.mayy5.admin.common.CommonException;
+import com.mayy5.admin.model.domain.Retailer;
+import com.mayy5.admin.repository.RetailerRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mayy5.admin.common.BError;
-import com.mayy5.admin.common.CommonException;
-import com.mayy5.admin.model.domain.MarketRetailer;
-import com.mayy5.admin.model.domain.Retailer;
-import com.mayy5.admin.model.domain.User;
-import com.mayy5.admin.repository.MarketRetailerRepository;
-import com.mayy5.admin.repository.RetailerRepository;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,13 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 public class RetailerService {
 
 	private final RetailerRepository retailerRepository;
-	private final MarketRetailerRepository marketRetailerRepository;
-	private final UserService userService;
 
 	@Transactional
-	public Retailer createRetailer(String userId, Retailer input) {
-		User user = userService.getUser(userId);
-		Retailer retailer = Retailer.createRetailer(user, input.getName(), input.getType(), input.getMeta());
+	public Retailer createRetailer(Retailer input) {
+		Retailer retailer = Retailer.createRetailer(input.getName(), input.getRetailerType(), input.getMeta());
 		return retailerRepository.save(retailer);
 	}
 
@@ -66,15 +58,4 @@ public class RetailerService {
 		}
 	}
 
-	@Transactional(readOnly = true)
-	public List<Retailer> getRetailersByUserId(String userId) {
-		List<Retailer> retailers = retailerRepository.getRetailersByUserId(userId);
-		return retailers;
-	}
-
-	@Transactional(readOnly = true)
-	public List<MarketRetailer> getMarketRetailersOfRetailer(Long retailerId) {
-		List<MarketRetailer> marketRetailers = marketRetailerRepository.getMarketRetailersByRetailerId(retailerId);
-		return marketRetailers;
-	}
 }
