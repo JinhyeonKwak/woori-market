@@ -1,23 +1,23 @@
 package com.mayy5.admin.model.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Embeddable;
 
-import lombok.Getter;
-
-@Embeddable
+@Builder
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Embeddable
 public class Address {
 
-	private String street;
-	private String detail;
-	private String postCode;
+    private String roadAddress;
+    private String jibunAddress;
+    private String regionCode;
+    private String latitude;
+    private String longitude;
 
-	protected Address() {
-	}
-
-	public Address(String street, String detail, String postCode) {
-		this.street = street;
-		this.detail = detail;
-		this.postCode = postCode;
-	}
 }

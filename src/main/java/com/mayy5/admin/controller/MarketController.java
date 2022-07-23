@@ -51,7 +51,7 @@ public class MarketController implements MarketApi {
             MarketAgent inputMarketAgent = marketAgentMapper.toEntity(marketCreateRequestDto);
             List<RetailerRequestDto> retailerRequestList = marketCreateRequestDto.getRetailers();
             List<Retailer> retailerList = retailerMapper.toEntities(retailerRequestList);
-            Market inputMarket = marketMapper.toEntity(marketCreateRequestDto);
+            Market inputMarket = marketMapper.toMarket(marketCreateRequestDto);
             Market market = marketService.createMarket(loginUserId, inputMarketAgent, retailerList, inputMarket);
 
             return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
@@ -82,8 +82,8 @@ public class MarketController implements MarketApi {
 
         try {
             Market findMarket = marketService.getMarket(marketId);
-            marketMapper.update(marketRequest, findMarket);
-            Market updateMarket = marketService.updateMarket(findMarket);
+            Market market = marketMapper.patchMarket(marketRequest, findMarket);
+            Market updateMarket = marketService.updateMarket(market);
             return new ResponseEntity<>(marketMapper.toMarketResponse(updateMarket), HttpStatus.OK);
         } catch (CommonException e) {
             throw e;

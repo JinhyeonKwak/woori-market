@@ -97,10 +97,12 @@ public class AdminApplication {
 
 				double random = Math.random();
 				int value = (int) (random * 7 + 1);
+				Address address = Address.builder()
+						.roadAddress(roadAddresses[i - 1])
+						.jibunAddress(jibunAddresses[i - 1])
+						.build();
 				Market market = Market.builder()
-						.jibunAddress(jibunAddresses[i-1])
-						.roadAddress(roadAddresses[i-1])
-						.detailAddress("DETAIL ADDRESS" + i)
+						.address(address)
 						.startDate(LocalDate.now().plusWeeks(value))
 						.endDate(LocalDate.now().plusWeeks(value).plusYears(1))
 						.marketDay(DayOfWeek.of(value))

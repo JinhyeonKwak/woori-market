@@ -2,10 +2,7 @@ package com.mayy5.admin.service;
 
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
-import com.mayy5.admin.model.domain.Market;
-import com.mayy5.admin.model.domain.MarketAgent;
-import com.mayy5.admin.model.domain.MarketSchedule;
-import com.mayy5.admin.model.domain.Retailer;
+import com.mayy5.admin.model.domain.*;
 import com.mayy5.admin.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,13 +41,19 @@ public class MarketService {
 			.map(retailer -> retailerService.createRetailer(retailer))
 			.collect(Collectors.toList());
 
-		String regionCode = MarketMapService.getRegionCode(inputMarket.getRoadAddress());
-		Map<String, String> latLng = MarketMapService.getLatLng(inputMarket.getRoadAddress());
-		inputMarket.setRegionCode(regionCode);
-		inputMarket.setLatitude(latLng.get("latitude"));
-		inputMarket.setLongitude(latLng.get("longitude"));
+		String roadAddress = inputMarket.getAddress().getRoadAddress();
+		String jibunAddress = inputMarket.getAddress().getJibunAddress();
+		String regionCode = MarketMapService.getRegionCode(roadAddress);
+		Map<String, String> latLng = MarketMapService.getLatLng(roadAddress);
+		Address address = Address.builder()
+				.roadAddress(roadAddress)
+				.jibunAddress(jibunAddress)
+				.regionCode(regionCode)
+				.latitude(latLng.get("latitude"))
+				.longitude(latLng.get("longitude"))
+				.build();
 
-		Market market = marketRepository.save(Market.createMarket(marketAgent, inputMarket, retailerList));
+		Market market = marketRepository.save(Market.createMarket(inputMarket, address, marketAgent, retailerList));
 
 		marketScheduleService.createSchedule(market, retailerList);
 

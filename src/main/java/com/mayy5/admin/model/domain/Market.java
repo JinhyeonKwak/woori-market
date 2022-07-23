@@ -24,12 +24,8 @@ public class Market {
     @Column(name = "MARKET_ID")
     private Long id;
 
-    private String roadAddress;
-    private String jibunAddress;
-    private String detailAddress;
-    private String regionCode;
-    private String latitude;
-    private String longitude;
+    @Embedded
+    private Address address;
 
     @Column(name = "START_AT")
     private LocalDate startDate;
@@ -61,14 +57,9 @@ public class Market {
 
 
     //==생성 메서드==//
-    public static Market createMarket(MarketAgent marketAgent, Market inputMarket, List<Retailer> retailerList) {
+    public static Market createMarket(Market inputMarket, Address address, MarketAgent marketAgent, List<Retailer> retailerList) {
         Market market = Market.builder()
-                .roadAddress(inputMarket.getRoadAddress())
-                .jibunAddress(inputMarket.getJibunAddress())
-                .detailAddress(inputMarket.getDetailAddress())
-                .regionCode(inputMarket.getRegionCode())
-                .latitude(inputMarket.getLatitude())
-                .longitude(inputMarket.getLongitude())
+                .address(address)
                 .startDate(inputMarket.getStartDate())
                 .endDate(inputMarket.getEndDate())
                 .marketDay(inputMarket.getMarketDay())

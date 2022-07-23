@@ -26,9 +26,6 @@ public class MarketResponseDto {
     @ApiModelProperty(value = "Market Jibun Address")
     private String jibunAddress;
 
-    @ApiModelProperty(value = "Market Detail Address")
-    private String detailAddress;
-
     @ApiModelProperty(value = "Start Date")
     private LocalDate startDate;
 
