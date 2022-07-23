@@ -11,6 +11,9 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -21,10 +24,16 @@ public interface MarketMapper {
 
     Market toEntity(MarketCreateRequestDto dto);
 
+    void update(MarketUpdateRequestDto updateRequest, @MappingTarget Market market);
+
     @Mapping(source = "id", target = "marketId")
     MarketResponseDto toMarketResponse(Market market);
 
-    void update(MarketUpdateRequestDto marketRequest, @MappingTarget Market market);
+    default List<MarketResponseDto> toMarketResponseList(List<Market> marketList) {
+        return marketList.stream()
+                .map(marketMapper::toMarketResponse)
+                .collect(Collectors.toList());
+    }
 
 //    @Mapping(source = "marketRetailer.retailer.id", target = "retailerId")
 //    @Mapping(source = "marketRetailer.market.id", target = "marketId")

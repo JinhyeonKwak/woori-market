@@ -55,6 +55,8 @@ public class MarketMapService {
         String result = br.readLine();
         br.close();
 
+        System.out.println("result = " + result);
+
         JSONParser parser = new JSONParser();
         JSONObject response = (JSONObject) parser.parse(result);
         JSONArray stanReginCd = (JSONArray) response.get("StanReginCd");

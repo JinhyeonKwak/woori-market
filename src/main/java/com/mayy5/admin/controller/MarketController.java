@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -50,7 +49,6 @@ public class MarketController implements MarketApi {
             List<RetailerRequestDto> retailerRequestList = marketCreateRequestDto.getRetailers();
             List<Retailer> retailerList = retailerMapper.toEntities(retailerRequestList);
             Market inputMarket = marketMapper.toEntity(marketCreateRequestDto);
-
             Market market = marketService.createMarket(loginUserId, inputMarketAgent, retailerList, inputMarket);
 
             return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
@@ -80,9 +78,9 @@ public class MarketController implements MarketApi {
     public ResponseEntity<MarketResponseDto> updateMarket(Long marketId, MarketUpdateRequestDto marketRequest) {
 
         try {
-            Market market = marketService.getMarket(marketId);
-            marketMapper.update(marketRequest, market);
-            Market updateMarket = marketService.updateMarket(market);
+            Market findMarket = marketService.getMarket(marketId);
+            marketMapper.update(marketRequest, findMarket);
+            Market updateMarket = marketService.updateMarket(findMarket);
             return new ResponseEntity<>(marketMapper.toMarketResponse(updateMarket), HttpStatus.OK);
         } catch (CommonException e) {
             throw e;
@@ -124,10 +122,10 @@ public class MarketController implements MarketApi {
 
     //==장주 관련==//
     @Override
-    public ResponseEntity<MarketAgentResponseDto> registerMarketAgent(Long marketId, Long marketAgentId) {
+    public ResponseEntity<MarketResponseDto> registerMarketAgent(Long marketId, Long marketAgentId) {
         try {
-            MarketAgent marketAgent = marketService.registerMarketAgent(marketId, marketAgentId);
-            return new ResponseEntity<>(marketAgentMapper.toDto(marketAgent), HttpStatus.OK);
+            Market market = marketService.registerMarketAgent(marketId, marketAgentId);
+            return new ResponseEntity<>(marketMapper.toMarketResponse(market), HttpStatus.OK);
         } catch (CommonException e) {
             throw e;
         } catch (Exception e) {
@@ -141,9 +139,7 @@ public class MarketController implements MarketApi {
 
         try {
             List<Market> marketList = marketService.getMarketsOfMarketAgent(marketAgentId);
-            List<MarketResponseDto> marketResponseDtoList = marketList.stream()
-                    .map(marketMapper::toMarketResponse)
-                    .collect(Collectors.toList());
+            List<MarketResponseDto> marketResponseDtoList = marketMapper.toMarketResponseList(marketList);
             return new ResponseEntity<>(marketResponseDtoList, HttpStatus.OK);
         } catch (CommonException e) {
             throw e;

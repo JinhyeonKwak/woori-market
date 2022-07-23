@@ -2,6 +2,7 @@ package com.mayy5.admin.service;
 
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
+import com.mayy5.admin.model.domain.Market;
 import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.repository.RetailerRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class RetailerService {
 
 	@Transactional
 	public Retailer createRetailer(Retailer input) {
-		Retailer retailer = Retailer.createRetailer(input.getName(), input.getRetailerType(), input.getMeta());
+		Retailer retailer = Retailer.createRetailer(input.getRetailerName(), input.getRetailType(), input.getMeta());
 		return retailerRepository.save(retailer);
 	}
 
@@ -57,5 +58,6 @@ public class RetailerService {
 			throw new CommonException(BError.FAIL, "Retailer Delete");
 		}
 	}
+
 
 }

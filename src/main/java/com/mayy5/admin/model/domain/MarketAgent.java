@@ -29,7 +29,7 @@ public class MarketAgent {
 
     private String corporateName;
 
-    @OneToMany(mappedBy = "marketAgent", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "marketAgent")
     private List<Market> marketList = new ArrayList<>();
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)

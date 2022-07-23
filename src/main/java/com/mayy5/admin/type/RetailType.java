@@ -1,10 +1,9 @@
 package com.mayy5.admin.type;
 
-public enum RetailerType {
+public enum RetailType {
 
 	VEGETABLE,
 	SEAFOOD,
 	JOGBAL
-
 
 }

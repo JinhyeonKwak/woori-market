@@ -25,7 +25,7 @@ public interface RetailerMapper {
 
 	default List<Retailer> toEntities(List<RetailerRequestDto> dtoList) {
 		List<Retailer> retailerList = dtoList.stream().
-				map(this::toEntity)
+				map(retailerMapper::toEntity)
 				.collect(Collectors.toList());
 		return retailerList;
 	}
@@ -37,7 +37,7 @@ public interface RetailerMapper {
 	default List<RetailerResponseDto> toDtoList(List<Retailer> retailerList) {
 		List<RetailerResponseDto> retailerResponseDtoList = new ArrayList<>();
 		for (Retailer retailer : retailerList) {
-			retailerResponseDtoList.add(this.toDto(retailer));
+			retailerResponseDtoList.add(retailerMapper.toDto(retailer));
 		}
 		return retailerResponseDtoList;
 	}

@@ -43,7 +43,7 @@ public class Market {
     @JoinColumn(name = "MARKET_AGENT_ID")
     private MarketAgent marketAgent;
 
-    @OneToMany(mappedBy = "market")
+    @OneToMany(mappedBy = "market", cascade = CascadeType.REMOVE)
     private List<Retailer> retailerList = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -85,5 +85,12 @@ public class Market {
     public void setRetailerList(List<Retailer> retailerList) {
         this.retailerList = retailerList;
         retailerList.forEach(retailer -> retailer.setMarket(this));
+    }
+
+    public void addRetailerList(List<Retailer> retailerList) {
+        retailerList.forEach(retailer -> {
+            this.getRetailerList().add(retailer);
+            retailer.setMarket(this);
+        });
     }
 }

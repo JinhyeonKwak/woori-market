@@ -1,14 +1,12 @@
 package com.mayy5.admin;
 
 import com.mayy5.admin.model.domain.*;
-import com.mayy5.admin.model.mapper.MarketMapper;
 import com.mayy5.admin.repository.PostRepository;
 import com.mayy5.admin.security.AuthConstant;
-import com.mayy5.admin.service.MarketMapService;
 import com.mayy5.admin.service.MarketService;
 import com.mayy5.admin.service.UserService;
 import com.mayy5.admin.type.PostType;
-import com.mayy5.admin.type.RetailerType;
+import com.mayy5.admin.type.RetailType;
 import com.mayy5.admin.type.UserMetaType;
 import com.mayy5.admin.type.UserRoleType;
 import org.json.simple.parser.ParseException;
@@ -72,7 +70,7 @@ public class AdminApplication {
 	@Profile({"dev","local"})
 	@Order(value = 2)
 	@Bean
-	public CommandLineRunner mockUpMarket(MarketService marketService, MarketMapService marketMapService, MarketMapper marketMapper) {
+	public CommandLineRunner mockUpMarket(MarketService marketService) {
 		return args -> {
 
 			String[] jibunAddresses = {"서울특별시 종로구 혜화동 20-12", "서울특별시 성동구 성수동1가 685-700", "서울특별시 용산구 원효로3가 124-1",
@@ -92,8 +90,8 @@ public class AdminApplication {
 				List<Retailer> retailerList = new ArrayList<>();
 				IntStream.rangeClosed(1, 20).forEach(j -> {
 					Retailer retailer = Retailer.builder()
-							.name("NAME" + j)
-							.retailerType(RetailerType.JOGBAL)
+							.retailerName("NAME" + j)
+							.retailType(RetailType.JOGBAL)
 							.build();
 					retailerList.add(retailer);
 				});

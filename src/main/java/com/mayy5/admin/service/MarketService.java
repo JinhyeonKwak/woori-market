@@ -63,26 +63,23 @@ public class MarketService {
 
 	@Transactional
 	public Market addRetailers(Long marketId, List<Retailer> retailerList) {
-		Market market = this.getMarket(marketId);
-		retailerList.stream()
+		Market market = getMarket(marketId);
+		List<Retailer> retailers = retailerList.stream()
 				.map(retailerService::createRetailer)
-				.forEach(retailer -> market.getRetailerList().add(retailer));
+				.collect(Collectors.toList());
+		market.addRetailerList(retailers);
 		return market;
 	}
 
 	@Transactional
 	public Market dropRetailers(Long marketId, List<Long> retailerIds) {
-		Market market = this.getMarket(marketId);
-		for (Long retailerId : retailerIds) {
-			retailerService.deleteRetailer(retailerId);
-		}
+		Market market = getMarket(marketId);
+		retailerIds.forEach(retailerService::deleteRetailer);
 		return market;
 	}
 
 	@Transactional
 	public Market updateMarket(Market market) {
-		marketRepository.findById(market.getId())
-			.orElseThrow(() -> new CommonException(BError.NOT_EXIST, "market"));
 		return marketRepository.save(market);
 	}
 
@@ -107,12 +104,11 @@ public class MarketService {
 //	}
 
 	@Transactional
-	public MarketAgent registerMarketAgent(Long marketId, Long marketAgentId) {
-		Market market = this.getMarket(marketId);
+	public Market registerMarketAgent(Long marketId, Long marketAgentId) {
+		Market market = getMarket(marketId);
 		MarketAgent marketAgent = marketAgentService.getMarketAgent(marketAgentId);
 		market.setMarketAgent(marketAgent);
-		this.updateMarket(market);
-		return marketAgent;
+		return market;
 	}
 
 	@Transactional(readOnly = true)

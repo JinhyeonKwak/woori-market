@@ -64,12 +64,12 @@ public interface MarketApi {
     //==장주 관련==//
     @ApiOperation(value = "특정 장에 대한 장주 등록/변경 API")
     @ApiResponses(value = {
-            @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = MarketAgentResponseDto.class),
+            @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = MarketResponseDto.class),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @PostMapping(path = "/v1/markets/{marketId}/agents/{marketAgentId}")
-    ResponseEntity<MarketAgentResponseDto> registerMarketAgent(@PathVariable Long marketId, @PathVariable Long marketAgentId);
+    ResponseEntity<MarketResponseDto> registerMarketAgent(@PathVariable Long marketId, @PathVariable Long marketAgentId);
 
     @ApiOperation(value = "장주 전용 장 리스트 조회 API")
     @ApiResponses(value = {
@@ -97,5 +97,5 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @DeleteMapping(path = "/v1/markets/{marketId}/retailers")
-    ResponseEntity<MarketResponseDto> dropRetailers(@RequestBody @Valid Long marketId, @RequestBody @Valid List<Long> retailerIds);
+    ResponseEntity<MarketResponseDto> dropRetailers(@PathVariable @Valid Long marketId, @RequestParam @Valid List<Long> retailerIds);
 }
