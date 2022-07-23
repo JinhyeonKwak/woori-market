@@ -2,11 +2,8 @@ package com.mayy5.admin.model.domain;
 
 import com.mayy5.admin.type.MarketAgentMetaType;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 @Entity
-public class MarketAgent {
+public class MarketAgent extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,14 +32,6 @@ public class MarketAgent {
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
-
-    @Column(name = "CREATE_AT", nullable = false, updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createAt;
-
-    @Column(name = "UPDATE_AT")
-    @UpdateTimestamp
-    private LocalDateTime updateAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @MapKeyEnumerated(EnumType.STRING)

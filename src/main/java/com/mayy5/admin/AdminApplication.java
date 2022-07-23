@@ -16,19 +16,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.IntStream;
 
 @EnableScheduling
+@EnableJpaAuditing
 @SpringBootApplication
 public class AdminApplication {
 
@@ -58,8 +59,6 @@ public class AdminApplication {
 					.subTitle("순서" + index)
 					.content("콘텐츠")
 					.postType(PostType.FREE)
-					.createAt(LocalDateTime.now())
-					.updateAt(LocalDateTime.now())
 					.user(user)
 					.build());
 			});

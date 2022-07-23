@@ -46,6 +46,9 @@ public class Market {
     @OneToMany(mappedBy = "market", cascade = CascadeType.REMOVE)
     private List<Retailer> retailerList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "market")
+    private List<MarketSchedule> marketScheduleList = new ArrayList<>();
+
     @ElementCollection(fetch = FetchType.EAGER)
     @MapKeyEnumerated(EnumType.STRING)
     @CollectionTable(

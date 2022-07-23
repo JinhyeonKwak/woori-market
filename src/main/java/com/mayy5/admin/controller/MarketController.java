@@ -5,6 +5,7 @@ import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.Market;
 import com.mayy5.admin.model.domain.MarketAgent;
+import com.mayy5.admin.model.domain.MarketSchedule;
 import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.model.mapper.MarketAgentMapper;
 import com.mayy5.admin.model.mapper.MarketMapper;
@@ -14,6 +15,7 @@ import com.mayy5.admin.model.req.MarketUpdateRequestDto;
 import com.mayy5.admin.model.req.RetailerRequestDto;
 import com.mayy5.admin.model.res.MarketAgentResponseDto;
 import com.mayy5.admin.model.res.MarketResponseDto;
+import com.mayy5.admin.model.res.ScheduleResponseDto;
 import com.mayy5.admin.service.MarketService;
 import com.mayy5.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -105,20 +108,18 @@ public class MarketController implements MarketApi {
         }
     }
 
-//    @Override
-//    public ResponseEntity<ScheduleResponseDto> checkAttend(CheckAttendDTO checkAttendDTO) {
-//        try {
-//            MarketSchedule marketSchedule = marketService.checkAttend(checkAttendDTO.getMarketId(),
-//                                                                    checkAttendDTO.getRetailerId(),
-//                                                                    checkAttendDTO.getCheckDate());
-//            return new ResponseEntity<>(marketMapper.toScheduleResponse(marketSchedule), HttpStatus.OK);
-//        } catch (CommonException e) {
-//            throw e;
-//        } catch (Exception e) {
-//            log.error(e.getMessage(), e);
-//            throw new CommonException(BError.FAIL, "checkAttend");
-//        }
-//    }
+    @Override
+    public ResponseEntity<List<ScheduleResponseDto>> checkAttend(Long marketId, List<Long> retailerIds, LocalDate checkDate) {
+        try {
+            List<MarketSchedule> marketScheduleList = marketService.checkAttend(marketId, retailerIds, checkDate);
+            return new ResponseEntity<>(marketMapper.toScheduleResponseList(marketScheduleList), HttpStatus.OK);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "checkAttend");
+        }
+    }
 
     //==장주 관련==//
     @Override

@@ -4,6 +4,7 @@ import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.model.domain.Market;
 import com.mayy5.admin.model.domain.MarketAgent;
+import com.mayy5.admin.model.domain.MarketSchedule;
 import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +28,7 @@ public class MarketService {
 
 	private final MarketAgentService marketAgentService;
 	private final RetailerService retailerService;
-//	private final MarketScheduleService marketScheduleService;
+	private final MarketScheduleService marketScheduleService;
 	private final EntityManager em;
 
 	private final MarketRepository marketRepository;
@@ -50,7 +52,7 @@ public class MarketService {
 
 		Market market = marketRepository.save(Market.createMarket(marketAgent, inputMarket, retailerList));
 
-//		marketScheduleService.createSchedule(marketRetailers);
+		marketScheduleService.createSchedule(market, retailerList);
 
 		return market;
 	}
@@ -98,10 +100,13 @@ public class MarketService {
 		}
 	}
 
-//	@Transactional
-//	public MarketSchedule checkAttend(Long marketId, Long retailerId, LocalDate checkDate) {
-//		return marketScheduleService.checkAttend(marketId, retailerId, checkDate);
-//	}
+	@Transactional
+	public List<MarketSchedule> checkAttend(Long marketId, List<Long> retailerIds, LocalDate checkDate) {
+		List<MarketSchedule> marketScheduleList = retailerIds.stream()
+				.map(retailerId -> marketScheduleService.checkAttend(marketId, retailerId, checkDate))
+				.collect(Collectors.toList());
+		return marketScheduleList;
+	}
 
 	@Transactional
 	public Market registerMarketAgent(Long marketId, Long marketAgentId) {

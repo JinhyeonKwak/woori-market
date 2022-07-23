@@ -1,14 +1,23 @@
 package com.mayy5.admin.apis;
 
 import com.mayy5.admin.apis.type.SwaggerApiTag;
-import com.mayy5.admin.model.req.*;
-import com.mayy5.admin.model.res.*;
-import io.swagger.annotations.*;
+import com.mayy5.admin.model.req.MarketCreateRequestDto;
+import com.mayy5.admin.model.req.MarketUpdateRequestDto;
+import com.mayy5.admin.model.req.RetailerRequestDto;
+import com.mayy5.admin.model.res.MarketAgentResponseDto;
+import com.mayy5.admin.model.res.MarketResponseDto;
+import com.mayy5.admin.model.res.ScheduleResponseDto;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 
 @Api(value = "Market", tags = SwaggerApiTag.MARKET)
@@ -52,14 +61,17 @@ public interface MarketApi {
     @DeleteMapping(path = "/v1/markets/{marketId}")
     ResponseEntity<MarketAgentResponseDto> deleteMarket(@PathVariable Long marketId);
 
-//    @ApiOperation(value = "출석 체크 API")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = ScheduleResponseDto.class),
-//            @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
-//            @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
-//    })
-//    @PatchMapping(path = "/v1/markets/schedules")
-//    ResponseEntity<ScheduleResponseDto> checkAttend(@RequestBody @Valid CheckAttendDTO checkAttendDTO);
+    @ApiOperation(value = "출석 체크 API")
+    @ApiResponses(value = {
+            @ApiResponse(code = org.apache.http.HttpStatus.SC_OK, message = "성공", response = ScheduleResponseDto.class),
+            @ApiResponse(code = org.apache.http.HttpStatus.SC_NOT_IMPLEMENTED, message = "아직 제공하지 않는 기능"),
+            @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
+    })
+    @PatchMapping(path = "/v1/markets/{marketId}/schedules")
+    ResponseEntity<List<ScheduleResponseDto>> checkAttend(@PathVariable Long marketId, @RequestParam List<Long> retailerId,
+                                                    @RequestParam("date")
+                                                    @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkDate);
+
 
     //==장주 관련==//
     @ApiOperation(value = "특정 장에 대한 장주 등록/변경 API")
@@ -97,5 +109,5 @@ public interface MarketApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @DeleteMapping(path = "/v1/markets/{marketId}/retailers")
-    ResponseEntity<MarketResponseDto> dropRetailers(@PathVariable @Valid Long marketId, @RequestParam @Valid List<Long> retailerIds);
+    ResponseEntity<MarketResponseDto> dropRetailers(@PathVariable Long marketId, @RequestParam List<Long> retailerIds);
 }

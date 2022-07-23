@@ -3,11 +3,8 @@ package com.mayy5.admin.model.domain;
 import com.mayy5.admin.type.RetailType;
 import com.mayy5.admin.type.RetailerMetaType;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +14,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Retailer {
+public class Retailer extends BaseTime {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,14 +41,6 @@ public class Retailer {
 	@MapKeyColumn(name = "META_TYPE")
 	@Column(name = "META_VALUE")
 	private Map<RetailerMetaType, String> meta = new HashMap<>();
-
-	@Column(name = "CREATE_AT", nullable = false, updatable = false)
-	@CreationTimestamp
-	private LocalDateTime createAt;
-
-	@Column(name = "UPDATE_AT")
-	@UpdateTimestamp
-	private LocalDateTime updateAt;
 
 	//==생성 메서드==//
 	public static Retailer createRetailer(String name, RetailType retailType, Map<RetailerMetaType, String> meta) {
