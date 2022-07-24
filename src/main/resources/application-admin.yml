@@ -1,0 +1,24 @@
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+server:
+  ip: localhost
+  port: 3000
+---
+spring:
+  config:
+    activate:
+      on-profile: dev, test
+server:
+  ip: dev-market-api.kooru.be
+  port: 3002
+---
+spring:
+  config:
+    activate:
+      on-profile:  stage, real
+server:
+  ip: market-api.kooru.be
+  port: 3001

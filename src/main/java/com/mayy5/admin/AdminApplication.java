@@ -113,7 +113,7 @@ public class AdminApplication {
 					e.printStackTrace();
 				}
 
-				marketService.createMarket("admin", marketAgent, retailerList, market);
+				// marketService.createMarket("admin", marketAgent, retailerList, market);
 			});
 		};
 	}

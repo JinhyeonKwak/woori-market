@@ -1,0 +1,26 @@
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+logging:
+  config: classpath:logback/logback-local.xml
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev, test
+
+logging:
+  config: classpath:logback/logback-dev.xml
+
+---
+spring:
+  config:
+    activate:
+      on-profile: stage, real
+
+logging:
+  config: classpath:logback/logback-release.xml
