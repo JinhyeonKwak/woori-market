@@ -45,7 +45,7 @@ public class AdminSwaggerConfig {
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
 			.apiInfo(apiInfo())
-			.host(ip + ":" + port)
+			.host(ip.equals("localhost") ? ip + ":" + port : ip) // Localhost 일때만 PORT까지 반영
 			.alternateTypeRules(
 				AlternateTypeRules.newRule(typeResolver.resolve(Pageable.class), typeResolver.resolve(Page.class)))
 			.securityContexts(Arrays.asList(securityContext()))
