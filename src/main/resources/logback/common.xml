@@ -4,7 +4,7 @@
 	<springProperty name="SERVER_PORT" source="server.port"/>
 	<springProperty name="ACTIVE_PROFILE" source="spring.profiles.active"/>
 
-	<property name="LOG_PATH" value="$HOME/logs/${APP_NAME}_${SERVER_PORT}"/>
+	<property name="LOG_PATH" value="/home/kooru/logs/${APP_NAME}_${SERVER_PORT}"/>
 	<property name="LOG_FILE" value="${LOG_PATH}/${APP_NAME}"/>
 	<property name="LOG_BACKUP" value="${LOG_PATH}/archived/${APP_NAME}"/>
 

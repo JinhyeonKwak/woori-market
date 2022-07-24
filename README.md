@@ -14,7 +14,7 @@
 
 ## Profile 적용
 - JVM에 다음과 같은 설정 반영 필요 -Dspring.profiles.active=dev
-- java -jar -Dspring.profiles.active=prod *.jar
+- java -jar -Dspring.profiles.active=real *.jar
 
 ## 빌드
 - ./gradlew -x test build

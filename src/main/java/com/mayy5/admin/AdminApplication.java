@@ -38,7 +38,7 @@ public class AdminApplication {
 		SpringApplication.run(AdminApplication.class, args);
 	}
 
-	@Profile({"dev","local","prod"})
+	@Profile({"dev","local","real"})
 	@Order(value = 1)
 	@Bean
 	public CommandLineRunner adminUser(UserService userService, PasswordEncoder passwordEncoder, PostRepository postRepository) {
