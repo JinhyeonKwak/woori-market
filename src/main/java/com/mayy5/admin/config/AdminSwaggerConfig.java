@@ -35,15 +35,17 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class AdminSwaggerConfig {
 
-	@Value("${server.ip:localhost:8080}")
-	private String ip;
 	private final TypeResolver typeResolver;
+	@Value("${server.ip:localhost}")
+	private String ip;
+	@Value("${server.port:8080}")
+	private int port;
 
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
 			.apiInfo(apiInfo())
-			.host(ip)
+			.host(ip + ":" + port)
 			.alternateTypeRules(
 				AlternateTypeRules.newRule(typeResolver.resolve(Pageable.class), typeResolver.resolve(Page.class)))
 			.securityContexts(Arrays.asList(securityContext()))
