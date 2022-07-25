@@ -1,34 +1,46 @@
 package com.mayy5.admin.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mayy5.admin.common.BError;
+import com.mayy5.admin.common.CommonException;
+import com.mayy5.admin.security.OpenApiConfig;
+import com.mayy5.admin.service.pojo.geocode.GeocodeResponse;
+import com.mayy5.admin.service.pojo.regionCode.RegionCodeResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MarketMapService {
 
-    public static String getRegionCode(String roadAddress) throws IOException, ParseException {
+    @SneakyThrows
+    public static String getRegionCode(String roadAddress) {
 
-        JSONArray addresses = geocode(roadAddress);
-        JSONObject address = (JSONObject) addresses.get(0);
-        String jibunAddress = (String) address.get("jibunAddress");
+        ResponseEntity<GeocodeResponse> geocodeResponse = geocode(roadAddress);
+        String jibunAddress = geocodeResponse.getBody().getAddresses().get(0).getJibunAddress();
 
         String[] locationArr = jibunAddress.split("\\s");
         String[] tmp;
@@ -45,33 +57,53 @@ public class MarketMapService {
                 .collect(Collectors.joining());
         String region = sb;
 
-        String openApiUrl = "http://apis.data.go.kr/1741000/StanReginCd/getStanReginCdList?ServiceKey=eRcBsQ1bX6mccg1jgFvvIl1dS4uvs455RS2zMyRdmmrsE%2FmcLfYdQVR5zih6A%2FGbf08iMsz8cODLVGy6HwscLg%3D%3D&type=json&pageNo=1&numOfRows=3&flag=Y&locatadd_nm=";
-        URL url = new URL(openApiUrl + URLEncoder.encode(region, "UTF-8"));
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.connect();
+        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(OpenApiConfig.regionCodeApiUrl);
+        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-        String result = br.readLine();
-        br.close();
+        WebClient webClient = WebClient.builder()
+                .baseUrl(OpenApiConfig.regionCodeApiUrl)
+                .uriBuilderFactory(factory)
+                .build();
 
-        System.out.println("result = " + result);
+        String response = null;
+        Instant start = Instant.now();
+        Instant finish;
+        Long timeElapsed = null;
 
-        JSONParser parser = new JSONParser();
-        JSONObject response = (JSONObject) parser.parse(result);
-        JSONArray stanReginCd = (JSONArray) response.get("StanReginCd");
-        JSONObject row = (JSONObject) stanReginCd.get(1);
-        JSONArray rowArr = (JSONArray) row.get("row");
-        JSONObject body = (JSONObject) rowArr.get(0);
-        String regionCode = (String) body.get("region_cd");
-        return regionCode;
+        do {
+            response = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .queryParam("ServiceKey", OpenApiConfig.regionCodeApiKey)
+                            .queryParam("type", "json")
+                            .queryParam("pageNo", 1)
+                            .queryParam("numOfRows", 3)
+                            .queryParam("flag", "Y")
+                            .queryParam("locatadd_nm", URLEncoder.encode(region, StandardCharsets.UTF_8))
+                            .build())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            finish = Instant.now();
+            timeElapsed = Duration.between(start, finish).toMillis();
+            } while (response == OpenApiConfig.errorResult && timeElapsed < 5000);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            RegionCodeResponse regionCodeResponse = objectMapper.readValue(response, RegionCodeResponse.class);
+            String regionCode = regionCodeResponse.getStanReginCd().get(1).getRow().get(0).getRegionCd();
+            return regionCode;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.debug(e.getMessage(), e);
+            throw new CommonException(BError.FAIL, "GET REGION CODE");
+        }
+
     }
 
-    public static Map<String, String> getLatLng(String roadAddress) throws IOException, ParseException {
-        JSONArray addresses = geocode(roadAddress);
-        JSONObject address = (JSONObject) addresses.get(0);
-        String lng = (String) address.get("x");
-        String lat = (String) address.get("y");
+    public static Map<String, String> getLatLng(String roadAddress) {
+        ResponseEntity<GeocodeResponse> geocodeResponse = geocode(roadAddress);
+        String lng = geocodeResponse.getBody().getAddresses().get(0).getX();
+        String lat = geocodeResponse.getBody().getAddresses().get(0).getY();
 
         HashMap<String, String> latLng = new HashMap<>();
         latLng.put("latitude", lat);
@@ -79,30 +111,26 @@ public class MarketMapService {
         return latLng;
     }
 
-    /**
-     * Naver geocode api
-     * @param location (도로명 주소)
-     * @return addresses [도로명 주소, 지번 주소, 영어 주소, 경도, 위도, 검색 중심 좌표로부터의 거리, 주소를 이루는 요소들]
-     * @throws IOException
-     * @throws ParseException
-     */
-    private static JSONArray geocode(String location) throws IOException, ParseException {
-        String geocoderApiUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
-        URL url = new URL( geocoderApiUrl + "?query=" + URLEncoder.encode(location, "UTF-8"));
+    private static ResponseEntity<GeocodeResponse> geocode(String location) {
 
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("X-NCP-APIGW-API-KEY-ID", "n8buzwmo5q");
-        conn.setRequestProperty("X-NCP-APIGW-API-KEY", "uoSPNzUnT64eTcbSZT65yWDVWt5sNpLAE5agij2A");
-        conn.connect();
+        RestTemplate restTemplate = new RestTemplate();
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-        String result = br.readLine();
-        br.close();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-NCP-APIGW-API-KEY-ID", OpenApiConfig.geocoderApiKeyId);
+        headers.set("X-NCP-APIGW-API-KEY", OpenApiConfig.geocoderApiKey);
 
-        JSONParser parser = new JSONParser();
-        JSONObject response = (JSONObject) parser.parse(result);
-        JSONArray addresses = (JSONArray) response.get("addresses");
-        return addresses;
+        HttpEntity request = new HttpEntity(headers);
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(OpenApiConfig.geocoderApiUrl)
+                .queryParam("query", location)
+                .build();
+
+        ResponseEntity<GeocodeResponse> response = restTemplate.exchange(
+                uriComponents.toUriString(),
+                HttpMethod.GET,
+                request,
+                GeocodeResponse.class);
+
+        return response;
     }
+
 }
