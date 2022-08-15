@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Market {
+public class Market extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +35,12 @@ public class Market {
     private LocalDate endDate;
 
     private DayOfWeek marketDay;
+
+    @Column(name = "OPEN_AT")
+    private LocalDateTime openAt;
+
+    @Column(name = "CLOSED_AT")
+    private LocalDateTime closedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MARKET_AGENT_ID")
@@ -63,6 +70,8 @@ public class Market {
                 .startDate(inputMarket.getStartDate())
                 .endDate(inputMarket.getEndDate())
                 .marketDay(inputMarket.getMarketDay())
+                .openAt(inputMarket.getOpenAt())
+                .closedAt(inputMarket.getClosedAt())
                 .meta(inputMarket.getMeta())
                 .build();
         market.setMarketAgent(marketAgent);

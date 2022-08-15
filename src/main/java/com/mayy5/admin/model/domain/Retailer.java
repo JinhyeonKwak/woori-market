@@ -1,11 +1,15 @@
 package com.mayy5.admin.model.domain;
 
+import com.mayy5.admin.type.RetailSubtype;
 import com.mayy5.admin.type.RetailType;
 import com.mayy5.admin.type.RetailerMetaType;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -21,12 +25,27 @@ public class Retailer extends BaseTime {
 	@Column(name = "RETAILER_ID")
 	private Long id;
 
-	@Column(name = "RETAIER_NAME")
+	@Column(name = "RETAILER_NAME")
 	private String retailerName;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "RETAIER_TYPE")
+	@Column(name = "RETAIL_TYPE")
 	private RetailType retailType;
+
+	@ElementCollection
+	@CollectionTable(
+			name = "RETAIL_SUBTYPE",
+			joinColumns = @JoinColumn(name = "RETAILER_ID")
+	)
+	@Enumerated(EnumType.STRING)
+	@Column(name = "SUBTYPE_VALUE")
+	private List<RetailSubtype> retailSubtypeList = new ArrayList<>();
+
+	@Column(name = "START_AT")
+	private LocalDateTime startAt;
+
+	@Column(name = "END_AT")
+	private LocalDateTime endAt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MARKET_ID")
@@ -48,6 +67,18 @@ public class Retailer extends BaseTime {
 				.retailerName(name)
 				.retailType(retailType)
 				.meta(meta)
+				.build();
+		return retailer;
+	}
+
+	public static Retailer createRetailer(Retailer inputRetailer) {
+		Retailer retailer = Retailer.builder()
+				.retailerName(inputRetailer.getRetailerName())
+				.retailType(inputRetailer.getRetailType())
+				.retailSubtypeList(inputRetailer.getRetailSubtypeList())
+				.startAt(inputRetailer.getStartAt())
+				.endAt(inputRetailer.getEndAt())
+				.meta(inputRetailer.getMeta())
 				.build();
 		return retailer;
 	}

@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: admin
+  profiles:
+    active: local
+    include:
+      - datasource
+      - admin
+      - logging
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
