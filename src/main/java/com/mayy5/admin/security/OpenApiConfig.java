@@ -2,9 +2,10 @@ package com.mayy5.admin.security;
 
 public class OpenApiConfig {
 
-    public static final String geocoderApiUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
-    public static final String geocoderApiKeyId = "n8buzwmo5q";
-    public static final String geocoderApiKey = "uoSPNzUnT64eTcbSZT65yWDVWt5sNpLAE5agij2A";
+    public static final String geocodeApiUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
+    public static final String reverseGeocodeApiUrl = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc";
+    public static final String geocodeApiKeyId = "n8buzwmo5q";
+    public static final String geocodeApiKey = "uoSPNzUnT64eTcbSZT65yWDVWt5sNpLAE5agij2A";
 
     public static final String regionCodeApiUrl = "http://apis.data.go.kr/1741000/StanReginCd/getStanReginCdList";
     public static final String regionCodeApiKey = "eRcBsQ1bX6mccg1jgFvvIl1dS4uvs455RS2zMyRdmmrsE%2FmcLfYdQVR5zih6A%2FGbf08iMsz8cODLVGy6HwscLg%3D%3D"; // encoded

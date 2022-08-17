@@ -6,12 +6,9 @@ import com.mayy5.admin.model.domain.*;
 import com.mayy5.admin.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +23,6 @@ public class MarketService {
 	private final MarketAgentService marketAgentService;
 	private final RetailerService retailerService;
 	private final MarketScheduleService marketScheduleService;
-	private final EntityManager em;
 
 	private final MarketRepository marketRepository;
 
@@ -34,12 +30,12 @@ public class MarketService {
 	public Market createMarket(String loginUserId,
 							   MarketAgent inputMarketAgent,
 							   List<Retailer> inputRetailerList,
-							   Market inputMarket) throws IOException, ParseException {
+							   Market inputMarket) {
 
 		MarketAgent marketAgent = marketAgentService.createMarketAgent(loginUserId, inputMarketAgent);
 		List<Retailer> retailerList = inputRetailerList.stream()
-			.map(retailer -> retailerService.createRetailer(retailer))
-			.collect(Collectors.toList());
+				.map(retailer -> retailerService.createRetailer(retailer))
+				.collect(Collectors.toList());
 
 		String roadAddress = inputMarket.getAddress().getRoadAddress();
 		String jibunAddress = inputMarket.getAddress().getJibunAddress();
@@ -63,11 +59,18 @@ public class MarketService {
 	@Transactional(readOnly = true)
 	public Market getMarket(Long marketId) {
 		return marketRepository.findById(marketId)
-			.orElseThrow(() -> new CommonException(BError.NOT_EXIST, "Market"));
+				.orElseThrow(() -> new CommonException(BError.NOT_EXIST, "Market"));
+	}
+
+	@Transactional(readOnly = true)
+	public List<Retailer> getRetailersOfMarket(Long marketId) {
+		Market market = getMarket(marketId);
+		return market.getRetailerList();
 	}
 
 	@Transactional
 	public Market addRetailers(Long marketId, List<Retailer> retailerList) {
+
 		Market market = getMarket(marketId);
 		List<Retailer> retailers = retailerList.stream()
 				.map(retailerService::createRetailer)
@@ -125,4 +128,8 @@ public class MarketService {
 		return marketAgent.getMarketList();
 	}
 
+	@Transactional(readOnly = true)
+	public List<Market> getMarketsByRegionCode(String regionCode) {
+		return marketRepository.getMarketsByRegionCode(regionCode);
+	}
 }

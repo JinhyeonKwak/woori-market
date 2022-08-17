@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public interface MarketClientApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @GetMapping(path = "/v1/clients/retailers")
-    ResponseEntity<List<RetailerResponseDto>> getRetailersAroundClient();
+    ResponseEntity<List<RetailerResponseDto>> getRetailersAroundClient(@RequestParam Double latitude, @RequestParam Double longitude);
 
     @ApiOperation(value = "가게 상세 페이지 조회")
     @ApiResponses(value = {
@@ -34,7 +35,7 @@ public interface MarketClientApi {
             @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "잘못된 요청")
     })
     @GetMapping(path = "/v1/clients/retailers/{retailerId}")
-    ResponseEntity<RetailerResponseDto> getRetailersDetail(@PathVariable Long retailerId);
+    ResponseEntity<RetailerResponseDto> getRetailerDetail(@PathVariable Long retailerId);
 
     @ApiOperation(value = "가게의 특정 품목 예약")
     @ApiResponses(value = {

@@ -2,7 +2,6 @@ package com.mayy5.admin.service;
 
 import com.mayy5.admin.common.BError;
 import com.mayy5.admin.common.CommonException;
-import com.mayy5.admin.model.domain.Market;
 import com.mayy5.admin.model.domain.Retailer;
 import com.mayy5.admin.repository.RetailerRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -30,11 +28,6 @@ public class RetailerService {
 	public Retailer getRetailer(Long retailerId) {
 		return retailerRepository.findById(retailerId)
 			.orElseThrow(() -> new CommonException(BError.NOT_EXIST, "Retailer"));
-	}
-
-	@Transactional(readOnly = true)
-	public List<Retailer> getAllRetailers() {
-		return retailerRepository.findAll();
 	}
 
 	@Transactional

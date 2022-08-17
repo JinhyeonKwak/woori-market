@@ -1,17 +1,12 @@
 package com.mayy5.admin.controller;
 
 import com.mayy5.admin.model.domain.Market;
-import com.mayy5.admin.model.domain.User;
 import com.mayy5.admin.model.req.MarketAgentRequestDto;
 import com.mayy5.admin.model.req.MarketCreateRequestDto;
 import com.mayy5.admin.model.req.RetailerRequestDto;
 import com.mayy5.admin.model.res.MarketResponseDto;
 import com.mayy5.admin.repository.MarketRepository;
-import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.service.UserService;
-import com.mayy5.admin.type.UserMetaType;
-import com.mayy5.admin.type.UserRoleType;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -44,20 +38,6 @@ class MarketControllerTest {
     @Autowired
     private MarketRepository marketRepository;
 
-    @Before
-    @Transactional
-    void createUser() {
-        User user = User.builder()
-                .id(AuthConstant.ADMIN_USER)
-                .password(passwordEncoder.encode(AuthConstant.ADMIN_PWD))
-                .email("mayy5.master@gmail.com")
-                .name("master")
-                .phone("010-0000-0000")
-                .meta(new HashMap<>())
-                .build();
-        user.getMeta().put(UserMetaType.ROLE, UserRoleType.ROLE_ADMIN.name());
-        userService.createUser(user);
-    }
 
     @Test
     @Transactional

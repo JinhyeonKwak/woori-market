@@ -6,8 +6,8 @@ import com.mayy5.admin.common.CommonException;
 import com.mayy5.admin.security.OpenApiConfig;
 import com.mayy5.admin.service.pojo.geocode.GeocodeResponse;
 import com.mayy5.admin.service.pojo.regionCode.RegionCodeResponse;
+import com.mayy5.admin.service.pojo.reverseGeocode.ReverseGeocodeResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -36,7 +36,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MarketMapService {
 
-    @SneakyThrows
+    private final MarketService marketService;
+
     public static String getRegionCode(String roadAddress) {
 
         ResponseEntity<GeocodeResponse> geocodeResponse = geocode(roadAddress);
@@ -116,11 +117,11 @@ public class MarketMapService {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-NCP-APIGW-API-KEY-ID", OpenApiConfig.geocoderApiKeyId);
-        headers.set("X-NCP-APIGW-API-KEY", OpenApiConfig.geocoderApiKey);
+        headers.set("X-NCP-APIGW-API-KEY-ID", OpenApiConfig.geocodeApiKeyId);
+        headers.set("X-NCP-APIGW-API-KEY", OpenApiConfig.geocodeApiKey);
 
         HttpEntity request = new HttpEntity(headers);
-        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(OpenApiConfig.geocoderApiUrl)
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(OpenApiConfig.geocodeApiUrl)
                 .queryParam("query", location)
                 .build();
 
@@ -131,6 +132,30 @@ public class MarketMapService {
                 GeocodeResponse.class);
 
         return response;
+    }
+
+    public String getRegionCodeAround(Double lat, Double lng) {
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-NCP-APIGW-API-KEY-ID", OpenApiConfig.geocodeApiKeyId);
+        headers.set("X-NCP-APIGW-API-KEY", OpenApiConfig.geocodeApiKey);
+
+        HttpEntity request = new HttpEntity(headers);
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(OpenApiConfig.reverseGeocodeApiUrl)
+                .queryParam("coords", lng.toString() + ',' + lat.toString()) // (lng, lat)
+                .queryParam("output", "json")
+                .build();
+
+        ResponseEntity<ReverseGeocodeResponse> response = restTemplate.exchange(
+                uriComponents.toUriString(),
+                HttpMethod.GET,
+                request,
+                ReverseGeocodeResponse.class);
+
+        String regionCode = response.getBody().getResults().get(0).getCode().getId();
+        return regionCode;
     }
 
 }
