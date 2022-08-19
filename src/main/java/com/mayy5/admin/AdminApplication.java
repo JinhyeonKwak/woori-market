@@ -5,10 +5,7 @@ import com.mayy5.admin.repository.PostRepository;
 import com.mayy5.admin.security.AuthConstant;
 import com.mayy5.admin.service.MarketService;
 import com.mayy5.admin.service.UserService;
-import com.mayy5.admin.type.PostType;
-import com.mayy5.admin.type.RetailType;
-import com.mayy5.admin.type.UserMetaType;
-import com.mayy5.admin.type.UserRoleType;
+import com.mayy5.admin.type.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -87,7 +85,10 @@ public class AdminApplication {
 				IntStream.rangeClosed(1, 20).forEach(j -> {
 					Retailer retailer = Retailer.builder()
 							.retailerName("NAME" + j)
-							.retailType(RetailType.JOGBAL)
+							.retailType(RetailType.SNACK)
+							.startAt("9")
+							.endAt("17")
+							.retailSubtypeList(new ArrayList<>(Arrays.asList(RetailSubtype.TTEOKBOKKI, RetailSubtype.JOKBAL)))
 							.build();
 					retailerList.add(retailer);
 				});
@@ -102,6 +103,8 @@ public class AdminApplication {
 						.address(address)
 						.startDate(LocalDate.now().plusWeeks(value))
 						.endDate(LocalDate.now().plusWeeks(value).plusYears(1))
+						.openAt("9")
+						.closedAt("20")
 						.marketDay(DayOfWeek.of(value))
 						.build();
 

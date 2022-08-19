@@ -31,14 +31,9 @@ public class MarketClientService {
         return retailerList;
     }
 
-    @Transactional(readOnly = true)
-    public void getRetailer() {
-
-    }
-
     @Transactional
     public void makeReservation() {
-
+        
     }
 
     @Transactional

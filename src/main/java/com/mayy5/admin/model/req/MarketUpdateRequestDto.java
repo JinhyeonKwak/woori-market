@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,12 @@ public class MarketUpdateRequestDto {
 
     @ApiModelProperty(value = "Market Day")
     private DayOfWeek marketDay;
+
+    @ApiModelProperty(value = "Open At")
+    private LocalDateTime openAt;
+
+    @ApiModelProperty(value = "Closed At")
+    private LocalDateTime closedAt;
 
     @ApiModelProperty(
             value = "A MarketPropType map of key/value pairs",

@@ -20,7 +20,7 @@ public class RetailerService {
 
 	@Transactional
 	public Retailer createRetailer(Retailer input) {
-		Retailer retailer = Retailer.createRetailer(input.getRetailerName(), input.getRetailType(), input.getMeta());
+		Retailer retailer = Retailer.createRetailer(input);
 		return retailerRepository.save(retailer);
 	}
 

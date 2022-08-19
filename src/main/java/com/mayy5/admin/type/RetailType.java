@@ -4,6 +4,7 @@ public enum RetailType {
 
 	VEGETABLE,
 	SEAFOOD,
-	JOGBAL
+	CLOTHES,
+	SNACK
 
 }

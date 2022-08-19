@@ -33,6 +33,12 @@ public class MarketCreateRequestDto {
     @ApiModelProperty(value = "Market Day")
     private DayOfWeek marketDay;
 
+    @ApiModelProperty(value = "Open At", example = "9")
+    private String openAt;
+
+    @ApiModelProperty(value = "Closed At", example = "20")
+    private String closedAt;
+
     @ApiModelProperty(value = "MarketAgentRequestDto")
     private MarketAgentRequestDto marketAgent;
 

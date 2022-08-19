@@ -6,7 +6,6 @@ import com.mayy5.admin.type.RetailerMetaType;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,10 +41,10 @@ public class Retailer extends BaseTime {
 	private List<RetailSubtype> retailSubtypeList = new ArrayList<>();
 
 	@Column(name = "START_AT")
-	private LocalDateTime startAt;
+	private String startAt;
 
 	@Column(name = "END_AT")
-	private LocalDateTime endAt;
+	private String endAt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MARKET_ID")
@@ -62,15 +61,6 @@ public class Retailer extends BaseTime {
 	private Map<RetailerMetaType, String> meta = new HashMap<>();
 
 	//==생성 메서드==//
-	public static Retailer createRetailer(String name, RetailType retailType, Map<RetailerMetaType, String> meta) {
-		Retailer retailer = Retailer.builder()
-				.retailerName(name)
-				.retailType(retailType)
-				.meta(meta)
-				.build();
-		return retailer;
-	}
-
 	public static Retailer createRetailer(Retailer inputRetailer) {
 		Retailer retailer = Retailer.builder()
 				.retailerName(inputRetailer.getRetailerName())

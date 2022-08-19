@@ -6,7 +6,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,10 +36,10 @@ public class Market extends BaseTime {
     private DayOfWeek marketDay;
 
     @Column(name = "OPEN_AT")
-    private LocalDateTime openAt;
+    private String openAt;
 
     @Column(name = "CLOSED_AT")
-    private LocalDateTime closedAt;
+    private String closedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MARKET_AGENT_ID")
