@@ -12,6 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ScheduleResponseDto {
 
+	@ApiModelProperty(value = "Market ID")
+	private Long marketId;
+
 	@ApiModelProperty(value = "Retailer ID")
 	private Long retailerId;
 
